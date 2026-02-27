@@ -57,6 +57,7 @@ OUTPUT_SCHEMA = """{
   "mental_model": "string - one sentence mental model",
   "template_code_python": "string - Python template implementing the pattern",
   "template_code_javascript": "string - JavaScript template implementing the pattern",
+  "template_code_java": "string - Java template implementing the pattern",
   "trigger_phrases": ["list of 5-8 phrases that signal this pattern"],
   "when_to_use": ["list of 4-6 bullet points on when to apply this pattern"],
   "common_mistakes": ["list of 3-5 common mistakes when using this pattern"],

@@ -40,7 +40,7 @@ SECTION_TO_PATTERN = {
     "binary tree": "Trees",
     "binary search tree": "Trees",
     "graph": "Graphs",
-    "dynamic programming": "1-D DP",
+    "dynamic programming": "DP",
     "trie": "Tries",
 }
 

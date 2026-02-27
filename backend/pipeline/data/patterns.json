@@ -1,0 +1,755 @@
+[
+  {
+    "pattern_id": "arrays-hashing",
+    "name": "Arrays & Hashing",
+    "explanation": "The Arrays & Hashing pattern is a fundamental technique in computer science, particularly relevant for coding interviews. It leverages the strengths of both arrays (for ordered data and direct access) and hash tables (dictionaries or maps for efficient key-value lookups).  The core idea is to use a hash table to store and retrieve information about elements in an array, often to check for existence, count frequencies, or group similar items. This pattern is incredibly versatile and forms the basis for solving a wide range of problems involving data manipulation and analysis.",
+    "explanation_continued": "By using a hash table, we can often achieve O(1) average time complexity for operations like insertion, deletion, and lookup. This significantly speeds up algorithms that would otherwise require O(n) or O(n^2) time complexity if only array operations were used.  The trade-off is typically an increase in space complexity, as the hash table needs to store the data. Understanding how to effectively map array elements to hash table keys and values is crucial for mastering this pattern.",
+    "mental_model": "Use a hash map to quickly count, check for existence, or group elements from an array.",
+    "template_code_python": "def solve(nums):\n    # Initialize a hash map (dictionary in Python)\n    hash_map = {}\n\n    # Iterate through the array\n    for num in nums:\n        # Example: Check if an element exists\n        if num in hash_map:\n            # Do something if it exists\n            pass\n        else:\n            # Add element to hash map, potentially with a count or other value\n            hash_map[num] = 1 # Or some other initial value\n\n        # Example: Increment count of an element\n        # hash_map[num] = hash_map.get(num, 0) + 1\n\n    # Further processing using the hash map\n    # ...\n\n    return # result",
+    "template_code_javascript": "function solve(nums) {\n    // Initialize a hash map (Map object in JavaScript)\n    const hashMap = new Map();\n\n    // Iterate through the array\n    for (const num of nums) {\n        // Example: Check if an element exists\n        if (hashMap.has(num)) {\n            // Do something if it exists\n        } else {\n            // Add element to hash map, potentially with a count or other value\n            hashMap.set(num, 1); // Or some other initial value\n        }\n\n        // Example: Increment count of an element\n        // hashMap.set(num, (hashMap.get(num) || 0) + 1);\n    }\n\n    // Further processing using the hash map\n    // ...\n\n    return /* result */;\n}",
+    "trigger_phrases": [
+      "find duplicates",
+      "check if unique",
+      "count occurrences",
+      "group anagrams",
+      "frequency of elements",
+      "two sum",
+      "anagram",
+      "common prefix"
+    ],
+    "when_to_use": [
+      "When you need to quickly check if an element has been seen before.",
+      "When you need to count the frequency of elements in a collection.",
+      "When you need to group elements based on some property (e.g., anagrams).",
+      "When the problem involves finding pairs or subsets of elements that satisfy a condition.",
+      "When you need to optimize lookups in a large dataset.",
+      "When the order of elements doesn't matter for the core logic, but efficient access does."
+    ],
+    "common_mistakes": [
+      "Forgetting to handle edge cases like empty arrays or arrays with a single element.",
+      "Using a hash map when a simpler array-based approach (like sorting) would suffice and be more space-efficient.",
+      "Not considering the potential for hash collisions and their impact on performance (though usually abstracted away by language implementations).",
+      "Incorrectly initializing or updating counts/values in the hash map.",
+      "Choosing the wrong key for the hash map, leading to incorrect grouping or lookups."
+    ],
+    "time_complexity": "O(N) on average, where N is the number of elements. This is because hash map operations (insertion, lookup, deletion) are O(1) on average. In the worst case (due to hash collisions), it can degrade to O(N).",
+    "space_complexity": "O(N) in the worst case, as the hash map might need to store all unique elements from the input array.",
+    "related_patterns": [
+      "arrays-hashing",
+      "two-pointers",
+      "sliding-window",
+      "heap-priority-queue"
+    ],
+    "sample_walkthrough": {
+      "problem": "Two Sum",
+      "problem_number": 1,
+      "approach": "The 'Two Sum' problem asks us to find two numbers in an array that add up to a specific target. This is a classic application of the Arrays & Hashing pattern.\n\n1. **Initialization**: We'll use a hash map (dictionary in Python, Map in JavaScript) to store numbers we've encountered so far, along with their indices. The key will be the number itself, and the value will be its index.\n\n2. **Iteration**: We iterate through the input array `nums` one element at a time. For each element `num` at index `i`:\n   a. **Calculate Complement**: We determine the `complement` needed to reach the `target`. This is `complement = target - num`.\n   b. **Check Hash Map**: We check if this `complement` already exists as a key in our hash map. \n      - If it does, it means we've found the two numbers that sum up to the target. The current number `num` and the number stored in the hash map (which is the `complement`) form the pair. We return the current index `i` and the index of the `complement` (which we stored as the value in the hash map).\n      - If the `complement` is not in the hash map, it means we haven't seen the required number yet.\n   c. **Add to Hash Map**: We add the current number `num` and its index `i` to the hash map. This way, if a future number needs `num` as its complement, we'll be able to find it.\n\n3. **No Solution**: If we iterate through the entire array and don't find a pair, it means no such pair exists. The problem statement usually specifies what to return in this case (e.g., an empty list or raise an error)."
+    }
+  },
+  {
+    "pattern_id": "two-pointers",
+    "name": "Two Pointers",
+    "explanation": "The Two Pointers pattern is a technique used to solve problems involving arrays or linked lists by maintaining two pointers that traverse the data structure, often from opposite ends or at different speeds. This pattern is particularly effective when dealing with sorted data, as it allows for efficient comparisons and manipulations. By strategically moving these pointers, we can often reduce the time complexity of a solution from O(n^2) or O(n^3) to O(n) or O(n log n), making it a crucial tool for optimizing algorithms.",
+    "mental_model": "Two pointers moving through a data structure (often from ends inwards or at different speeds) to find a solution.",
+    "template_code_python": "def two_pointers_pattern(arr):\n    left = 0\n    right = len(arr) - 1\n\n    while left < right:\n        # Perform operations based on arr[left] and arr[right]\n        # Example: if arr[left] + arr[right] == target:\n        #              return True\n\n        # Move pointers based on conditions\n        # Example: if arr[left] + arr[right] < target:\n        #              left += 1\n        #          else:\n        #              right -= 1\n\n        pass # Placeholder for actual logic\n\n    return False # Or appropriate return value\n",
+    "template_code_javascript": "function twoPointersPattern(arr) {\n    let left = 0;\n    let right = arr.length - 1;\n\n    while (left < right) {\n        // Perform operations based on arr[left] and arr[right]\n        // Example: if (arr[left] + arr[right] === target) {\n        //              return true;\n        //          }\n\n        // Move pointers based on conditions\n        // Example: if (arr[left] + arr[right] < target) {\n        //              left++;\n        //          } else {\n        //              right--;\n        //          }\n\n        // Placeholder for actual logic\n    }\n\n    return false; // Or appropriate return value\n}\n",
+    "trigger_phrases": [
+      "sorted array",
+      "two numbers",
+      "pair",
+      "palindrome",
+      "container with most water",
+      "trapping rain water",
+      "remove duplicates",
+      "merge sorted"
+    ],
+    "when_to_use": [
+      "When the input array is sorted, and you need to find pairs or triplets that satisfy a certain condition.",
+      "When you need to check for palindromes in a string or array.",
+      "When you need to find the maximum or minimum value that can be formed by combining elements from opposite ends of a data structure.",
+      "When you need to efficiently remove duplicates or rearrange elements in a sorted array.",
+      "When the problem involves finding a sub-structure (like a subarray or substring) with specific properties, and you can narrow down the search space by moving pointers."
+    ],
+    "common_mistakes": [
+      "Incorrectly updating pointer positions: Forgetting to move one or both pointers, or moving them in the wrong direction based on the problem's logic.",
+      "Off-by-one errors: Mismanaging the `left < right` or `left <= right` condition, leading to missed elements or incorrect boundary checks.",
+      "Not handling edge cases: Failing to consider empty arrays, arrays with one element, or specific scenarios where pointers might overlap or go out of bounds.",
+      "Assuming the array is always sorted: The two-pointer approach is most effective on sorted data. If the array isn't sorted, it might need to be sorted first, adding to the time complexity."
+    ],
+    "time_complexity": "O(n) or O(n log n) if sorting is required",
+    "space_complexity": "O(1) or O(n) if a copy of the array is made for sorting",
+    "related_patterns": [
+      "arrays-hashing",
+      "sliding-window"
+    ],
+    "sample_walkthrough": {
+      "problem": "Valid Palindrome",
+      "problem_number": 125,
+      "approach": "The problem asks us to determine if a given string is a palindrome, considering only alphanumeric characters and ignoring cases. We can use the Two Pointers pattern here. Initialize a `left` pointer at the beginning of the string and a `right` pointer at the end. We'll iterate as long as `left` is less than `right`. In each iteration, we first advance `left` past any non-alphanumeric characters and decrement `right` past any non-alphanumeric characters. Once both pointers point to alphanumeric characters, we compare them in lowercase. If they don't match, the string is not a palindrome, and we return `False`. If they match, we move `left` one step to the right and `right` one step to the left to continue checking the next pair of characters. If the loop completes without finding any mismatches, it means the string is a palindrome, and we return `True`."
+    }
+  },
+  {
+    "pattern_id": "sliding-window",
+    "name": "Sliding Window",
+    "explanation": "The Sliding Window pattern is a technique used to efficiently solve problems involving contiguous subarrays or substrings. It's particularly useful when you need to find a specific property (like maximum sum, minimum length, or count of elements) within a dynamic range of elements. The core idea is to maintain a 'window' of elements that slides over the input data. This window typically has a start and an end pointer. As the window slides, elements are added to the end and removed from the beginning, allowing us to re-evaluate the property of interest without re-processing the entire input each time.",
+    "explanation_continued": "Instead of iterating through all possible subarrays or substrings (which would often lead to O(n^2) or O(n^3) complexity), the sliding window approach optimizes this by intelligently expanding and shrinking the window. The expansion typically happens when the current window satisfies a certain condition or when we need to include more elements. The shrinking happens when the window violates a condition, or when we've found a potential solution and need to see if a smaller window can also satisfy it. This dynamic adjustment is key to achieving linear or near-linear time complexity.",
+    "mental_model": "A window that slides over a sequence, expanding and shrinking to find optimal subarrays/substrings.",
+    "template_code_python": "def sliding_window_template(nums):\n    left = 0\n    max_len = 0  # Or min_len, or other relevant metric\n    # Initialize any data structures needed for the window (e.g., a frequency map)\n    window_data = {}\n\n    for right in range(len(nums)):\n        # Add the element at 'right' to the window\n        # Update window_data based on nums[right]\n\n        # Shrink the window from the left if a condition is violated\n        while left <= right and condition_to_shrink(window_data, nums, left, right):\n            # Remove the element at 'left' from the window\n            # Update window_data based on nums[left]\n            left += 1\n\n        # Update the result (e.g., max_len) with the current valid window\n        # This is often done after the shrinking loop, as the window is now valid\n        max_len = max(max_len, right - left + 1) # Example for max length\n\n    return max_len # Or other computed result\n\ndef condition_to_shrink(window_data, nums, left, right):\n    # Implement the condition that determines if the window needs to shrink\n    # This depends on the specific problem (e.g., duplicates, character counts)\n    return False # Placeholder",
+    "template_code_javascript": "function slidingWindowTemplate(nums) {\n    let left = 0;\n    let maxLen = 0; // Or minLen, or other relevant metric\n    // Initialize any data structures needed for the window (e.g., a frequency map)\n    const windowData = {};\n\n    for (let right = 0; right < nums.length; right++) {\n        // Add the element at 'right' to the window\n        // Update windowData based on nums[right]\n\n        // Shrink the window from the left if a condition is violated\n        while (left <= right && conditionToShrink(windowData, nums, left, right)) {\n            // Remove the element at 'left' from the window\n            // Update windowData based on nums[left]\n            left++;\n        }\n\n        // Update the result (e.g., maxLen) with the current valid window\n        // This is often done after the shrinking loop, as the window is now valid\n        maxLen = Math.max(maxLen, right - left + 1); // Example for max length\n    }\n\n    return maxLen; // Or other computed result\n}\n\nfunction conditionToShrink(windowData, nums, left, right) {\n    // Implement the condition that determines if the window needs to shrink\n    // This depends on the specific problem (e.g., duplicates, character counts)\n    return false; // Placeholder\n}",
+    "trigger_phrases": [
+      "contiguous subarray",
+      "substring",
+      "longest/shortest subarray/substring",
+      "maximum/minimum sum of subarray",
+      "fixed size window",
+      "at most K distinct characters",
+      "exactly K distinct characters",
+      "contains duplicate within K distance"
+    ],
+    "when_to_use": [
+      "Problems asking for the longest/shortest contiguous subarray or substring with a certain property.",
+      "Problems involving a fixed-size window that needs to slide over an array or string.",
+      "Problems where you need to count occurrences or check for specific conditions within a dynamic range.",
+      "When brute-force solutions involving nested loops for subarrays/substrings are too slow (O(n^2) or worse).",
+      "Problems that can be optimized by maintaining a window and incrementally updating its state."
+    ],
+    "common_mistakes": [
+      "Incorrectly defining the condition for shrinking the window, leading to either too much shrinking or not enough.",
+      "Forgetting to update the result metric (e.g., max length, min sum) after the window has been adjusted to a valid state.",
+      "Off-by-one errors in window boundary calculations (left and right pointers).",
+      "Not handling edge cases like empty input arrays/strings or windows that never satisfy the condition.",
+      "Inefficiently updating window data structures (e.g., recomputing counts instead of incremental updates)."
+    ],
+    "time_complexity": "O(N), where N is the size of the input array/string. Each element is visited at most twice (once by the right pointer and once by the left pointer).",
+    "space_complexity": "O(K) or O(N), where K is the number of distinct elements in the window or the size of the alphabet (e.g., for character-based problems), or O(N) in the worst case if the window can grow to encompass the entire input.",
+    "related_patterns": [
+      "two-pointers",
+      "arrays-hashing",
+      "greedy",
+      "intervals"
+    ],
+    "sample_walkthrough": {
+      "problem": "Longest Substring Without Repeating Characters",
+      "problem_number": 3,
+      "approach": "The goal is to find the longest substring in a given string `s` that does not contain any repeating characters. We can use the sliding window pattern here.\n\n1. **Initialization**: We'll use two pointers, `left` and `right`, both starting at index 0. We'll also need a data structure to keep track of characters within the current window and their counts or presence. A hash map (dictionary in Python, Map in JavaScript) is suitable for this, storing `character -> last_seen_index`.\n\n2. **Expansion**: The `right` pointer iterates through the string from left to right. For each character `s[right]`:\n   - If `s[right]` is already in our hash map and its last seen index is within the current window (i.e., `map[s[right]] >= left`), it means we've found a repeating character. To maintain the 'no repeating characters' property, we must shrink the window from the left.\n   - If `s[right]` is not in the map or its last seen index is outside the current window, we can safely expand the window. We update the character's last seen index in the map to `right`.\n\n3. **Shrinking**: When a repeating character is found (as described above), we need to move the `left` pointer forward. The `left` pointer should be moved to `map[s[right]] + 1`. This effectively removes the previous occurrence of `s[right]` and all characters before it from the window, ensuring the window now contains only unique characters.\n\n4. **Updating Result**: After each expansion (and potential shrinking), the current window `s[left...right]` is guaranteed to have no repeating characters. We calculate the length of this current window (`right - left + 1`) and update our `max_length` if this length is greater than the current `max_length`.\n\n5. **Termination**: The `right` pointer continues until it reaches the end of the string. The final `max_length` will be the answer."
+    }
+  },
+  {
+    "pattern_id": "stack",
+    "name": "Stack",
+    "explanation": "The Stack pattern is a fundamental data structure that operates on the Last-In, First-Out (LIFO) principle. Imagine a pile of plates: you can only add a new plate to the top, and you can only remove the topmost plate. This LIFO behavior makes stacks ideal for problems where you need to process elements in reverse order of their arrival, or where you need to keep track of a history of operations that can be undone. Common operations include `push` (adding an element to the top), `pop` (removing the top element), and `peek` (viewing the top element without removing it).",
+    "mental_model": "A LIFO (Last-In, First-Out) data structure, like a pile of plates, where the last item added is the first one removed.",
+    "template_code_python": "class Stack:\n    def __init__(self):\n        self.items = []\n\n    def push(self, item):\n        \"\"\"Adds an item to the top of the stack.\"\"\"\n        self.items.append(item)\n\n    def pop(self):\n        \"\"\"Removes and returns the top item from the stack. Returns None if the stack is empty.\"\"\"\n        if not self.is_empty():\n            return self.items.pop()\n        return None\n\n    def peek(self):\n        \"\"\"Returns the top item of the stack without removing it. Returns None if the stack is empty.\"\"\"\n        if not self.is_empty():\n            return self.items[-1]\n        return None\n\n    def is_empty(self):\n        \"\"\"Checks if the stack is empty.\"\"\"\n        return len(self.items) == 0\n\n    def size(self):\n        \"\"\"Returns the number of items in the stack.\"\"\"\n        return len(self.items)\n\n# Example Usage:\n# stack = Stack()\n# stack.push(1)\n# stack.push(2)\n# print(stack.pop()) # Output: 2\n# print(stack.peek()) # Output: 1",
+    "template_code_javascript": "class Stack {\n    constructor() {\n        this.items = [];\n    }\n\n    push(item) {\n        \"\"\"Adds an item to the top of the stack.\"\"\"\n        this.items.push(item);\n    }\n\n    pop() {\n        \"\"\"Removes and returns the top item from the stack. Returns undefined if the stack is empty.\"\"\"\n        if (!this.isEmpty()) {\n            return this.items.pop();\n        }\n        return undefined;\n    }\n\n    peek() {\n        \"\"\"Returns the top item of the stack without removing it. Returns undefined if the stack is empty.\"\"\"\n        if (!this.isEmpty()) {\n            return this.items[this.items.length - 1];\n        }\n        return undefined;\n    }\n\n    isEmpty() {\n        \"\"\"Checks if the stack is empty.\"\"\"\n        return this.items.length === 0;\n    }\n\n    size() {\n        \"\"\"Returns the number of items in the stack.\"\"\"\n        return this.items.length;\n    }\n}\n\n// Example Usage:\n// const stack = new Stack();\n// stack.push(1);\n// stack.push(2);\n// console.log(stack.pop()); // Output: 2\n// console.log(stack.peek()); // Output: 1",
+    "trigger_phrases": [
+      "balanced parentheses",
+      "matching brackets",
+      "last in first out",
+      "undo operations",
+      "reverse order",
+      "nested structures",
+      "previous element"
+    ],
+    "when_to_use": [
+      "Validating balanced parentheses or brackets in an expression.",
+      "Evaluating postfix expressions (Reverse Polish Notation).",
+      "Backtracking algorithms where you need to store states to revert to.",
+      "Simulating function call stacks or managing nested scopes.",
+      "Finding the next greater/smaller element for each element in an array.",
+      "Processing tasks that require a LIFO order, like undo/redo functionality."
+    ],
+    "common_mistakes": [
+      "Forgetting to handle the case of an empty stack when calling `pop` or `peek`.",
+      "Incorrectly comparing elements when dealing with nested structures (e.g., mismatched parentheses types).",
+      "Not clearing the stack between test cases in competitive programming.",
+      "Using a stack when a queue (FIFO) or other data structure would be more appropriate."
+    ],
+    "time_complexity": "O(1) for push, pop, peek, isEmpty, size (amortized for dynamic arrays)",
+    "space_complexity": "O(N) in the worst case, where N is the number of elements stored",
+    "related_patterns": [
+      "arrays-hashing",
+      "linked-list",
+      "backtracking"
+    ],
+    "sample_walkthrough": {
+      "problem": "Valid Parentheses",
+      "problem_number": 20,
+      "approach": "The problem asks us to determine if a string containing just the characters '(', ')', '{', '}', '[' and ']' is valid. A string is valid if: 1. Open brackets must be closed by the same type of brackets. 2. Open brackets must be closed in the correct order. 3. Every close bracket has a corresponding open bracket of the same type.\n\nWe can use a stack to solve this. The core idea is to iterate through the input string character by character. \n\n1. **If the character is an opening bracket ('(', '{', '['):** We push it onto the stack. This signifies that we've encountered an opening bracket that needs a corresponding closing bracket later.\n\n2. **If the character is a closing bracket (')', '}', ']'):** We need to check if it matches the most recently opened bracket. \n   a. First, we check if the stack is empty. If it is, it means we've found a closing bracket without a corresponding opening bracket, so the string is invalid.\n   b. If the stack is not empty, we pop the top element from the stack. This element represents the most recent unclosed opening bracket.\n   c. We then compare the popped opening bracket with the current closing bracket. If they form a valid pair (e.g., '(' with ')', '{' with '}', '[' with ']'), we continue. If they don't match, the string is invalid.\n\n3. **After iterating through the entire string:** If the stack is empty, it means all opening brackets have been successfully matched with their corresponding closing brackets, and the string is valid. If the stack is not empty, it means there are unclosed opening brackets, and the string is invalid."
+    }
+  },
+  {
+    "pattern_id": "binary-search",
+    "name": "Binary Search",
+    "explanation": "Binary Search is a highly efficient searching algorithm that works on sorted data structures. The core idea is to repeatedly divide the search interval in half. If the value of the search key is less than the item in the middle of the interval, the search narrows to the lower half. Otherwise, it narrows to the upper half. This process continues until the value is found or the interval is empty.\n\nThis pattern is not limited to just finding an element. It can also be used to find the *position* where an element *should* be inserted to maintain sorted order, or to find the minimum/maximum value that satisfies a certain condition within a sorted range. The key prerequisite for Binary Search is that the data must be sorted or exhibit a monotonic property that allows for halving the search space. This monotonic property is crucial because it guarantees that if a certain value is not found in the middle, we can definitively discard half of the remaining search space.",
+    "mental_model": "Efficiently find a target in sorted data by repeatedly halving the search space.",
+    "template_code_python": "def binary_search(arr, target):\n    left, right = 0, len(arr) - 1\n\n    while left <= right:\n        mid = (left + right) // 2\n        if arr[mid] == target:\n            return mid  # Target found at index mid\n        elif arr[mid] < target:\n            left = mid + 1  # Target is in the right half\n        else:\n            right = mid - 1 # Target is in the left half\n\n    return -1  # Target not found",
+    "template_code_javascript": "function binarySearch(arr, target) {\n    let left = 0;\n    let right = arr.length - 1;\n\n    while (left <= right) {\n        const mid = Math.floor((left + right) / 2);\n        if (arr[mid] === target) {\n            return mid; // Target found at index mid\n        } else if (arr[mid] < target) {\n            left = mid + 1; // Target is in the right half\n        } else {\n            right = mid - 1; // Target is in the left half\n        }\n    }\n\n    return -1; // Target not found\n}",
+    "trigger_phrases": [
+      "sorted array",
+      "sorted list",
+      "find an element",
+      "search for a value",
+      "minimum/maximum value",
+      "satisfies a condition",
+      "monotonic property"
+    ],
+    "when_to_use": [
+      "The input data is sorted.",
+      "You need to find a specific element or its insertion point.",
+      "The problem involves finding the minimum or maximum value that satisfies a certain condition within a range.",
+      "The search space can be divided into two halves, and you can determine which half to discard based on a comparison.",
+      "The problem can be reframed as finding a threshold value where a property changes from false to true (or vice versa)."
+    ],
+    "common_mistakes": [
+      "Off-by-one errors in loop conditions (e.g., `left < right` vs. `left <= right`) or index calculations.",
+      "Incorrectly updating `left` and `right` pointers, leading to infinite loops or missed elements.",
+      "Not handling edge cases like empty arrays or arrays with a single element.",
+      "Applying binary search to unsorted data, which will yield incorrect results.",
+      "Forgetting to consider the case where the target is at the `mid` index itself."
+    ],
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1) for iterative, O(log n) for recursive (due to call stack)",
+    "related_patterns": [
+      "arrays-hashing",
+      "two-pointers"
+    ],
+    "sample_walkthrough": {
+      "problem": "Search Insert Position",
+      "problem_number": 35,
+      "approach": "The problem asks us to find the index of a target value in a sorted array. If the target is not present, we need to return the index where it would be if it were inserted in order. This is a classic application of binary search.\n\n1. **Initialization**: We start with `left = 0` and `right = len(nums) - 1`. These pointers define our current search space.\n2. **Iteration**: We enter a `while left <= right` loop. This condition ensures we continue as long as there's a valid search space.\n3. **Midpoint Calculation**: Inside the loop, we calculate `mid = (left + right) // 2`. This gives us the middle index of the current search space.\n4. **Comparison**: \n   - If `nums[mid] == target`, we've found the target, and we return `mid`.\n   - If `nums[mid] < target`, it means the target, if it exists, must be in the right half of the current search space (or it should be inserted after `mid`). So, we update `left = mid + 1`.\n   - If `nums[mid] > target`, it means the target, if it exists, must be in the left half of the current search space (or it should be inserted at or before `mid`). So, we update `right = mid - 1`.\n5. **Target Not Found**: If the loop finishes without finding the target (i.e., `left > right`), it means the target is not in the array. At this point, `left` will be pointing to the correct insertion index. This is because `left` is always the first index where `nums[left]` is greater than or equal to the `target` (or `len(nums)` if the target is larger than all elements). Therefore, we return `left`."
+    }
+  },
+  {
+    "pattern_id": "linked-list",
+    "name": "Linked List",
+    "explanation": "Linked Lists are fundamental linear data structures where elements, called nodes, are not stored contiguously in memory. Instead, each node contains data and a reference (or pointer) to the next node in the sequence. This dynamic nature allows for efficient insertion and deletion of elements, as only the pointers need to be updated, unlike arrays which might require shifting elements.  The structure can be singly linked (each node points to the next) or doubly linked (each node points to both the next and previous node).  Understanding how to traverse, manipulate, and manage pointers within a linked list is crucial for solving a variety of problems.",
+    "mental_model": "A chain of connected boxes, where each box holds data and a link to the next box.",
+    "template_code_python": "class ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n\ndef traverse_linked_list(head):\n    current = head\n    while current:\n        # Process current.val\n        print(current.val)\n        current = current.next\n\ndef insert_at_beginning(head, new_val):\n    new_node = ListNode(new_val)\n    new_node.next = head\n    return new_node\n\ndef insert_at_end(head, new_val):\n    new_node = ListNode(new_val)\n    if not head:\n        return new_node\n    current = head\n    while current.next:\n        current = current.next\n    current.next = new_node\n    return head\n\ndef delete_node(head, key):\n    current = head\n    prev = None\n\n    if current and current.val == key:\n        return current.next\n\n    while current and current.val != key:\n        prev = current\n        current = current.next\n\n    if current is None:\n        return head\n\n    prev.next = current.next\n    return head",
+    "template_code_javascript": "class ListNode {\n    constructor(val = 0, next = null) {\n        this.val = val;\n        this.next = next;\n    }\n}\n\nfunction traverseLinkedList(head) {\n    let current = head;\n    while (current !== null) {\n        // Process current.val\n        console.log(current.val);\n        current = current.next;\n    }\n}\n\nfunction insertAtBeginning(head, newVal) {\n    const newNode = new ListNode(newVal);\n    newNode.next = head;\n    return newNode;\n}\n\nfunction insertAtEnd(head, newVal) {\n    const newNode = new ListNode(newVal);\n    if (head === null) {\n        return newNode;\n    }\n    let current = head;\n    while (current.next !== null) {\n        current = current.next;\n    }\n    current.next = newNode;\n    return head;\n}\n\nfunction deleteNode(head, key) {\n    let current = head;\n    let prev = null;\n\n    if (current !== null && current.val === key) {\n        return current.next;\n    }\n\n    while (current !== null && current.val !== key) {\n        prev = current;\n        current = current.next;\n    }\n\n    if (current === null) {\n        return head;\n    }\n\n    prev.next = current.next;\n    return head;\n}",
+    "trigger_phrases": [
+      "linked list",
+      "node",
+      "pointer",
+      "next",
+      "previous",
+      "circular list",
+      "reverse the list",
+      "insert/delete at specific position"
+    ],
+    "when_to_use": [
+      "When the order of elements matters and insertions/deletions are frequent.",
+      "When you need to represent sequences where elements are not necessarily contiguous in memory.",
+      "When dealing with problems involving cycles or circular structures.",
+      "When the size of the collection is dynamic and unpredictable.",
+      "As a building block for more complex data structures like stacks, queues, and graphs."
+    ],
+    "common_mistakes": [
+      "Null pointer exceptions: Forgetting to check if a node or its `next` pointer is null before accessing it.",
+      "Losing the head of the list: Incorrectly updating the `head` pointer during operations like insertion or deletion.",
+      "Infinite loops: Failing to properly terminate traversal loops, especially when dealing with cycles or incorrect pointer manipulation.",
+      "Memory leaks (in languages with manual memory management): Not freeing nodes that are no longer referenced.",
+      "Off-by-one errors: Incorrectly handling the start or end of the list during traversals or modifications."
+    ],
+    "time_complexity": "O(N) for traversal and most operations (insertion/deletion at known positions), O(1) for insertion/deletion at head/tail if pointers are maintained.",
+    "space_complexity": "O(1) for most operations (in-place modification), O(N) if a new list is created.",
+    "related_patterns": [
+      "two-pointers",
+      "stack",
+      "arrays-hashing"
+    ],
+    "sample_walkthrough": {
+      "problem": "Reverse Linked List",
+      "problem_number": 206,
+      "approach": "The goal is to reverse the direction of the pointers in a singly linked list. We can achieve this iteratively by maintaining three pointers: `prev`, `current`, and `next_node`. Initially, `prev` is `None` (as the new tail will point to `None`), `current` points to the `head` of the list, and `next_node` is used to temporarily store the node that `current` will point to after reversal.\n\n1. **Initialization**: `prev = None`, `current = head`.\n2. **Iteration**: While `current` is not `None`:\n   a. **Store next**: `next_node = current.next` (save the next node before we break the link).\n   b. **Reverse pointer**: `current.next = prev` (make the current node point to the previous node).\n   c. **Move pointers forward**: `prev = current` (the current node becomes the previous node for the next iteration).\n   d. **Move current forward**: `current = next_node` (move to the next node in the original list).\n3. **Return new head**: After the loop finishes, `current` will be `None`, and `prev` will be pointing to the last node of the original list, which is now the new head of the reversed list. Return `prev`."
+    }
+  },
+  {
+    "pattern_id": "trees",
+    "name": "Trees",
+    "explanation": "Trees are hierarchical data structures where each node has a parent (except for the root) and zero or more children. They are fundamental in computer science for representing relationships, organizing data efficiently, and enabling various algorithms. Common tree types include binary trees (each node has at most two children), binary search trees (BSTs) where left children are smaller and right children are larger than the parent, and n-ary trees.  Problems involving trees often require traversing them, manipulating their structure, or finding specific properties like depth, height, or common ancestors.",
+    "mental_model": "A tree is a recursive structure where operations on a node often involve similar operations on its children.",
+    "template_code_python": "class TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val = val\n        self.left = left\n        self.right = right\n\ndef traverse_tree(root):\n    if not root:\n        return\n\n    # Pre-order traversal (Root, Left, Right)\n    # print(root.val)\n    # traverse_tree(root.left)\n    # traverse_tree(root.right)\n\n    # In-order traversal (Left, Root, Right)\n    # traverse_tree(root.left)\n    # print(root.val)\n    # traverse_tree(root.right)\n\n    # Post-order traversal (Left, Right, Root)\n    # traverse_tree(root.left)\n    # traverse_tree(root.right)\n    # print(root.val)\n\n    # Level-order traversal (BFS)\n    # from collections import deque\n    # queue = deque([root])\n    # while queue:\n    #     node = queue.popleft()\n    #     print(node.val)\n    #     if node.left:\n    #         queue.append(node.left)\n    #     if node.right:\n    #         queue.append(node.right)\n\n    pass # Implement specific tree logic here",
+    "template_code_javascript": "class TreeNode {\n    constructor(val, left = null, right = null) {\n        this.val = val;\n        this.left = left;\n        this.right = right;\n    }\n}\n\nfunction traverseTree(root) {\n    if (!root) {\n        return;\n    }\n\n    // Pre-order traversal (Root, Left, Right)\n    // console.log(root.val);\n    // traverseTree(root.left);\n    // traverseTree(root.right);\n\n    // In-order traversal (Left, Root, Right)\n    // traverseTree(root.left);\n    // console.log(root.val);\n    // traverseTree(root.right);\n\n    // Post-order traversal (Left, Right, Root)\n    // traverseTree(root.left);\n    // traverseTree(root.right);\n    // console.log(root.val);\n\n    // Level-order traversal (BFS)\n    // const queue = [root];\n    // while (queue.length > 0) {\n    //     const node = queue.shift();\n    //     console.log(node.val);\n    //     if (node.left) {\n    //         queue.push(node.left);\n    //     }\n    //     if (node.right) {\n    //         queue.push(node.right);\n    //     }\n    // }\n\n    // Implement specific tree logic here\n}",
+    "trigger_phrases": [
+      "binary tree",
+      "root node",
+      "left child",
+      "right child",
+      "subtree",
+      "level order",
+      "depth of tree",
+      "height of tree"
+    ],
+    "when_to_use": [
+      "When the problem involves hierarchical data or relationships where elements have parent-child connections.",
+      "When you need to perform operations that can be broken down recursively, such as traversing all nodes or calculating properties of subtrees.",
+      "When the problem statement explicitly mentions 'tree', 'binary tree', 'node', 'leaf', or 'branch'.",
+      "For problems involving searching or ordering data where a BST structure is implied or beneficial.",
+      "When you need to represent relationships like file systems, organizational charts, or decision processes."
+    ],
+    "common_mistakes": [
+      "Not handling the base case (empty tree or null node) correctly in recursive solutions.",
+      "Confusing pre-order, in-order, and post-order traversals and their applications.",
+      "Incorrectly managing state or passing parameters in recursive calls, leading to incorrect results.",
+      "Forgetting to check for null children before accessing their properties or making recursive calls.",
+      "Inefficiently recomputing values for overlapping subproblems instead of using memoization or dynamic programming."
+    ],
+    "time_complexity": "O(N) for most traversals and operations, where N is the number of nodes. Can be O(N log N) or O(N^2) for unbalanced trees in specific scenarios (e.g., BST insertion/search).",
+    "space_complexity": "O(H) for recursive traversals (due to call stack), where H is the height of the tree. O(W) for level-order traversal (BFS), where W is the maximum width of the tree. In the worst case (skewed tree), H can be N, making space O(N).",
+    "related_patterns": [
+      "stack",
+      "graphs",
+      "binary-search",
+      "backtracking"
+    ],
+    "sample_walkthrough": {
+      "problem": "Lowest Common Ancestor of a Binary Search Tree",
+      "problem_number": 235,
+      "approach": "The problem asks for the Lowest Common Ancestor (LCA) of two nodes in a Binary Search Tree (BST). The key property of a BST is that for any node, all values in its left subtree are smaller, and all values in its right subtree are larger. This property allows for an efficient, recursive solution.\n\n1. **Understand the BST Property:** Recall that `node.left.val < node.val < node.right.val` for any node.\n2. **Define the Goal:** We are looking for the deepest node that is an ancestor of both `p` and `q`.\n3. **Recursive Approach:** We can define a recursive function `findLCA(node, p, q)`.\n4. **Base Case:** If the current `node` is null, we return null.\n5. **Decision Logic:** \n   - If both `p.val` and `q.val` are smaller than `node.val`, it means the LCA must be in the left subtree. So, we recursively call `findLCA(node.left, p, q)`.\n   - If both `p.val` and `q.val` are larger than `node.val`, it means the LCA must be in the right subtree. So, we recursively call `findLCA(node.right, p, q)`.\n   - If neither of the above conditions is met, it implies that the current `node` is the LCA. This happens when `p.val <= node.val <= q.val` (or vice-versa), meaning `p` and `q` are on opposite sides of the current node, or one of them *is* the current node. In this case, the current `node` is the LCA, and we return `node`."
+    }
+  },
+  {
+    "pattern_id": "tries",
+    "name": "Tries",
+    "explanation": "Tries, also known as prefix trees or digital trees, are specialized tree-based data structures designed for efficient retrieval of keys in a dataset of strings. Each node in a trie represents a character, and the path from the root to a node forms a prefix.  A common implementation uses a root node with children representing the next possible characters in a string.  A special marker (often a boolean flag) at a node indicates if the path leading to that node forms a complete word. This structure is particularly adept at handling operations like prefix searching, auto-completion, and spell checking.",
+    "mental_model": "A trie is a tree where each path from the root represents a string, and nodes store characters to build these strings efficiently.",
+    "template_code_python": "class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end_of_word = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word: str) -> None:\n        node = self.root\n        for char in word:\n            if char not in node.children:\n                node.children[char] = TrieNode()\n            node = node.children[char]\n        node.is_end_of_word = True\n\n    def search(self, word: str) -> bool:\n        node = self.root\n        for char in word:\n            if char not in node.children:\n                return False\n            node = node.children[char]\n        return node.is_end_of_word\n\n    def starts_with(self, prefix: str) -> bool:\n        node = self.root\n        for char in prefix:\n            if char not in node.children:\n                return False\n            node = node.children[char]\n        return True\n",
+    "template_code_javascript": "class TrieNode {\n    constructor() {\n        this.children = {};\n        this.isEndOfWord = false;\n    }\n}\n\nclass Trie {\n    constructor() {\n        this.root = new TrieNode();\n    }\n\n    insert(word) {\n        let node = this.root;\n        for (const char of word) {\n            if (!node.children[char]) {\n                node.children[char] = new TrieNode();\n            }\n            node = node.children[char];\n        }\n        node.isEndOfWord = true;\n    }\n\n    search(word) {\n        let node = this.root;\n        for (const char of word) {\n            if (!node.children[char]) {\n                return false;\n            }\n            node = node.children[char];\n        }\n        return node.isEndOfWord;\n    }\n\n    startsWith(prefix) {\n        let node = this.root;\n        for (const char of prefix) {\n            if (!node.children[char]) {\n                return false;\n            }\n            node = node.children[char];\n        }\n        return true;\n    }\n}\n",
+    "trigger_phrases": [
+      "prefix tree",
+      "autocomplete",
+      "dictionary",
+      "word search",
+      "suggested words",
+      "find all words with prefix",
+      "insert words",
+      "search for words"
+    ],
+    "when_to_use": [
+      "When dealing with a large set of strings and needing to perform frequent prefix-based queries.",
+      "Problems involving auto-completion or predictive text features.",
+      "Implementing spell checkers or dictionaries.",
+      "When you need to efficiently check for the existence of words or prefixes.",
+      "Problems that require finding all words that start with a given prefix."
+    ],
+    "common_mistakes": [
+      "Forgetting to mark the end of a word, leading to incorrect search results for complete words.",
+      "Inefficient child node representation (e.g., using a fixed-size array for all possible characters when the alphabet is large and sparse).",
+      "Not handling edge cases like empty strings or empty tries.",
+      "Confusing prefix search with exact word search."
+    ],
+    "time_complexity": "Insertion, Search, and Prefix Search: O(L), where L is the length of the word/prefix.  Building a trie with N words of average length L: O(N*L).",
+    "space_complexity": "O(N*L) in the worst case, where N is the number of words and L is the average length of words. This is because each character in each word might create a new node.",
+    "related_patterns": [
+      "arrays-hashing",
+      "trees",
+      "backtracking"
+    ],
+    "sample_walkthrough": {
+      "problem": "Implement Trie Prefix Tree",
+      "problem_number": 208,
+      "approach": "The problem asks us to implement a Trie data structure with `insert`, `search`, and `startsWith` operations. We'll use a node-based approach. Each `TrieNode` will have a dictionary (or map) to store its children, where keys are characters and values are other `TrieNode`s. A boolean flag `is_end_of_word` will indicate if the path to this node forms a complete word.\n\n1.  **Initialization**: Create a `Trie` class with a `root` node, which is an empty `TrieNode`.\n2.  **Insert**: To insert a word, traverse from the root. For each character in the word, if a child node for that character doesn't exist, create it. Move to the child node. After processing all characters, mark the final node's `is_end_of_word` as `True`.\n3.  **Search**: To search for a word, traverse from the root. For each character, check if a child node exists. If not, the word is not in the trie, return `False`. If we reach the end of the word, return the value of `is_end_of_word` for the current node.\n4.  **StartsWith**: To check if any word starts with a given prefix, traverse from the root. For each character in the prefix, check if a child node exists. If not, return `False`. If we successfully traverse the entire prefix, return `True` (as there's at least one path extending from this prefix)."
+    }
+  },
+  {
+    "pattern_id": "heap-priority-queue",
+    "name": "Heap / Priority Queue",
+    "explanation": "The Heap or Priority Queue pattern is a powerful data structure that efficiently manages a collection of elements based on their priority. At its core, a heap is a specialized tree-based data structure that satisfies the heap property: in a min-heap, the parent node is always less than or equal to its children, and in a max-heap, the parent node is always greater than or equal to its children. This property ensures that the minimum (or maximum) element is always at the root, allowing for O(1) retrieval of the highest priority item. Operations like insertion and deletion (extracting the root) typically take logarithmic time, making heaps ideal for scenarios where we need to repeatedly access or remove the smallest or largest elements from a dynamic set.",
+    "mental_model": "A dynamic, ordered collection where the smallest/largest element is always readily available.",
+    "template_code_python": "import heapq\n\nclass Heap:\n    def __init__(self, is_min_heap=True):\n        self.heap = []\n        self.is_min_heap = is_min_heap\n\n    def push(self, item):\n        if self.is_min_heap:\n            heapq.heappush(self.heap, item)\n        else:\n            # For a max-heap, store negative values to simulate max-heap behavior with heapq (which is a min-heap implementation)\n            heapq.heappush(self.heap, -item)\n\n    def pop(self):\n        if not self.heap:\n            return None\n        if self.is_min_heap:\n            return heapq.heappop(self.heap)\n        else:\n            return -heapq.heappop(self.heap)\n\n    def peek(self):\n        if not self.heap:\n            return None\n        if self.is_min_heap:\n            return self.heap[0]\n        else:\n            return -self.heap[0]\n\n    def __len__(self):\n        return len(self.heap)\n\n    def is_empty(self):\n        return len(self.heap) == 0\n\n# Example Usage (Min-Heap):\n# min_heap = Heap(is_min_heap=True)\n# min_heap.push(3)\n# min_heap.push(1)\n# min_heap.push(4)\n# print(min_heap.pop()) # Output: 1\n\n# Example Usage (Max-Heap):\n# max_heap = Heap(is_min_heap=False)\n# max_heap.push(3)\n# max_heap.push(1)\n# max_heap.push(4)\n# print(max_heap.pop()) # Output: 4",
+    "template_code_javascript": "class PriorityQueue {\n    constructor(comparator = (a, b) => a - b) {\n        this._heap = [];\n        this._comparator = comparator;\n    }\n\n    size() {\n        return this._heap.length;\n    }\n\n    isEmpty() {\n        return this.size() === 0;\n    }\n\n    peek() {\n        return this._heap[0];\n    }\n\n    _parent(idx) {\n        return Math.floor((idx - 1) / 2);\n    }\n\n    _leftChild(idx) {\n        return idx * 2 + 1;\n    }\n\n    _rightChild(idx) {\n        return idx * 2 + 2;\n    }\n\n    _swap(i, j) {\n        [this._heap[i], this._heap[j]] = [this._heap[j], this._heap[i]];\n    }\n\n    _compare(i, j) {\n        return this._comparator(this._heap[i], this._heap[j]);\n    }\n\n    push(value) {\n        this._heap.push(value);\n        this._siftUp();\n    }\n\n    _siftUp() {\n        let nodeIdx = this.size() - 1;\n        while (nodeIdx > 0 && this._compare(nodeIdx, this._parent(nodeIdx)) < 0) {\n            this._swap(nodeIdx, this._parent(nodeIdx));\n            nodeIdx = this._parent(nodeIdx);\n        }\n    }\n\n    pop() {\n        if (this.size() === 0) return undefined;\n        if (this.size() === 1) return this._heap.pop();\n        const poppedValue = this.peek();\n        this._heap[0] = this._heap.pop();\n        this._siftDown();\n        return poppedValue;\n    }\n\n    _siftDown() {\n        let nodeIdx = 0;\n        while (\n            (this._leftChild(nodeIdx) < this.size() && this._compare(this._leftChild(nodeIdx), nodeIdx) < 0) ||\n            (this._rightChild(nodeIdx) < this.size() && this._compare(this._rightChild(nodeIdx), nodeIdx) < 0)\n        ) {\n            const greaterChildIdx = (\n                this._rightChild(nodeIdx) < this.size() &&\n                this._compare(this._rightChild(nodeIdx), this._leftChild(nodeIdx)) < 0\n            ) ? this._rightChild(nodeIdx) : this._leftChild(nodeIdx);\n            this._swap(nodeIdx, greaterChildIdx);\n            nodeIdx = greaterChildIdx;\n        }\n    }\n}\n\n// Example Usage (Min-Heap):\n// const minHeap = new PriorityQueue(); // Default is min-heap\n// minHeap.push(3);\n// minHeap.push(1);\n// minHeap.push(4);\n// console.log(minHeap.pop()); // Output: 1\n\n// Example Usage (Max-Heap):\n// const maxHeap = new PriorityQueue((a, b) => b - a); // Custom comparator for max-heap\n// maxHeap.push(3);\n// maxHeap.push(1);\n// maxHeap.push(4);\n// console.log(maxHeap.pop()); // Output: 4",
+    "trigger_phrases": [
+      "kth largest",
+      "kth smallest",
+      "median",
+      "top k",
+      "closest points",
+      "least frequent",
+      "most frequent",
+      "priority"
+    ],
+    "when_to_use": [
+      "When you need to efficiently find the smallest or largest element in a collection that changes over time.",
+      "Problems involving finding the 'kth' element (largest or smallest) in a stream or array.",
+      "When you need to maintain a sorted order of a subset of elements, like the top 'k' items.",
+      "Scenarios where elements have associated priorities and you need to process them in order of priority.",
+      "When dealing with scheduling tasks or events where some have higher urgency than others."
+    ],
+    "common_mistakes": [
+      "Forgetting to handle the case of an empty heap when performing pop or peek operations.",
+      "Incorrectly implementing the comparator for max-heaps when using a min-heap library (e.g., Python's `heapq`).",
+      "Not considering the time complexity implications of repeatedly inserting and extracting elements from the heap.",
+      "Using a heap when a simpler data structure like a sorted array or a balanced BST would suffice and be more efficient for certain operations.",
+      "Misunderstanding the difference between a heap and a fully sorted list; a heap only guarantees the root element's property."
+    ],
+    "time_complexity": "Insertion: O(log N), Deletion (extract-min/max): O(log N), Peek (find-min/max): O(1), where N is the number of elements in the heap.",
+    "space_complexity": "O(N) to store the elements in the heap.",
+    "related_patterns": [
+      "arrays-hashing",
+      "greedy",
+      "sorting"
+    ],
+    "sample_walkthrough": {
+      "problem": "Kth Largest Element In An Array",
+      "problem_number": 215,
+      "approach": "The problem asks us to find the kth largest element in an unsorted array. A heap (specifically a min-heap) is an excellent data structure for this. We can iterate through the array and maintain a min-heap of size 'k'. For each number in the array:\n\n1. **If the heap size is less than 'k'**: We simply push the current number into the min-heap. This builds up our initial set of 'k' candidates.\n\n2. **If the heap size is equal to 'k'**: We compare the current number with the smallest element in the heap (which is the root of the min-heap, accessible via `peek()` or `heap[0]`).\n   - If the current number is *larger* than the smallest element in the heap, it means this new number is a better candidate for being among the 'k' largest. So, we remove the smallest element from the heap (`pop()`) and insert the current number (`push()`).\n   - If the current number is *smaller than or equal to* the smallest element in the heap, it cannot be among the 'k' largest elements, so we do nothing and move to the next number in the array.\n\nAfter iterating through the entire array, the min-heap will contain the 'k' largest elements from the array. The smallest element in this heap (the root) will be the kth largest element overall. This is because any element smaller than the root would have been discarded or never added if the heap was already full with larger elements."
+    }
+  },
+  {
+    "pattern_id": "backtracking",
+    "name": "Backtracking",
+    "explanation": "Backtracking is a general algorithmic technique for solving problems recursively by trying to build a solution incrementally, one piece at a time, removing those solutions that fail to satisfy the constraints of the problem at any point in time. It's essentially a depth-first search (DFS) on an implicit state-space tree.  At each step, we explore a choice. If that choice leads to a valid solution, we record it. If it leads to a dead end or violates constraints, we 'backtrack' \u2013 undo the last choice and try a different one. This process continues until all possible paths have been explored.",
+    "mental_model": "Explore all possible paths, and if a path doesn't lead to a solution, go back and try another.",
+    "template_code_python": "def backtrack(current_state, other_parameters):\n    # Base case: If current_state is a valid solution\n    if is_solution(current_state):\n        add_solution(current_state)\n        return\n\n    # Explore possible choices from current_state\n    for choice in get_choices(current_state):\n        # Check if the choice is valid (satisfies constraints)\n        if is_valid(current_state, choice):\n            # Make the choice (update current_state)\n            apply_choice(current_state, choice)\n\n            # Recursively call backtrack with the new state\n            backtrack(current_state, other_parameters)\n\n            # Undo the choice (backtrack)\n            undo_choice(current_state, choice)\n\n# Initial call to start the backtracking process\ninitial_state = ...\nbacktrack(initial_state, ...)",
+    "template_code_javascript": "function backtrack(currentState, otherParameters) {\n    // Base case: If currentState is a valid solution\n    if (isSolution(currentState)) {\n        addSolution(currentState);\n        return;\n    }\n\n    // Explore possible choices from currentState\n    for (const choice of getChoices(currentState)) {\n        // Check if the choice is valid (satisfies constraints)\n        if (isValid(currentState, choice)) {\n            // Make the choice (update currentState)\n            applyChoice(currentState, choice);\n\n            // Recursively call backtrack with the new state\n            backtrack(currentState, otherParameters);\n\n            // Undo the choice (backtrack)\n            undoChoice(currentState, choice);\n        }\n    }\n}\n\n// Initial call to start the backtracking process\nlet initialState = ...;\nbacktrack(initialState, ...);",
+    "trigger_phrases": [
+      "find all combinations",
+      "generate all permutations",
+      "find all subsets",
+      "construct all possible",
+      "return all possible solutions",
+      "explore all possibilities",
+      "pathfinding",
+      "placement"
+    ],
+    "when_to_use": [
+      "When you need to find all possible solutions to a problem, not just one.",
+      "When the problem involves making a sequence of choices, and each choice affects subsequent possibilities.",
+      "When the problem can be modeled as exploring a tree of possibilities.",
+      "When constraints need to be checked at each step of building a solution.",
+      "When the problem involves permutations, combinations, or subsets.",
+      "When dealing with puzzles or games where you need to explore different moves."
+    ],
+    "common_mistakes": [
+      "Forgetting to undo choices (backtrack) after a recursive call, leading to incorrect states.",
+      "Incorrectly defining the base case or the conditions for a valid solution.",
+      "Inefficiently generating choices or checking validity, leading to performance issues.",
+      "Not handling duplicate elements correctly in problems like Subsets II or Combination Sum II.",
+      "Off-by-one errors in state management or loop bounds."
+    ],
+    "time_complexity": "O(N! * N) or O(N^k) in general, where N is the input size and k is the depth of recursion. The exact complexity depends heavily on the branching factor and depth of the search tree.",
+    "space_complexity": "O(N) or O(depth of recursion) for the recursion stack, plus space for storing the solutions.",
+    "related_patterns": [
+      "graphs",
+      "trees",
+      "recursion"
+    ],
+    "sample_walkthrough": {
+      "problem": "Subsets",
+      "problem_number": 78,
+      "approach": "The goal is to find all possible subsets of a given set of distinct integers. We can use backtracking to build these subsets.  We start with an empty subset. At each step, for each element in the input array, we have two choices: either include the element in the current subset or exclude it.  We explore both possibilities recursively.\n\n1. **Initialization**: We'll have a list to store all the generated subsets (`result`) and a temporary list to build the current subset (`current_subset`). We also need the input array (`nums`).\n\n2. **Recursive Function `backtrack(index, current_subset)`**: \n   - **Base Case**: When `index` reaches the end of the `nums` array, it means we have considered all elements. The `current_subset` at this point is a valid subset, so we add a copy of it to `result`.\n   - **Recursive Steps**: \n     - **Exclude `nums[index]`**: We make a recursive call `backtrack(index + 1, current_subset)`. This explores the path where `nums[index]` is not included in the current subset.\n     - **Include `nums[index]`**: We add `nums[index]` to `current_subset`. Then, we make a recursive call `backtrack(index + 1, current_subset)`. This explores the path where `nums[index]` is included.\n     - **Backtrack**: After the recursive call for inclusion returns, we must remove `nums[index]` from `current_subset` to undo the choice. This is crucial for exploring other branches correctly.\n\n3. **Initial Call**: We start the process by calling `backtrack(0, [])`."
+    }
+  },
+  {
+    "pattern_id": "graphs",
+    "name": "Graphs",
+    "explanation": "Graphs are a fundamental data structure representing a set of objects (nodes or vertices) and the relationships between them (edges). These relationships can be directed (one-way) or undirected (two-way), and edges can have weights. Problems involving graphs often require traversing these connections to find paths, cycles, connectivity, or optimal routes. Common algorithms like Breadth-First Search (BFS) and Depth-First Search (DFS) are the workhorses for exploring graph structures.",
+    "mental_model": "Think of a graph as a network of interconnected points, where you need to explore the connections to solve a problem.",
+    "template_code_python": "from collections import defaultdict, deque\n\ndef solve_graph_problem(graph_representation):\n    # graph_representation can be an adjacency list (dict of lists/sets)\n    # or an adjacency matrix.\n    \n    # Example: Adjacency list representation\n    # graph = {\n    #     0: [1, 2],\n    #     1: [0, 3],\n    #     2: [0],\n    #     3: [1]\n    # }\n    \n    num_nodes = len(graph_representation) # or infer from input\n    visited = [False] * num_nodes # or a set for non-integer nodes\n    \n    # --- DFS Approach ---\n    def dfs(node):\n        visited[node] = True\n        # Process node here\n        for neighbor in graph_representation.get(node, []):\n            if not visited[neighbor]:\n                dfs(neighbor)\n\n    # --- BFS Approach ---\n    def bfs(start_node):\n        queue = deque([start_node])\n        visited[start_node] = True\n        \n        while queue:\n            current_node = queue.popleft()\n            # Process node here\n            for neighbor in graph_representation.get(current_node, []):\n                if not visited[neighbor]:\n                    visited[neighbor] = True\n                    queue.append(neighbor)\n\n    # --- Main Logic ---\n    # Depending on the problem, you might iterate through all nodes\n    # to ensure all components are visited, or start from a specific node.\n    \n    # For problems like 'Number of Islands' or 'Max Area of Island', you'd iterate:\n    # for i in range(num_nodes):\n    #     if not visited[i]:\n    #         # Start DFS or BFS from i and count components/areas\n    #         pass\n    \n    # For problems like 'Course Schedule' or 'Clone Graph', you might start from a specific node or handle dependencies.\n    \n    return \"Result\"\n",
+    "template_code_javascript": "function solveGraphProblem(graphRepresentation) {\n    // graphRepresentation can be an adjacency list (Map or Object of Arrays/Sets)\n    // or an adjacency matrix.\n    \n    // Example: Adjacency list representation\n    // const graph = new Map([\n    //     [0, [1, 2]],\n    //     [1, [0, 3]],\n    //     [2, [0]],\n    //     [3, [1]]\n    // ]);\n    \n    const numNodes = graphRepresentation.size; // or infer from input\n    const visited = new Set(); // or an array for integer nodes\n    \n    // --- DFS Approach ---\n    function dfs(node) {\n        visited.add(node);\n        // Process node here\n        const neighbors = graphRepresentation.get(node) || [];\n        for (const neighbor of neighbors) {\n            if (!visited.has(neighbor)) {\n                dfs(neighbor);\n            }\n        }\n    }\n\n    // --- BFS Approach ---\n    function bfs(startNode) {\n        const queue = [startNode];\n        visited.add(startNode);\n        \n        while (queue.length > 0) {\n            const currentNode = queue.shift();\n            // Process node here\n            const neighbors = graphRepresentation.get(currentNode) || [];\n            for (const neighbor of neighbors) {\n                if (!visited.has(neighbor)) {\n                    visited.add(neighbor);\n                    queue.push(neighbor);\n                }\n            }\n        }\n    }\n\n    // --- Main Logic ---\n    // Depending on the problem, you might iterate through all nodes\n    // to ensure all components are visited, or start from a specific node.\n    \n    // For problems like 'Number of Islands' or 'Max Area of Island', you'd iterate:\n    // for (let i = 0; i < numNodes; i++) {\n    //     if (!visited.has(i)) {\n    //         // Start DFS or BFS from i and count components/areas\n    //         // dfs(i) or bfs(i);\n    //     }\n    // }\n    \n    // For problems like 'Course Schedule' or 'Clone Graph', you might start from a specific node or handle dependencies.\n    \n    return \"Result\";\n}\n",
+    "trigger_phrases": [
+      "connected components",
+      "reachability",
+      "shortest path",
+      "network",
+      "dependencies",
+      "relationships between items",
+      "adjacency list",
+      "nodes and edges"
+    ],
+    "when_to_use": [
+      "When the problem describes entities and their connections or relationships.",
+      "When you need to explore all possible paths or traversals in a system.",
+      "Problems involving finding cycles, detecting connectivity, or determining reachability.",
+      "When dealing with social networks, road networks, or dependency structures.",
+      "Problems that can be modeled as a set of nodes and edges."
+    ],
+    "common_mistakes": [
+      "Not handling disconnected components: Forgetting to iterate through all nodes to ensure all parts of the graph are visited.",
+      "Infinite loops in cyclic graphs: Failing to use a `visited` set or array to track visited nodes, leading to re-processing and infinite recursion/loops.",
+      "Incorrect graph representation: Choosing an inefficient or incorrect way to represent the graph (e.g., adjacency matrix for sparse graphs).",
+      "Off-by-one errors in indexing or node numbering.",
+      "Confusing directed vs. undirected edges in traversal logic."
+    ],
+    "time_complexity": "O(V + E) for BFS/DFS where V is the number of vertices and E is the number of edges. Other graph algorithms can have different complexities (e.g., Dijkstra's O(E log V) or O(E + V log V)).",
+    "space_complexity": "O(V) for storing visited nodes and the recursion stack (DFS) or queue (BFS).",
+    "related_patterns": [
+      "trees",
+      "backtracking",
+      "heap-priority-queue",
+      "arrays-hashing"
+    ],
+    "sample_walkthrough": {
+      "problem": "Number of Islands",
+      "problem_number": 200,
+      "approach": "This problem asks us to count the number of distinct 'islands' in a 2D grid where '1' represents land and '0' represents water. An island is formed by connecting adjacent lands horizontally or vertically. This is a classic graph problem where each land cell ('1') can be considered a node, and an edge exists between two land cells if they are adjacent. We can model the grid as an undirected graph.\n\n1. **Graph Representation**: We can implicitly represent the graph. Each cell (r, c) in the grid is a potential node. An edge exists between (r1, c1) and (r2, c2) if they are adjacent (up, down, left, right) and both are land ('1').\n\n2. **Traversal Strategy**: We need to find connected components of land cells. Both DFS and BFS are suitable for this.\n\n3. **Algorithm (using DFS)**:\n   a. Initialize `num_islands = 0`.\n   b. Iterate through each cell (r, c) of the grid.\n   c. If the cell (r, c) is land ('1') and has not been visited yet:\n      i. Increment `num_islands`.\n      ii. Start a DFS traversal from this cell. The DFS function will mark the current cell as visited (e.g., by changing '1' to '0' or using a separate `visited` grid) and recursively call itself for all adjacent land cells.\n   d. The DFS ensures that all connected land cells belonging to the current island are visited and marked, so they won't be counted as part of a new island later.\n\n4. **Example Walkthrough**: Consider a grid:\n   ```\n   11000\n   11000\n   00100\n   00011\n   ```\n   - Start at (0,0) which is '1'. `num_islands` becomes 1. DFS explores (0,1), (1,0), (1,1) and marks them visited.\n   - Continue scanning. When we reach (2,2) which is '1' and unvisited, `num_islands` becomes 2. DFS explores only (2,2).\n   - Continue scanning. When we reach (3,3) which is '1' and unvisited, `num_islands` becomes 3. DFS explores (3,3) and (3,4).\n   - The final count is 3."
+    }
+  },
+  {
+    "pattern_id": "1d-dp",
+    "name": "1-D DP",
+    "explanation": "The 1-D Dynamic Programming (DP) pattern is a fundamental technique used to solve problems where the optimal solution for a larger problem can be built upon the optimal solutions of its smaller subproblems, and these subproblems can be represented by a single dimension (typically an index or a count).  At its core, it involves defining a state that depends on previous states, usually in a linear fashion. This means the solution for `dp[i]` can be computed using values like `dp[i-1]`, `dp[i-2]`, or a combination of previous states. The key is identifying this recursive relationship and then optimizing it by storing intermediate results to avoid redundant computations.",
+    "mental_model": "Build up the solution for the current step by optimally combining solutions from previous, smaller steps.",
+    "template_code_python": "def solve_1d_dp(n):\n    # Initialize DP array. The size depends on the problem, often n+1.\n    # dp[i] will store the optimal solution for a subproblem of size i.\n    dp = [0] * (n + 1)\n\n    # Base cases: Define the solutions for the smallest subproblems.\n    # For example, dp[0] might be 0 or 1 depending on the problem.\n    # dp[1] might also have a specific value.\n\n    # Iterate through the problem space, building up the solution.\n    # The loop typically starts from the first non-base case index.\n    for i in range(start_index, n + 1):\n        # Transition: Define how dp[i] is computed from previous dp states.\n        # This is the core of the DP relation.\n        # Example: dp[i] = min(dp[i], dp[i - cost1] + value1, dp[i - cost2] + value2)\n        # Or: dp[i] = max(dp[i], dp[i-1] + current_value)\n        pass # Replace with actual DP transition logic\n\n    # The final answer is usually dp[n] or a value derived from it.\n    return dp[n]",
+    "template_code_javascript": "function solve1DDP(n) {\n    // Initialize DP array. The size depends on the problem, often n+1.\n    // dp[i] will store the optimal solution for a subproblem of size i.\n    const dp = new Array(n + 1).fill(0);\n\n    // Base cases: Define the solutions for the smallest subproblems.\n    // For example, dp[0] might be 0 or 1 depending on the problem.\n    // dp[1] might also have a specific value.\n\n    // Iterate through the problem space, building up the solution.\n    // The loop typically starts from the first non-base case index.\n    for (let i = startIndex; i <= n; i++) {\n        // Transition: Define how dp[i] is computed from previous dp states.\n        // This is the core of the DP relation.\n        // Example: dp[i] = Math.min(dp[i], dp[i - cost1] + value1, dp[i - cost2] + value2);\n        // Or: dp[i] = Math.max(dp[i], dp[i-1] + currentValue);\n        // Replace with actual DP transition logic\n    }\n\n    // The final answer is usually dp[n] or a value derived from it.\n    return dp[n];\n}",
+    "trigger_phrases": [
+      "minimum number of steps",
+      "maximum value",
+      "ways to achieve",
+      "longest sequence",
+      "optimal solution",
+      "at least",
+      "at most",
+      "number of ways"
+    ],
+    "when_to_use": [
+      "Problems that can be broken down into overlapping subproblems.",
+      "When the solution to a problem depends on the solutions to smaller instances of the same problem.",
+      "Problems where you need to find an optimal value (minimum, maximum) or count possibilities.",
+      "When the problem can be modeled with a linear sequence or a single parameter that defines the state.",
+      "Problems that involve making a series of decisions where each decision affects future possibilities.",
+      "When you observe a recursive structure that can be memoized or tabulated."
+    ],
+    "common_mistakes": [
+      "Incorrectly defining the base cases, leading to wrong initial values.",
+      "Failing to identify the correct DP transition (the recurrence relation).",
+      "Off-by-one errors in array indexing or loop bounds.",
+      "Not considering all possible previous states that can lead to the current state.",
+      "Using recursion without memoization (leading to exponential time complexity) when DP is applicable."
+    ],
+    "time_complexity": "O(N) or O(N*K) where N is the input size and K is a constant factor related to the DP transition.",
+    "space_complexity": "O(N) for storing the DP table. Can sometimes be optimized to O(1) if only a few previous states are needed.",
+    "related_patterns": [
+      "2d-dp",
+      "greedy",
+      "backtracking"
+    ],
+    "sample_walkthrough": {
+      "problem": "Climbing Stairs",
+      "problem_number": 70,
+      "approach": "The problem asks for the number of distinct ways to climb to the top of a staircase with N steps, where you can climb either 1 or 2 steps at a time. This problem exhibits overlapping subproblems and optimal substructure, making it a prime candidate for 1-D DP.\n\n1.  **Define the State:** Let `dp[i]` be the number of distinct ways to reach the `i`-th step.\n\n2.  **Identify the Base Cases:**\n    *   To reach step 0 (the ground), there's 1 way (do nothing). So, `dp[0] = 1`.\n    *   To reach step 1, you can only take one 1-step. So, `dp[1] = 1`.\n\n3.  **Formulate the Recurrence Relation (Transition):** To reach step `i`, you could have come from either step `i-1` (by taking a 1-step) or step `i-2` (by taking a 2-step). Therefore, the total number of ways to reach step `i` is the sum of the ways to reach step `i-1` and the ways to reach step `i-2`.\n    `dp[i] = dp[i-1] + dp[i-2]`\n\n4.  **Build the DP Table:** We can iterate from step 2 up to step `n` and apply the recurrence relation.\n    *   `dp[2] = dp[1] + dp[0] = 1 + 1 = 2` (Ways: 1+1, 2)\n    *   `dp[3] = dp[2] + dp[1] = 2 + 1 = 3` (Ways: 1+1+1, 1+2, 2+1)\n    *   And so on...\n\n5.  **Final Answer:** The number of ways to reach the top step `n` is `dp[n]`."
+    }
+  },
+  {
+    "pattern_id": "2d-dp",
+    "name": "2-D DP",
+    "explanation": "The 2-D Dynamic Programming (DP) pattern is an extension of the 1-D DP concept, where the state of our problem can be defined by two varying parameters. This typically arises when we need to make decisions or calculate values based on two independent sequences, grids, or dimensions.  We build a 2D table (or matrix) where each cell `dp[i][j]` stores the optimal solution for a subproblem defined by the first `i` elements of one sequence/dimension and the first `j` elements of another. The key is to identify the recurrence relation that allows us to compute `dp[i][j]` based on previously computed values, usually from `dp[i-1][j]`, `dp[i][j-1]`, and/or `dp[i-1][j-1]`.",
+    "mental_model": "Solve problems involving two sequences or a grid by building a table where each cell represents the solution to a subproblem defined by prefixes of both sequences/dimensions.",
+    "template_code_python": "def solve_2d_dp(arr1, arr2):\n    m = len(arr1)\n    n = len(arr2)\n\n    # Initialize DP table with appropriate dimensions and base cases\n    # dp[i][j] will store the solution for subproblem involving arr1[:i] and arr2[:j]\n    dp = [[0] * (n + 1) for _ in range(m + 1)]\n\n    # Fill in base cases (usually dp[0][j] and dp[i][0])\n    # Example: For LCS, dp[0][j] = 0 and dp[i][0] = 0\n\n    # Iterate through the DP table to fill it using the recurrence relation\n    for i in range(1, m + 1):\n        for j in range(1, n + 1):\n            # Define the recurrence relation based on the problem\n            # This is where the core logic of the DP pattern lies.\n            # It typically depends on dp[i-1][j], dp[i][j-1], and/or dp[i-1][j-1]\n            # Example for LCS: if arr1[i-1] == arr2[j-1]: dp[i][j] = 1 + dp[i-1][j-1]\n            # else: dp[i][j] = max(dp[i-1][j], dp[i][j-1])\n            pass # Replace with actual recurrence\n\n    # The final answer is usually at dp[m][n]\n    return dp[m][n]",
+    "template_code_javascript": "function solve2DDP(arr1, arr2) {\n    const m = arr1.length;\n    const n = arr2.length;\n\n    // Initialize DP table with appropriate dimensions and base cases\n    // dp[i][j] will store the solution for subproblem involving arr1[:i] and arr2[:j]\n    const dp = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));\n\n    // Fill in base cases (usually dp[0][j] and dp[i][0])\n    // Example: For LCS, dp[0][j] = 0 and dp[i][0] = 0\n\n    // Iterate through the DP table to fill it using the recurrence relation\n    for (let i = 1; i <= m; i++) {\n        for (let j = 1; j <= n; j++) {\n            // Define the recurrence relation based on the problem\n            // This is where the core logic of the DP pattern lies.\n            // It typically depends on dp[i-1][j], dp[i][j-1], and/or dp[i-1][j-1]\n            // Example for LCS: if (arr1[i - 1] === arr2[j - 1]) { dp[i][j] = 1 + dp[i - 1][j - 1]; }\n            // else { dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); }\n            // Replace with actual recurrence\n        }\n    }\n\n    // The final answer is usually at dp[m][n]\n    return dp[m][n];\n}",
+    "trigger_phrases": [
+      "two strings",
+      "two arrays",
+      "grid",
+      "matrix",
+      "subsequence",
+      "substring",
+      "edit distance",
+      "paths"
+    ],
+    "when_to_use": [
+      "When the problem involves comparing or processing two sequences (strings, arrays).",
+      "When the problem can be broken down into overlapping subproblems that depend on solutions to smaller subproblems involving prefixes of both sequences.",
+      "When the problem involves a grid or matrix where decisions at a cell depend on adjacent cells (up, left, or diagonally up-left).",
+      "When you need to find the optimal way to transform one sequence into another.",
+      "When the problem asks for the number of ways to achieve a certain state using elements from two sources."
+    ],
+    "common_mistakes": [
+      "Incorrectly defining the DP state: The state `dp[i][j]` must uniquely capture the subproblem being solved.",
+      "Off-by-one errors in indexing: Carefully handle array/string indices (0-based vs. 1-based) when accessing `dp` table and input arrays.",
+      "Missing or incorrect base cases: Base cases are crucial for the DP to build upon. Ensure they are correctly initialized.",
+      "Failing to identify the correct recurrence relation: The recurrence relation is the heart of the DP solution; it must accurately reflect how to combine subproblem solutions."
+    ],
+    "time_complexity": "O(m*n), where m and n are the lengths of the two input sequences or dimensions of the grid.",
+    "space_complexity": "O(m*n) for the DP table. Can sometimes be optimized to O(min(m, n)) or O(1) if only the previous row/column is needed.",
+    "related_patterns": [
+      "1d-dp",
+      "arrays-hashing",
+      "backtracking"
+    ],
+    "sample_walkthrough": {
+      "problem": "Longest Common Subsequence",
+      "problem_number": 1143,
+      "approach": "The problem asks for the length of the longest common subsequence between two strings, `text1` and `text2`. This is a classic 2D DP problem because we are comparing two sequences.\n\n1.  **Define DP State:** Let `dp[i][j]` be the length of the longest common subsequence of `text1[0...i-1]` and `text2[0...j-1]`. We use `i` and `j` to represent lengths of prefixes, so `dp` table will be of size `(m+1) x (n+1)` where `m = len(text1)` and `n = len(text2)`.\n\n2.  **Base Cases:** `dp[0][j] = 0` for all `j` (LCS with an empty string is 0) and `dp[i][0] = 0` for all `i` (LCS with an empty string is 0). These are handled by initializing the `dp` table with zeros.\n\n3.  **Recurrence Relation:** For `i` from 1 to `m` and `j` from 1 to `n`:\n    *   If `text1[i-1] == text2[j-1]` (the last characters of the current prefixes match), then the LCS includes this character. So, `dp[i][j] = 1 + dp[i-1][j-1]` (1 for the matched character plus the LCS of the preceding prefixes).\n    *   If `text1[i-1] != text2[j-1]` (the last characters don't match), then the LCS of `text1[0...i-1]` and `text2[0...j-1]` is the longer of:\n        *   The LCS of `text1[0...i-2]` and `text2[0...j-1]` (i.e., `dp[i-1][j]`).\n        *   The LCS of `text1[0...i-1]` and `text2[0...j-2]` (i.e., `dp[i][j-1]`).\n        So, `dp[i][j] = max(dp[i-1][j], dp[i][j-1])`.\n\n4.  **Final Answer:** The length of the LCS for the entire strings `text1` and `text2` will be stored in `dp[m][n]`."
+    }
+  },
+  {
+    "pattern_id": "greedy",
+    "name": "Greedy",
+    "explanation": "The Greedy pattern is a problem-solving approach where we make the locally optimal choice at each step with the hope that this choice will lead to a globally optimal solution. Unlike dynamic programming, which explores all possible subproblems and builds up a solution, a greedy algorithm makes a decision at each stage and never revisits or changes its past decisions. This often leads to simpler and more efficient algorithms, but it's crucial to prove that the greedy choice indeed leads to the overall best outcome.  The key challenge with greedy algorithms is identifying the correct greedy choice property and ensuring that it leads to an optimal solution for all cases.",
+    "mental_model": "At each step, make the choice that looks best right now, without worrying about future consequences.",
+    "template_code_python": "def greedy_algorithm(input_data):\n    # Sort or process input data if necessary for the greedy choice\n    # For example: input_data.sort()\n\n    result = []\n    # Initialize variables for the greedy choice\n    # For example: current_value = 0\n\n    for item in input_data:\n        # Make the locally optimal choice based on the current item and state\n        # This is the core of the greedy approach.\n        # Example: if item > current_value:\n        #              result.append(item)\n        #              current_value = item\n        pass # Replace with actual greedy logic\n\n    return result",
+    "template_code_javascript": "function greedyAlgorithm(inputData) {\n    // Sort or process input data if necessary for the greedy choice\n    // For example: inputData.sort((a, b) => a - b);\n\n    let result = [];\n    // Initialize variables for the greedy choice\n    // For example: let currentValue = 0;\n\n    for (const item of inputData) {\n        // Make the locally optimal choice based on the current item and state\n        // This is the core of the greedy approach.\n        // Example: if (item > currentValue) {\n        //              result.push(item);\n        //              currentValue = item;\n        //          }\n        // Replace with actual greedy logic\n    }\n\n    return result;\n}",
+    "trigger_phrases": [
+      "minimum number of",
+      "maximum value",
+      "earliest finish time",
+      "smallest number of",
+      "optimal strategy",
+      "select the best",
+      "at each step",
+      "locally optimal"
+    ],
+    "when_to_use": [
+      "When the problem asks for an optimal solution (minimum, maximum, etc.).",
+      "When you can identify a clear, locally optimal choice at each step.",
+      "When making a locally optimal choice does not prevent you from reaching the global optimum.",
+      "When the problem can be broken down into a sequence of independent choices.",
+      "When a proof of optimality can be established for the greedy strategy."
+    ],
+    "common_mistakes": [
+      "Assuming a greedy approach will always work without proving its optimality.",
+      "Making a greedy choice that might be locally optimal but prevents a better global solution.",
+      "Incorrectly defining the 'greedy choice' or the criteria for making it.",
+      "Not considering edge cases or specific scenarios where the greedy choice might fail.",
+      "Overcomplicating the greedy choice when a simpler, more direct selection is sufficient."
+    ],
+    "time_complexity": "O(N log N) due to sorting, or O(N) if sorting is not required.",
+    "space_complexity": "O(1) or O(N) depending on whether auxiliary space is used for sorting or storing results.",
+    "related_patterns": [
+      "sorting",
+      "heap-priority-queue",
+      "dynamic-programming"
+    ],
+    "sample_walkthrough": {
+      "problem": "Jump Game",
+      "problem_number": 55,
+      "approach": "The problem asks if we can reach the last index of an array, where each element represents the maximum jump length from that position.  We can use a greedy approach by keeping track of the farthest index we can reach at any point. We iterate through the array, and at each index `i`, we update our `max_reach` to be the maximum of its current value and `i + nums[i]`. If at any point `i` exceeds `max_reach`, it means we cannot reach the current index, and thus cannot reach the end. If `max_reach` becomes greater than or equal to the last index, we know we can reach the end. The greedy choice here is to always try to reach as far as possible from the current position."
+    }
+  },
+  {
+    "pattern_id": "intervals",
+    "name": "Intervals",
+    "explanation": "The Intervals pattern is a fundamental technique for solving problems involving ranges or segments of data. These problems often deal with a collection of intervals, where each interval is defined by a start and an end point. The core idea is to process these intervals in a structured way, typically by sorting them first, to efficiently identify overlaps, merge them, or select non-overlapping ones. This pattern is particularly useful when you need to make decisions or perform operations based on the relationships between different time periods, spatial ranges, or any other form of defined segments.",
+    "mental_model": "Sort intervals and iterate, merging or selecting based on overlaps.",
+    "template_code_python": "def solve_intervals(intervals):\n    if not intervals:\n        return []\n\n    # 1. Sort intervals based on their start times.\n    intervals.sort(key=lambda x: x[0])\n\n    merged_intervals = []\n    current_interval = intervals[0]\n\n    for i in range(1, len(intervals)):\n        next_interval = intervals[i]\n\n        # 2. Check for overlap.\n        # If the current interval's end is greater than or equal to the next interval's start,\n        # there's an overlap.\n        if current_interval[1] >= next_interval[0]:\n            # 3. Merge overlapping intervals.\n            # The new end is the maximum of the current and next interval's ends.\n            current_interval[1] = max(current_interval[1], next_interval[1])\n        else:\n            # 4. No overlap, add the current merged interval to the result and start a new one.\n            merged_intervals.append(current_interval)\n            current_interval = next_interval\n\n    # 5. Add the last processed interval.\n    merged_intervals.append(current_interval)\n\n    return merged_intervals\n",
+    "template_code_javascript": "function solveIntervals(intervals) {\n    if (!intervals || intervals.length === 0) {\n        return [];\n    }\n\n    // 1. Sort intervals based on their start times.\n    intervals.sort((a, b) => a[0] - b[0]);\n\n    const mergedIntervals = [];\n    let currentInterval = intervals[0];\n\n    for (let i = 1; i < intervals.length; i++) {\n        const nextInterval = intervals[i];\n\n        // 2. Check for overlap.\n        // If the current interval's end is greater than or equal to the next interval's start,\n        // there's an overlap.\n        if (currentInterval[1] >= nextInterval[0]) {\n            // 3. Merge overlapping intervals.\n            // The new end is the maximum of the current and next interval's ends.\n            currentInterval[1] = Math.max(currentInterval[1], nextInterval[1]);\n        } else {\n            // 4. No overlap, add the current merged interval to the result and start a new one.\n            mergedIntervals.push(currentInterval);\n            currentInterval = nextInterval;\n        }\n    }\n\n    // 5. Add the last processed interval.\n    mergedIntervals.push(currentInterval);\n\n    return mergedIntervals;\n}\n",
+    "trigger_phrases": [
+      "intervals",
+      "ranges",
+      "segments",
+      "time periods",
+      "start and end",
+      "overlap",
+      "merge",
+      "non-overlapping"
+    ],
+    "when_to_use": [
+      "When the problem involves a collection of defined ranges or segments.",
+      "When you need to combine or consolidate overlapping ranges.",
+      "When you need to find the maximum number of non-overlapping ranges.",
+      "When the order of processing ranges matters, and sorting by start or end point is beneficial.",
+      "When dealing with scheduling, resource allocation, or time-based events.",
+      "When you need to determine if a new range fits within existing ones or creates conflicts."
+    ],
+    "common_mistakes": [
+      "Forgetting to sort the intervals first, which is crucial for most interval problems.",
+      "Incorrectly defining the overlap condition (e.g., using '>' instead of '>=').",
+      "Not handling the last interval correctly after the loop finishes.",
+      "Modifying intervals in place when a new list is expected, leading to unexpected side effects.",
+      "Miscalculating the merged interval's end point, especially when dealing with multiple overlaps."
+    ],
+    "time_complexity": "O(N log N) due to sorting, where N is the number of intervals.",
+    "space_complexity": "O(N) in the worst case for storing the result, or O(1) if modifying in-place and allowed.",
+    "related_patterns": [
+      "greedy",
+      "arrays-hashing",
+      "two-pointers"
+    ],
+    "sample_walkthrough": {
+      "problem": "Merge Intervals",
+      "problem_number": 56,
+      "approach": "The problem asks us to merge all overlapping intervals in a given list of intervals. This is a classic application of the Intervals pattern.\n\n1. **Sort the Intervals:** The first and most critical step is to sort the input list of intervals based on their start times. This ensures that we process intervals in a sequential manner, making it easier to detect overlaps. For example, if we have `[[1,3],[8,10],[2,6],[15,18]]`, after sorting, it becomes `[[1,3],[2,6],[8,10],[15,18]]`.\n\n2. **Initialize Result and Current Interval:** We create an empty list `merged_intervals` to store the result. We also take the first interval from the sorted list as our `current_interval`.\n\n3. **Iterate and Merge:** We then iterate through the rest of the sorted intervals, starting from the second one.\n   - For each `next_interval`, we check if it overlaps with the `current_interval`. An overlap occurs if the end of `current_interval` is greater than or equal to the start of `next_interval` (i.e., `current_interval[1] >= next_interval[0]`).\n   - If there's an overlap, we merge them by updating the end of `current_interval` to be the maximum of its current end and the end of `next_interval` (i.e., `current_interval[1] = max(current_interval[1], next_interval[1])`). This effectively extends the `current_interval` to encompass the `next_interval`.\n   - If there's no overlap, it means the `current_interval` is complete and cannot be merged further with subsequent intervals. So, we add `current_interval` to our `merged_intervals` list and then set `current_interval` to be the `next_interval`, starting a new potential merged interval.\n\n4. **Add the Last Interval:** After the loop finishes, the `current_interval` will hold the last merged or single interval. We must add this to the `merged_intervals` list.\n\n**Example Walkthrough:**\nInput: `[[1,3],[2,6],[8,10],[15,18]]`\n\n- Sorted: `[[1,3],[2,6],[8,10],[15,18]]`\n- `merged_intervals = []`, `current_interval = [1,3]`\n\n- **Iteration 1:** `next_interval = [2,6]`\n  - Overlap: `3 >= 2` (True)\n  - Merge: `current_interval[1] = max(3, 6) = 6`. `current_interval` is now `[1,6]`.\n\n- **Iteration 2:** `next_interval = [8,10]`\n  - Overlap: `6 >= 8` (False)\n  - No overlap: Add `[1,6]` to `merged_intervals`. `merged_intervals = [[1,6]]`. Set `current_interval = [8,10]`.\n\n- **Iteration 3:** `next_interval = [15,18]`\n  - Overlap: `10 >= 15` (False)\n  - No overlap: Add `[8,10]` to `merged_intervals`. `merged_intervals = [[1,6], [8,10]]`. Set `current_interval = [15,18]`.\n\n- **End of loop:** Add the final `current_interval` `[15,18]` to `merged_intervals`. `merged_intervals = [[1,6], [8,10], [15,18]]`.\n\nOutput: `[[1,6],[8,10],[15,18]]`"
+    }
+  },
+  {
+    "pattern_id": "bit-manipulation",
+    "name": "Bit Manipulation",
+    "explanation": "Problems solvable with bit manipulation often involve tasks like counting set bits, reversing bits, finding unique elements in a collection where others appear an even number of times, or performing arithmetic operations without using standard arithmetic operators. The key is to recognize when the underlying binary representation of data can be leveraged for a more elegant or efficient solution.  This pattern is particularly powerful for problems that can be framed in terms of binary states or properties.",
+    "mental_model": "Think about the binary representation of numbers and how bitwise operators can efficiently modify or inspect them.",
+    "template_code_python": "def solve(n):\n    # Example: Count set bits (1s) in an integer\n    count = 0\n    while n > 0:\n        # n & 1 checks the least significant bit\n        count += (n & 1)\n        # Right shift n by 1 to process the next bit\n        n >>= 1\n    return count\n\n# Another common technique: n & (n - 1) clears the least significant set bit\ndef solve_optimized(n):\n    count = 0\n    while n > 0:\n        n &= (n - 1)\n        count += 1\n    return count\n",
+    "template_code_javascript": "function solve(n) {\n    // Example: Count set bits (1s) in an integer\n    let count = 0;\n    while (n > 0) {\n        // n & 1 checks the least significant bit\n        count += (n & 1);\n        // Right shift n by 1 to process the next bit\n        n >>>= 1; // Use unsigned right shift for consistency with positive numbers\n    }\n    return count;\n}\n\n// Another common technique: n & (n - 1) clears the least significant set bit\nfunction solveOptimized(n) {\n    let count = 0;\n    while (n > 0) {\n        n &= (n - 1);\n        count++;\n    }\n    return count;\n}\n",
+    "trigger_phrases": [
+      "binary representation",
+      "bits",
+      "set bits",
+      "toggle bits",
+      "even number of times",
+      "odd number of times",
+      "power of 2",
+      "bitwise operators"
+    ],
+    "when_to_use": [
+      "When a problem explicitly mentions binary representations or bitwise operations.",
+      "When you need to check or manipulate individual bits within an integer.",
+      "When dealing with problems where elements appear an even or odd number of times.",
+      "When optimizing for space or time complexity by using bitmasks or compact representations.",
+      "When performing arithmetic operations without using standard arithmetic operators (e.g., sum of two integers)."
+    ],
+    "common_mistakes": [
+      "Incorrectly using signed vs. unsigned right shifts (especially in languages like JavaScript).",
+      "Forgetting to handle edge cases like zero or negative numbers when bitwise operations are involved.",
+      "Overlooking the efficiency gains of certain bitwise tricks (e.g., `n & (n - 1)` for counting set bits).",
+      "Confusing the order of operations with bitwise operators.",
+      "Not fully understanding the behavior of bitwise operators on different data types."
+    ],
+    "time_complexity": "O(log N) or O(k) where k is the number of bits (typically 32 or 64), depending on the operation. Some operations can be O(1).",
+    "space_complexity": "O(1)",
+    "related_patterns": [
+      "math-geometry",
+      "arrays-hashing"
+    ],
+    "sample_walkthrough": {
+      "problem": "Number of 1 Bits",
+      "problem_number": 191,
+      "approach": "The problem asks us to count the number of set bits (1s) in the binary representation of a given unsigned integer. We can iterate through each bit of the integer and check if it's a 1. A common way to do this is by repeatedly checking the least significant bit (LSB) and then right-shifting the number.  The LSB can be checked using the bitwise AND operator with 1 (`n & 1`). If the result is 1, the LSB was 1. After checking, we right-shift the number by one position (`n >>= 1`) to bring the next bit to the LSB position. We continue this process until the number becomes 0.  Alternatively, a more optimized approach uses the property that `n & (n - 1)` clears the least significant set bit. By repeatedly applying this operation and counting how many times we do it until `n` becomes 0, we get the count of set bits. This is often faster as it only iterates as many times as there are set bits."
+    }
+  },
+  {
+    "pattern_id": "math-geometry",
+    "name": "Math & Geometry",
+    "explanation": "The Math & Geometry pattern encompasses problems that leverage mathematical principles, numerical properties, or geometric transformations to solve computational challenges. These problems often require understanding concepts like number theory (divisibility, prime numbers, modular arithmetic), arithmetic operations, coordinate geometry, or spatial reasoning. Instead of relying solely on data structure manipulations, the core of the solution lies in applying mathematical formulas, algorithms, or logical deductions derived from these domains. This pattern is particularly useful when dealing with numerical constraints, transformations of data in a grid-like structure, or problems that can be abstracted into geometric shapes or movements.",
+    "explanation_continued": "When encountering problems that involve calculations with numbers, sequences with mathematical properties, or operations on matrices/grids that resemble geometric transformations (like rotation or traversal), consider if a mathematical or geometric approach can simplify the logic. This might involve breaking down a large number into its digits, simulating geometric movements, or using properties of numbers to optimize calculations. The key is to identify the underlying mathematical structure or geometric interpretation that can lead to an efficient and elegant solution, often bypassing more complex data structure manipulations.",
+    "mental_model": "Solve by applying mathematical rules, numerical properties, or geometric transformations to the problem's data.",
+    "template_code_python": "def solve_math_geometry(input_data):\n    # Analyze the input and identify relevant mathematical or geometric properties.\n    # Example: For number problems, consider digit extraction, prime factorization, modular arithmetic.\n    # Example: For grid problems, consider transformations like rotation, reflection, or traversal patterns.\n\n    # Apply mathematical formulas or geometric algorithms.\n    # This might involve direct calculation, iterative updates based on rules, or coordinate transformations.\n    result = 0 # Placeholder for calculation\n\n    # Example: If dealing with digits of a number:\n    # num_str = str(input_data)\n    # for digit_char in num_str:\n    #     digit = int(digit_char)\n    #     # Perform operations on digit\n\n    # Example: If dealing with a matrix rotation:\n    # n = len(matrix)\n    # for layer in range(n // 2):\n    #     first = layer\n    #     last = n - 1 - layer\n    #     for i in range(first, last):\n    #         offset = i - first\n    #         top = matrix[first][i] # save top\n    #         # left -> top\n    #         matrix[first][i] = matrix[last - offset][first]\n    #         # bottom -> left\n    #         matrix[last - offset][first] = matrix[last][last - offset]\n    #         # right -> bottom\n    #         matrix[last][last - offset] = matrix[i][last]\n    #         # top -> right\n    #         matrix[i][last] = top # right <- saved top\n\n    return result\n",
+    "template_code_javascript": "function solveMathGeometry(inputData) {\n    // Analyze the input and identify relevant mathematical or geometric properties.\n    // Example: For number problems, consider digit extraction, prime factorization, modular arithmetic.\n    // Example: For grid problems, consider transformations like rotation, reflection, or traversal patterns.\n\n    // Apply mathematical formulas or geometric algorithms.\n    // This might involve direct calculation, iterative updates based on rules, or coordinate transformations.\n    let result = 0; // Placeholder for calculation\n\n    // Example: If dealing with digits of a number:\n    // const numStr = String(inputData);\n    // for (let i = 0; i < numStr.length; i++) {\n    //     const digit = parseInt(numStr[i]);\n    //     // Perform operations on digit\n    // }\n\n    // Example: If dealing with a matrix rotation:\n    // const n = matrix.length;\n    // for (let layer = 0; layer < Math.floor(n / 2); layer++) {\n    //     const first = layer;\n    //     const last = n - 1 - layer;\n    //     for (let i = first; i < last; i++) {\n    //         const offset = i - first;\n    //         const top = matrix[first][i]; // save top\n    //         // left -> top\n    //         matrix[first][i] = matrix[last - offset][first];\n    //         // bottom -> left\n    //         matrix[last - offset][first] = matrix[last][last - offset];\n    //         // right -> bottom\n    //         matrix[last][last - offset] = matrix[i][last];\n    //         // top -> right\n    //         matrix[i][last] = top; // right <- saved top\n    //     }\n    // }\n\n    return result;\n}\n",
+    "trigger_phrases": [
+      "mathematical",
+      "numerical",
+      "digits",
+      "rotate",
+      "matrix",
+      "geometry",
+      "transform",
+      "calculate"
+    ],
+    "when_to_use": [
+      "Problems involving number theory concepts (e.g., prime numbers, divisibility, GCD, LCM).",
+      "Problems requiring arithmetic operations on large numbers or sequences.",
+      "Problems that can be visualized as geometric shapes or transformations (e.g., rotations, reflections, traversals).",
+      "Problems where the input can be broken down into its constituent digits or components for calculation.",
+      "Problems with constraints that suggest a mathematical shortcut or property.",
+      "Grid-based problems where movement or state changes follow geometric rules."
+    ],
+    "common_mistakes": [
+      "Overcomplicating the solution with complex data structures when a simple mathematical formula suffices.",
+      "Ignoring edge cases related to number properties (e.g., zero, negative numbers, large numbers).",
+      "Incorrectly implementing geometric transformations, leading to off-by-one errors or incorrect mappings.",
+      "Failing to recognize the underlying mathematical pattern, leading to a brute-force or inefficient approach.",
+      "Precision issues with floating-point arithmetic if not handled carefully."
+    ],
+    "time_complexity": "Varies greatly depending on the specific mathematical operation or geometric transformation. Can range from O(1) for simple formulas to O(N) or O(N*M) for grid traversals/transformations, or O(log N) for number-theoretic algorithms.",
+    "space_complexity": "Often O(1) if calculations are done in-place or with minimal auxiliary variables. Can be O(N) or O(N*M) if a copy of the input (like a matrix) is needed for transformations.",
+    "related_patterns": [
+      "arrays-hashing",
+      "two-pointers",
+      "binary-search",
+      "bit-manipulation"
+    ],
+    "sample_walkthrough": {
+      "problem": "Rotate Image",
+      "problem_number": 48,
+      "approach": "The problem asks to rotate an n x n 2D matrix 90 degrees clockwise. This is a classic geometric transformation problem. Instead of creating a new matrix, we can perform the rotation in-place by observing the cyclic movement of elements. For an n x n matrix, we can process it layer by layer, from the outermost layer inwards. For each layer, we consider the four corners and the elements along the edges. An element at `matrix[row][col]` moves to `matrix[col][n - 1 - row]`. We can implement this by swapping elements in cycles. For a given layer, we iterate from the start of the layer up to (but not including) the end of the layer. In each iteration, we save the top element, then move the left element to the top position, the bottom element to the left position, the right element to the bottom position, and finally, the saved top element to the right position. This completes one 90-degree rotation for a set of four elements. We repeat this for all elements in the current layer and then move to the next inner layer until the center is reached (or the layer is fully processed if n is odd)."
+    }
+  }
+]

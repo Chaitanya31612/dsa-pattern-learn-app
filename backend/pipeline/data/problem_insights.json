@@ -1,0 +1,1802 @@
+[
+  {
+    "slug": "valid-anagram",
+    "pattern_hint": "The problem asks to check if two strings are anagrams, which implies comparing character frequencies, a classic use of hashing. The presence of strings and the need to compare them character-wise suggests using a hash table.",
+    "key_insight": "The core idea is to use a hash table to count the frequency of each character in both strings and then compare these counts for equality. This approach allows for an efficient comparison of the strings.",
+    "template_deviation": "This problem deviates from the standard hashing template by requiring the comparison of two separate data sets (the two input strings) rather than operating on a single dataset.",
+    "common_mistake": "A common mistake is forgetting to handle the case where the two strings are of different lengths, which immediately indicates they cannot be anagrams.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "two-sum",
+    "pattern_hint": "The problem requires finding two elements in an array that sum to a given target, which suggests using a hash table to store the elements we've seen so far and their complements. The need to find a pair of elements that meet a specific condition points towards hashing.",
+    "key_insight": "The key insight is to iterate through the array and for each element, check if its complement (target - current element) is already in the hash table. If it is, we've found a pair that sums to the target.",
+    "template_deviation": "This problem deviates from the standard hashing template by using the hash table to store the complement of each element rather than the element itself, allowing for efficient lookup of pairs.",
+    "common_mistake": "A common mistake is not handling the case where the input array is empty or contains only one element, which cannot satisfy the condition of finding two elements that sum to the target.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "top-k-frequent-elements",
+    "pattern_hint": "The problem asks for the top k frequent elements in an array, which implies counting the frequency of each element and then selecting the top k, a task well-suited for hashing and sorting or priority queues. The emphasis on frequency and ranking suggests using a combination of hashing and a data structure that can efficiently handle the top k elements.",
+    "key_insight": "The core idea is to use a hash table to count the frequency of each element and then use a data structure like a heap or priority queue to find the top k frequent elements. Alternatively, sorting the elements by frequency also works.",
+    "template_deviation": "This problem deviates from the standard hashing template by requiring an additional step of sorting or using a priority queue to find the top k elements after counting their frequencies.",
+    "common_mistake": "A common mistake is not considering the case where k is larger than the number of unique elements in the array, which should return all unique elements.",
+    "time_complexity": "O(n log k)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "3sum",
+    "pattern_hint": "The problem requires finding all triplets in an array that sum to zero, which suggests using a two-pointer technique after sorting the array. The need to find a combination of elements that meet a specific sum condition points towards sorting and then using pointers.",
+    "key_insight": "The key insight is to sort the array first and then for each element, use two pointers starting from the next element and the end of the array to find a pair that sums to the negation of the current element, thus achieving a sum of zero for the triplet.",
+    "template_deviation": "This problem deviates from the standard two-pointer template by requiring the sorting of the array first and then using the two pointers in a nested loop to find all valid triplets.",
+    "common_mistake": "A common mistake is not skipping duplicate triplets, which can be done by skipping the same elements in the outer and inner loops.",
+    "time_complexity": "O(n^2)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "best-time-to-buy-and-sell-stock",
+    "pattern_hint": "The problem asks for the maximum profit that can be achieved by buying and selling a stock once, with the constraint that the selling price must be after the buying price. This suggests using a sliding window approach to track the minimum price seen so far and the maximum profit that can be achieved.",
+    "key_insight": "The core idea is to maintain two variables: the minimum price seen so far and the maximum profit that can be achieved. As we iterate through the prices, we update these variables to reflect the minimum price and the maximum possible profit.",
+    "template_deviation": "This problem deviates from the standard sliding window template by not using a traditional window of fixed or variable size but instead using the concept of the minimum price seen so far as a 'window' to track potential profits.",
+    "common_mistake": "A common mistake is not initializing the minimum price and maximum profit correctly, or not updating them properly as we iterate through the prices.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "longest-substring-without-repeating-characters",
+    "pattern_hint": "The problem asks for the longest substring without repeating characters, which indicates a need to track a window of unique characters. The phrase 'without repeating characters' is a strong signal for the Sliding Window pattern.",
+    "key_insight": "The core idea is to maintain a sliding window where all characters within the window are unique, and expand or shrink the window based on the presence of repeating characters. This is achieved by using a set to store unique characters within the current window.",
+    "template_deviation": "This problem deviates from the standard Sliding Window template by requiring the use of a set to track unique characters within the window, rather than just tracking a sum or count.",
+    "common_mistake": "A common mistake is to forget to update the set of unique characters when shrinking the window, leading to incorrect results.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(min(n, m))"
+  },
+  {
+    "slug": "reverse-linked-list",
+    "pattern_hint": "The problem involves a linked list and requires reversing the order of nodes, which is a classic indication of a Linked List pattern. The phrase 'reverse' is a strong signal for this pattern.",
+    "key_insight": "The key idea is to iterate through the list and reverse the 'next' pointer of each node, effectively reversing the direction of the links between nodes.",
+    "template_deviation": "This problem does not deviate significantly from the standard Linked List template, as it involves a straightforward iteration and modification of node pointers.",
+    "common_mistake": "A common mistake is to forget to update the 'next' pointer of the new head node to null, leading to incorrect results.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "merge-two-sorted-lists",
+    "pattern_hint": "The problem involves merging two sorted linked lists, which indicates a need to compare and combine nodes from both lists. The phrase 'merge' is a strong signal for the Linked List pattern.",
+    "key_insight": "The core idea is to compare the values of nodes from both lists and create a new list with the smaller value, effectively merging the two sorted lists.",
+    "template_deviation": "This problem deviates from the standard Linked List template by requiring the creation of a new list, rather than modifying an existing one.",
+    "common_mistake": "A common mistake is to forget to handle the case where one list is longer than the other, leading to incorrect results.",
+    "time_complexity": "O(n + m)",
+    "space_complexity": "O(n + m)"
+  },
+  {
+    "slug": "valid-parentheses",
+    "pattern_hint": "The problem involves checking the validity of parentheses, which indicates a need to track the opening and closing of parentheses. The phrase 'valid parentheses' is a strong signal for the Stack pattern.",
+    "key_insight": "The key idea is to use a stack to track the opening parentheses and pop them when a matching closing parenthesis is encountered, effectively validating the parentheses.",
+    "template_deviation": "This problem deviates from the standard Stack template by requiring the use of a stack to track specific characters (parentheses), rather than just tracking a count or sum.",
+    "common_mistake": "A common mistake is to forget to handle the case where there are more closing parentheses than opening ones, leading to incorrect results.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "linked-list-cycle",
+    "pattern_hint": "The problem involves detecting a cycle in a linked list, which indicates a need to track the nodes that have been visited. The phrase 'cycle' is a strong signal for the Linked List pattern.",
+    "key_insight": "The core idea is to use a fast and slow pointer to detect the cycle, where the fast pointer moves twice as fast as the slow pointer, and if there is a cycle, the fast pointer will eventually catch up to the slow pointer.",
+    "template_deviation": "This problem deviates from the standard Linked List template by requiring the use of two pointers moving at different speeds, rather than just iterating through the list.",
+    "common_mistake": "A common mistake is to forget to handle the case where there is no cycle, leading to incorrect results.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "lowest-common-ancestor-of-a-binary-search-tree",
+    "pattern_hint": "The problem mentions a binary search tree, which immediately suggests using tree-related patterns, and the goal is to find a common ancestor, hinting at a recursive or iterative tree traversal approach.",
+    "key_insight": "The key insight is to leverage the properties of a binary search tree, where for any node, all elements in the left subtree are less than the node, and all elements in the right subtree are greater, to efficiently find the lowest common ancestor.",
+    "template_deviation": "This problem deviates from the standard tree pattern template by requiring the use of the binary search tree properties to guide the traversal towards the lowest common ancestor.",
+    "common_mistake": "A common mistake is not fully utilizing the binary search tree properties, leading to an inefficient traversal or incorrect identification of the lowest common ancestor.",
+    "time_complexity": "O(h)",
+    "space_complexity": "O(h)"
+  },
+  {
+    "slug": "implement-trie-prefix-tree",
+    "pattern_hint": "The problem asks for the implementation of a Trie (prefix tree), which directly signals the use of a Trie data structure, and the need to support operations like insert, search, and startsWith.",
+    "key_insight": "The core idea is to design a Trie node structure that can efficiently store and retrieve strings, and implement the required operations using recursive or iterative approaches.",
+    "template_deviation": "This problem deviates from the standard Trie pattern template by requiring the implementation of specific operations like search and startsWith, which need careful consideration of the Trie's structure and traversal.",
+    "common_mistake": "A common mistake is not properly handling the termination of words in the Trie or incorrectly implementing the search and startsWith operations.",
+    "time_complexity": "O(m)",
+    "space_complexity": "O(n*m)"
+  },
+  {
+    "slug": "sliding-window-maximum",
+    "pattern_hint": "The problem involves finding the maximum value within a sliding window of an array, which suggests using a sliding window approach, and the need to efficiently track the maximum value within the window.",
+    "key_insight": "The key insight is to use a deque data structure to keep track of the indices of the elements within the window that could be the maximum, and update this deque as the window slides.",
+    "template_deviation": "This problem deviates from the standard sliding window pattern template by requiring the use of a deque to efficiently track the maximum value within the window, rather than a simple array or list.",
+    "common_mistake": "A common mistake is not properly updating the deque as the window slides, leading to incorrect identification of the maximum value within the window.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "largest-rectangle-in-histogram",
+    "pattern_hint": "The problem involves finding the largest rectangle in a histogram, which suggests using a stack-based approach to track the indices of the bars and calculate the area of the rectangles.",
+    "key_insight": "The core idea is to use a stack to keep track of the indices of the bars, and when a smaller bar is encountered, calculate the area of the rectangle with the bar at the top of the stack as the smallest bar.",
+    "template_deviation": "This problem deviates from the standard stack pattern template by requiring the use of the stack to track the indices of the bars and calculate the area of the rectangles, rather than simply parsing a string or evaluating an expression.",
+    "common_mistake": "A common mistake is not properly handling the case where the stack is not empty after iterating through the histogram, leading to incorrect calculation of the largest rectangle area.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "search-in-rotated-sorted-array",
+    "pattern_hint": "The problem involves searching for a target value in a rotated sorted array, which suggests using a binary search approach, and the need to adapt the search to handle the rotation.",
+    "key_insight": "The key insight is to determine which half of the array is sorted and decide which half to continue searching in based on the comparison of the target value with the middle element and the bounds of the sorted half.",
+    "template_deviation": "This problem deviates from the standard binary search pattern template by requiring the adaptation of the search to handle the rotation of the sorted array, which affects the comparison and decision-making process.",
+    "common_mistake": "A common mistake is not properly handling the cases where the rotation occurs, leading to incorrect identification of the sorted half and failure to find the target value.",
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "maximum-depth-of-binary-tree",
+    "pattern_hint": "The problem mentions a binary tree, which immediately suggests using a tree traversal pattern. The goal of finding the maximum depth also points towards a recursive or iterative traversal approach.",
+    "key_insight": "The key insight is to realize that the maximum depth of a binary tree can be found by recursively calculating the maximum depth of the left and right subtrees and adding 1 for the current node. This can be done using either a recursive or iterative approach.",
+    "template_deviation": "This problem deviates from the standard tree traversal template in that it only requires calculating the depth of the tree, without needing to process or return any node values.",
+    "common_mistake": "A common mistake is to forget to handle the base case where the tree is empty, or to incorrectly calculate the depth by not adding 1 for the current node.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(h)"
+  },
+  {
+    "slug": "binary-tree-level-order-traversal",
+    "pattern_hint": "The problem asks for a level-order traversal, which is a clear indication of using a queue-based approach to process nodes level by level. The need to return a list of lists, where each sublist contains the node values at a given level, also suggests using a queue.",
+    "key_insight": "The key insight is to use a queue to process nodes level by level, and to use a temporary list to store the node values at each level before adding them to the result list.",
+    "template_deviation": "This problem deviates from the standard tree traversal template in that it requires processing nodes level by level, rather than recursively or iteratively in a depth-first manner.",
+    "common_mistake": "A common mistake is to incorrectly handle the queue, such as forgetting to remove nodes from the queue after processing them, or not properly handling the level boundaries.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "combination-sum",
+    "pattern_hint": "The problem asks for all combinations of numbers that sum up to a target, which suggests using a backtracking approach to explore all possible combinations. The need to find all combinations, rather than just one, also points towards backtracking.",
+    "key_insight": "The key insight is to use a recursive backtracking function to explore all possible combinations of numbers, and to use a base case to stop the recursion when the target sum is reached or exceeded.",
+    "template_deviation": "This problem deviates from the standard backtracking template in that it requires finding all combinations that sum up to a target, rather than just finding a single solution.",
+    "common_mistake": "A common mistake is to incorrectly handle the backtracking recursion, such as forgetting to remove the last added number from the current combination, or not properly handling the target sum.",
+    "time_complexity": "O(N^(T/M + 1))",
+    "space_complexity": "O(T/M)"
+  },
+  {
+    "slug": "permutations",
+    "pattern_hint": "The problem asks for all permutations of a given list of numbers, which is a clear indication of using a backtracking approach to generate all possible permutations. The need to find all permutations, rather than just one, also points towards backtracking.",
+    "key_insight": "The key insight is to use a recursive backtracking function to generate all possible permutations, and to use a base case to stop the recursion when all numbers have been used.",
+    "template_deviation": "This problem deviates from the standard backtracking template in that it requires generating all permutations of a list, rather than just finding a single solution.",
+    "common_mistake": "A common mistake is to incorrectly handle the backtracking recursion, such as forgetting to swap the current number with the next number, or not properly handling the base case.",
+    "time_complexity": "O(N!)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "slug": "number-of-islands",
+    "pattern_hint": "The problem involves a grid of land and water cells, and asks to find the number of islands, which suggests using a graph traversal approach to explore the connected land cells. The need to count the number of islands also points towards using a traversal approach.",
+    "key_insight": "The key insight is to use a depth-first search (DFS) traversal to explore the connected land cells, and to use a visited set to keep track of the visited cells.",
+    "template_deviation": "This problem deviates from the standard graph traversal template in that it requires counting the number of connected components (islands) in the grid, rather than just traversing the graph.",
+    "common_mistake": "A common mistake is to incorrectly handle the DFS traversal, such as forgetting to mark the visited cells, or not properly handling the island boundaries.",
+    "time_complexity": "O(M*N)",
+    "space_complexity": "O(M*N)"
+  },
+  {
+    "slug": "coin-change",
+    "pattern_hint": "The problem involves finding the minimum number of coins to make a certain amount, which suggests using dynamic programming to build up a solution from smaller sub-problems. The presence of coins with different denominations also hints at a 1-D DP approach.",
+    "key_insight": "The key insight is to use a bottom-up DP approach, where we build up a table of minimum coin counts for each amount from 0 to the target amount. We can then use this table to find the minimum number of coins needed for the target amount.",
+    "template_deviation": "This problem deviates from the standard 1-D DP template in that we need to consider all possible coin combinations, not just the minimum or maximum value.",
+    "common_mistake": "A common mistake is to not handle the case where it's not possible to make the target amount with the given coins.",
+    "time_complexity": "O(amount * num_coins)",
+    "space_complexity": "O(amount)"
+  },
+  {
+    "slug": "merge-intervals",
+    "pattern_hint": "The problem involves merging overlapping intervals, which suggests using a sorting-based approach to group adjacent intervals together. The presence of start and end times for each interval also hints at an intervals pattern.",
+    "key_insight": "The key insight is to sort the intervals by their start times and then iterate through the sorted intervals, merging any overlapping intervals we find.",
+    "template_deviation": "This problem deviates from the standard intervals template in that we need to merge overlapping intervals, rather than just finding overlapping or non-overlapping intervals.",
+    "common_mistake": "A common mistake is to not handle the case where two intervals have the same start time but different end times.",
+    "time_complexity": "O(n log n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "validate-binary-search-tree",
+    "pattern_hint": "The problem involves validating a binary search tree, which suggests using a recursive or iterative approach to check the tree's properties. The presence of a tree structure with nodes and edges also hints at a trees pattern.",
+    "key_insight": "The key insight is to use a recursive approach to check if each node's value falls within a valid range, which is updated as we traverse the tree.",
+    "template_deviation": "This problem deviates from the standard trees template in that we need to keep track of a valid range for each node, rather than just traversing the tree.",
+    "common_mistake": "A common mistake is to not update the valid range correctly as we traverse the tree.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(h)"
+  },
+  {
+    "slug": "clone-graph",
+    "pattern_hint": "The problem involves cloning a graph, which suggests using a recursive or iterative approach to copy the graph's nodes and edges. The presence of a graph structure with nodes and edges also hints at a graphs pattern.",
+    "key_insight": "The key insight is to use a depth-first search (DFS) approach to clone the graph, keeping track of visited nodes to avoid infinite loops.",
+    "template_deviation": "This problem deviates from the standard graphs template in that we need to clone the graph, rather than just traversing it.",
+    "common_mistake": "A common mistake is to not handle the case where a node has already been visited and cloned.",
+    "time_complexity": "O(n + m)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "course-schedule",
+    "pattern_hint": "The problem involves finding a valid course schedule, which suggests using a graph-based approach to model the course dependencies. The presence of a graph structure with nodes and edges also hints at a graphs pattern.",
+    "key_insight": "The key insight is to use a topological sorting approach to find a valid course schedule, detecting any cycles in the graph that would indicate an invalid schedule.",
+    "template_deviation": "This problem deviates from the standard graphs template in that we need to find a valid topological sorting of the graph, rather than just traversing it.",
+    "common_mistake": "A common mistake is to not handle the case where the graph has a cycle, which would indicate an invalid schedule.",
+    "time_complexity": "O(n + m)",
+    "space_complexity": "O(n + m)"
+  },
+  {
+    "slug": "unique-paths",
+    "pattern_hint": "The problem involves finding the number of unique paths in a grid, which signals the use of 2-D Dynamic Programming. The grid structure and the need to calculate the number of paths to a destination point also indicate this pattern.",
+    "key_insight": "The core idea is to break down the problem into smaller sub-problems and store the results in a 2-D array, where each cell represents the number of unique paths to that cell. The key is to realize that the number of unique paths to a cell is the sum of the number of unique paths to the cell above it and the cell to its left.",
+    "template_deviation": "This problem deviates from the standard 2-D DP template in that it has a simple and consistent transition function, where the number of unique paths to a cell only depends on the cells above and to the left.",
+    "common_mistake": "A common mistake is to forget to initialize the first row and column of the 2-D array, which can lead to incorrect results.",
+    "time_complexity": "O(m*n)",
+    "space_complexity": "O(m*n)"
+  },
+  {
+    "slug": "edit-distance",
+    "pattern_hint": "The problem involves finding the minimum number of operations to transform one string into another, which signals the use of 2-D Dynamic Programming. The need to compare characters and calculate distances between strings also indicates this pattern.",
+    "key_insight": "The core idea is to break down the problem into smaller sub-problems and store the results in a 2-D array, where each cell represents the minimum edit distance between the corresponding substrings. The key is to realize that the edit distance between two strings can be calculated by considering the minimum edit distance between the substrings and the cost of inserting, deleting, or replacing a character.",
+    "template_deviation": "This problem deviates from the standard 2-D DP template in that it has a more complex transition function, where the edit distance between two strings depends on the minimum edit distance between the substrings and the cost of the operations.",
+    "common_mistake": "A common mistake is to forget to consider the base cases, such as when one of the strings is empty, which can lead to incorrect results.",
+    "time_complexity": "O(m*n)",
+    "space_complexity": "O(m*n)"
+  },
+  {
+    "slug": "serialize-and-deserialize-binary-tree",
+    "pattern_hint": "The problem involves converting a binary tree into a string representation and vice versa, which signals the use of tree traversal and serialization techniques. The need to preserve the structure of the tree and reconstruct it from the string representation also indicates this pattern.",
+    "key_insight": "The core idea is to use a pre-order traversal to serialize the tree and a recursive approach to deserialize the string representation. The key is to realize that the pre-order traversal visits the root node before the left and right subtrees, which allows for efficient serialization and deserialization.",
+    "template_deviation": "This problem deviates from the standard tree traversal template in that it requires a more complex serialization and deserialization process, involving the use of null values to represent empty nodes and a recursive approach to reconstruct the tree.",
+    "common_mistake": "A common mistake is to forget to handle the case where the input tree is null or the string representation is empty, which can lead to runtime errors.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "find-median-from-data-stream",
+    "pattern_hint": "The problem involves finding the median of a stream of numbers, which signals the use of heap or priority queue data structures. The need to maintain a balanced data structure and efficiently insert and remove elements also indicates this pattern.",
+    "key_insight": "The core idea is to use two heaps, a max heap to store the smaller half of the numbers and a min heap to store the larger half, to maintain a balanced data structure and efficiently calculate the median. The key is to realize that the max heap should always contain one more element than the min heap if the total number of elements is odd.",
+    "template_deviation": "This problem deviates from the standard heap or priority queue template in that it requires a more complex data structure, involving the use of two heaps and a balancing mechanism to maintain the size difference between the heaps.",
+    "common_mistake": "A common mistake is to forget to balance the heaps after inserting or removing an element, which can lead to incorrect results.",
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "contains-duplicate",
+    "pattern_hint": "The problem involves checking for duplicate elements in an array, which signals the use of hashing or set data structures. The need to efficiently store and look up elements also indicates this pattern.",
+    "key_insight": "The core idea is to use a set data structure to store the elements as they are encountered, and check for duplicates by looking up each element in the set. The key is to realize that the set data structure provides constant-time lookup and insertion operations.",
+    "template_deviation": "This problem deviates from the standard hashing or set template in that it has a simple and straightforward solution, involving a single pass through the array and a constant-time lookup operation.",
+    "common_mistake": "A common mistake is to forget to check for duplicates in the correct order, such as checking for duplicates after the entire array has been processed, which can lead to incorrect results.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "group-anagrams",
+    "pattern_hint": "The problem asks to group strings that are anagrams of each other, indicating the use of hashing to store and compare character frequencies. The presence of strings and the need to find a common characteristic among them suggests a hashing approach.",
+    "key_insight": "The core idea is to use a hashmap where the key is the sorted version of the string and the value is a list of strings that are anagrams of the key. This allows for efficient grouping of anagrams.",
+    "template_deviation": "This problem deviates from the standard hashing template by requiring the creation of a custom key (the sorted string) to group anagrams together.",
+    "common_mistake": "A common mistake is to try to compare strings directly without considering the need to normalize or sort them to create a consistent key for hashing.",
+    "time_complexity": "O(n*m*log(m))",
+    "space_complexity": "O(n*m)"
+  },
+  {
+    "slug": "valid-palindrome",
+    "pattern_hint": "The problem involves checking if a string is the same when reversed, which suggests using two pointers starting from the beginning and end of the string. The presence of the word 'palindrome' also hints at this approach.",
+    "key_insight": "The key insight is to ignore non-alphanumeric characters and consider the string as case-insensitive, allowing for a straightforward two-pointer comparison.",
+    "template_deviation": "This problem deviates from the standard two-pointer template by requiring the handling of non-alphanumeric characters and case insensitivity.",
+    "common_mistake": "A common mistake is to forget to handle case sensitivity or non-alphanumeric characters, leading to incorrect results.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "container-with-most-water",
+    "pattern_hint": "The problem involves maximizing the area between two lines (the water containers), which suggests using two pointers to represent the width of the area. The goal of maximizing the area hints at a two-pointer approach.",
+    "key_insight": "The core idea is to start with the widest possible area and gradually move the pointers towards each other, keeping track of the maximum area found so far.",
+    "template_deviation": "This problem deviates from the standard two-pointer template by requiring the calculation of the area between the two pointers and moving them based on the height of the lines.",
+    "common_mistake": "A common mistake is to move the pointers based solely on their positions rather than considering the height of the lines and the potential area that could be gained by moving one pointer over the other.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "binary-search",
+    "pattern_hint": "The problem involves finding a target value within a sorted array, which strongly suggests the use of binary search. The presence of the word 'sorted' and the goal of finding a specific value are clear indicators.",
+    "key_insight": "The key insight is to repeatedly divide the search interval in half and search for the target value in one of the two halves, effectively reducing the search space by half with each iteration.",
+    "template_deviation": "This problem follows the standard binary search template closely, with the only deviation being the specific conditions for the target value and the array.",
+    "common_mistake": "A common mistake is to incorrectly calculate the mid index or to not properly update the search boundaries, leading to an infinite loop or incorrect results.",
+    "time_complexity": "O(log(n))",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "climbing-stairs",
+    "pattern_hint": "The problem involves finding the number of ways to reach a certain step, which suggests using dynamic programming to build up a solution from smaller sub-problems. The presence of the word 'ways' and the sequential nature of the steps hint at this approach.",
+    "key_insight": "The core idea is to recognize that the number of ways to reach a step is the sum of the number of ways to reach the two preceding steps, allowing for a straightforward dynamic programming solution.",
+    "template_deviation": "This problem deviates from the standard dynamic programming template by having a very simple and direct recurrence relation, making it a basic example of dynamic programming.",
+    "common_mistake": "A common mistake is to not properly initialize the base cases or to not consider the possibility of reaching a step from more than one preceding step.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "invert-binary-tree",
+    "pattern_hint": "The problem mentions a binary tree and asks to invert it, which signals the use of a tree traversal pattern. The word 'invert' specifically implies a recursive or iterative approach to swap child nodes.",
+    "key_insight": "The core idea is to recursively traverse the tree and swap the left and right child nodes of each internal node. This can be achieved through a simple recursive function or an iterative approach using a queue.",
+    "template_deviation": "This problem deviates from the standard tree traversal template in that it requires swapping child nodes, rather than just visiting them.",
+    "common_mistake": "A common mistake is to forget to handle the base case where the tree is empty or a node has only one child.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "minimum-window-substring",
+    "pattern_hint": "The problem asks for a minimum window that contains all characters of a given string, which signals the use of a sliding window pattern. The phrase 'minimum window' implies a dynamic approach to expanding and shrinking the window.",
+    "key_insight": "The key idea is to maintain a frequency count of characters in the window and the required string, and to expand and shrink the window based on whether all required characters are present. This can be achieved through a two-pointer technique.",
+    "template_deviation": "This problem deviates from the standard sliding window template in that it requires maintaining a frequency count of characters and handling the case where a character appears multiple times in the required string.",
+    "common_mistake": "A common mistake is to incorrectly update the frequency count when expanding or shrinking the window.",
+    "time_complexity": "O(n*m)",
+    "space_complexity": "O(m)"
+  },
+  {
+    "slug": "koko-eating-bananas",
+    "pattern_hint": "The problem asks to find the minimum number of hours Koko needs to eat all bananas, given a certain eating rate, which signals the use of a binary search pattern. The phrase 'minimum number of hours' implies a search for an optimal value.",
+    "key_insight": "The core idea is to use binary search to find the minimum number of hours that allows Koko to eat all bananas, by iteratively checking if a given number of hours is sufficient to eat all bananas at a certain rate.",
+    "template_deviation": "This problem deviates from the standard binary search template in that it requires a custom comparison function to check if a given number of hours is sufficient to eat all bananas.",
+    "common_mistake": "A common mistake is to incorrectly calculate the number of bananas that can be eaten in a given number of hours.",
+    "time_complexity": "O(n log m)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "subsets",
+    "pattern_hint": "The problem asks to generate all subsets of a given set, which signals the use of a backtracking pattern. The phrase 'all subsets' implies a recursive or iterative approach to generating all possible combinations.",
+    "key_insight": "The key idea is to use a recursive function to generate all subsets, by iteratively adding or removing elements from the current subset. This can be achieved through a simple recursive function or an iterative approach using a loop.",
+    "template_deviation": "This problem deviates from the standard backtracking template in that it requires generating all possible subsets, rather than just finding a single solution.",
+    "common_mistake": "A common mistake is to forget to handle the base case where the input set is empty.",
+    "time_complexity": "O(2^n)",
+    "space_complexity": "O(2^n)"
+  },
+  {
+    "slug": "word-search",
+    "pattern_hint": "The problem asks to find a word in a 2D grid of characters, which signals the use of a backtracking pattern. The phrase 'find a word' implies a search for a specific sequence of characters.",
+    "key_insight": "The core idea is to use a recursive function to search for the word in the grid, by iteratively exploring all possible directions from each cell. This can be achieved through a depth-first search (DFS) approach.",
+    "template_deviation": "This problem deviates from the standard backtracking template in that it requires searching for a specific sequence of characters in a 2D grid, rather than just finding a single solution.",
+    "common_mistake": "A common mistake is to incorrectly handle the case where the word can be found in multiple directions from a single cell.",
+    "time_complexity": "O(n*m*4^l)",
+    "space_complexity": "O(n*m)"
+  },
+  {
+    "slug": "longest-common-subsequence",
+    "pattern_hint": "The problem asks for the longest common subsequence between two sequences, indicating a 2-D DP approach. The presence of two sequences and the need to find a common subsequence suggests using a 2-D array to store intermediate results.",
+    "key_insight": "The core idea is to fill up a 2-D array where each cell [i][j] represents the length of the longest common subsequence between the first i characters of the first sequence and the first j characters of the second sequence. The final answer will be stored in the bottom-right cell of the array.",
+    "template_deviation": "This problem deviates from the standard 2-D DP template in that it requires a careful initialization of the first row and column of the array to handle edge cases.",
+    "common_mistake": "A common mistake is to incorrectly initialize the first row and column of the array, leading to incorrect results.",
+    "time_complexity": "O(m*n)",
+    "space_complexity": "O(m*n)"
+  },
+  {
+    "slug": "maximum-subarray",
+    "pattern_hint": "The problem asks for the maximum sum of a subarray, indicating a greedy approach. The presence of a single array and the need to find a maximum sum suggests using a single pass through the array.",
+    "key_insight": "The core idea is to keep track of the maximum sum of a subarray ending at each position, and update the maximum sum found so far. This can be achieved by using a single variable to store the maximum sum and another variable to store the current sum.",
+    "template_deviation": "This problem deviates from the standard greedy template in that it requires a careful handling of negative numbers, which can affect the maximum sum.",
+    "common_mistake": "A common mistake is to incorrectly handle the case where all numbers in the array are negative, leading to an incorrect result.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "number-of-1-bits",
+    "pattern_hint": "The problem asks for the number of 1 bits in the binary representation of a number, indicating a bit manipulation approach. The presence of a single number and the need to count 1 bits suggests using bitwise operations.",
+    "key_insight": "The core idea is to use bitwise operations to count the number of 1 bits in the binary representation of the number. This can be achieved by using a loop to iterate through each bit of the number and increment a counter when a 1 bit is found.",
+    "template_deviation": "This problem deviates from the standard bit manipulation template in that it requires a careful handling of the loop condition to ensure that all bits are counted.",
+    "common_mistake": "A common mistake is to incorrectly implement the loop condition, leading to an incorrect count of 1 bits.",
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "counting-bits",
+    "pattern_hint": "The problem asks for the number of 1 bits in the binary representation of each number up to a given number, indicating a bit manipulation approach. The presence of a range of numbers and the need to count 1 bits suggests using bitwise operations.",
+    "key_insight": "The core idea is to use bitwise operations to count the number of 1 bits in the binary representation of each number in the range. This can be achieved by using a loop to iterate through each number in the range and increment a counter when a 1 bit is found.",
+    "template_deviation": "This problem deviates from the standard bit manipulation template in that it requires a careful handling of the loop condition to ensure that all numbers in the range are counted.",
+    "common_mistake": "A common mistake is to incorrectly implement the loop condition, leading to an incorrect count of 1 bits for some numbers in the range.",
+    "time_complexity": "O(n log n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "reverse-bits",
+    "pattern_hint": "The problem asks for the binary representation of a number with the bits reversed, indicating a bit manipulation approach. The presence of a single number and the need to reverse its bits suggests using bitwise operations.",
+    "key_insight": "The core idea is to use bitwise operations to reverse the bits of the number. This can be achieved by using a loop to iterate through each bit of the number and build the reversed binary representation.",
+    "template_deviation": "This problem deviates from the standard bit manipulation template in that it requires a careful handling of the loop condition to ensure that all bits are reversed.",
+    "common_mistake": "A common mistake is to incorrectly implement the loop condition, leading to an incorrect reversal of the bits.",
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "lru-cache",
+    "pattern_hint": "The problem mentions a cache with a limited capacity, which hints at using a data structure that can efficiently manage a queue of elements, such as a Linked List. The requirement to remove the least recently used item also points towards a Linked List.",
+    "key_insight": "The core idea is to use a combination of a Linked List and a HashMap to store the cache elements, allowing for O(1) access and removal of elements. The key is to update the Linked List whenever an element is accessed or added.",
+    "template_deviation": "This problem deviates from the standard Linked List template by requiring the use of a HashMap to store the cache elements, allowing for efficient lookups.",
+    "common_mistake": "A common mistake is to forget to update the Linked List when an element is accessed, leading to incorrect removal of the least recently used item.",
+    "time_complexity": "O(1)",
+    "space_complexity": "O(capacity)"
+  },
+  {
+    "slug": "merge-k-sorted-lists",
+    "pattern_hint": "The problem involves merging multiple sorted lists, which suggests using a data structure that can efficiently handle sorted elements, such as a Linked List. The requirement to merge the lists in a sorted manner also points towards a Linked List.",
+    "key_insight": "The core idea is to use a min-heap to store the current smallest element from each list, allowing for efficient merging of the lists. The key is to extract the smallest element from the heap and add it to the result list.",
+    "template_deviation": "This problem deviates from the standard Linked List template by requiring the use of a min-heap to efficiently merge the sorted lists.",
+    "common_mistake": "A common mistake is to try to merge the lists by comparing elements one by one, leading to an inefficient solution with a high time complexity.",
+    "time_complexity": "O(N log k)",
+    "space_complexity": "O(k)"
+  },
+  {
+    "slug": "word-search-ii",
+    "pattern_hint": "The problem involves searching for words in a grid, which suggests using a data structure that can efficiently store and search for words, such as a Trie. The requirement to find all words in the grid also points towards a Trie.",
+    "key_insight": "The core idea is to use a Trie to store the words and then search for each word in the grid by traversing the Trie and the grid simultaneously. The key is to use a depth-first search to explore all possible paths in the grid.",
+    "template_deviation": "This problem deviates from the standard Trie template by requiring the use of a depth-first search to explore the grid and find all words.",
+    "common_mistake": "A common mistake is to try to search for each word in the grid separately, leading to an inefficient solution with a high time complexity.",
+    "time_complexity": "O(M * N * 4^L)",
+    "space_complexity": "O(M * N + N)"
+  },
+  {
+    "slug": "longest-increasing-subsequence",
+    "pattern_hint": "The problem involves finding the longest increasing subsequence, which suggests using a data structure that can efficiently store and compare elements, such as a 1-D DP array. The requirement to find the longest subsequence also points towards a 1-D DP array.",
+    "key_insight": "The core idea is to use a 1-D DP array to store the length of the longest increasing subsequence ending at each position, and then fill up the array by comparing elements and updating the lengths. The key is to use a bottom-up dynamic programming approach.",
+    "template_deviation": "This problem deviates from the standard 1-D DP template by requiring the use of a dynamic programming approach to fill up the array, rather than a straightforward iterative approach.",
+    "common_mistake": "A common mistake is to try to find the longest increasing subsequence by comparing elements one by one, leading to an inefficient solution with a high time complexity.",
+    "time_complexity": "O(n^2)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "jump-game",
+    "pattern_hint": "The problem involves finding the minimum number of jumps to reach the end of an array, which suggests using a greedy approach to make the most efficient jumps. The requirement to find the minimum number of jumps also points towards a greedy approach.",
+    "key_insight": "The core idea is to use a greedy approach to make the most efficient jumps by always choosing the jump that allows us to reach the farthest position. The key is to keep track of the maximum reachable position and the number of jumps made so far.",
+    "template_deviation": "This problem deviates from the standard greedy template by requiring the use of a dynamic programming approach to keep track of the maximum reachable position and the number of jumps made so far.",
+    "common_mistake": "A common mistake is to try to find the minimum number of jumps by using a brute-force approach, leading to an inefficient solution with a high time complexity.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "insert-interval",
+    "pattern_hint": "The problem involves inserting a new interval into a list of existing intervals, which suggests using the Intervals pattern to handle overlapping intervals. The presence of start and end values for each interval also indicates the need for interval merging.",
+    "key_insight": "The key insight is to iterate through the existing intervals and merge the new interval with overlapping intervals, then insert the merged interval into the correct position. This requires maintaining a list of non-overlapping intervals.",
+    "template_deviation": "This problem deviates from the standard Intervals pattern by requiring the insertion of a new interval, which necessitates merging and reordering the intervals.",
+    "common_mistake": "A common mistake is to incorrectly handle edge cases, such as when the new interval overlaps with multiple existing intervals or when it is completely contained within an existing interval.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "add-two-numbers",
+    "pattern_hint": "The problem involves adding two numbers represented as linked lists, where each node represents a digit, which suggests using the Linked List pattern to traverse and manipulate the lists. The presence of a 'next' pointer in each node also indicates a linked list structure.",
+    "key_insight": "The key insight is to iterate through both linked lists simultaneously, adding corresponding digits and handling carry-over values, then creating a new linked list with the resulting digits. This requires careful management of the carry-over value.",
+    "template_deviation": "This problem deviates from the standard Linked List pattern by requiring the addition of corresponding nodes, which necessitates handling carry-over values and creating a new linked list.",
+    "common_mistake": "A common mistake is to incorrectly handle the carry-over value, such as forgetting to propagate it to the next iteration or incorrectly adding it to the current digit.",
+    "time_complexity": "O(max(m, n))",
+    "space_complexity": "O(max(m, n))"
+  },
+  {
+    "slug": "trapping-rain-water",
+    "pattern_hint": "The problem involves finding the amount of water that can be trapped between a series of bars, which suggests using the Two Pointers pattern to track the maximum height of the bars from both ends. The presence of a 'height' array also indicates the need for a two-pointer approach.",
+    "key_insight": "The key insight is to use two pointers, one starting from the left and one from the right, to track the maximum height of the bars and calculate the trapped water. This requires maintaining the maximum height of the bars from both ends.",
+    "template_deviation": "This problem deviates from the standard Two Pointers pattern by requiring the calculation of the trapped water, which necessitates tracking the maximum height of the bars from both ends.",
+    "common_mistake": "A common mistake is to incorrectly calculate the trapped water, such as forgetting to consider the minimum height of the bars at each position.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "min-stack",
+    "pattern_hint": "The problem involves implementing a stack that supports finding the minimum element, which suggests using the Stack pattern to store and retrieve elements. The presence of 'push', 'pop', and 'getMin' operations also indicates the need for a stack-based approach.",
+    "key_insight": "The key insight is to use two stacks, one for storing the actual elements and another for storing the minimum elements, to efficiently find the minimum element. This requires careful management of the two stacks.",
+    "template_deviation": "This problem deviates from the standard Stack pattern by requiring the implementation of a 'getMin' operation, which necessitates the use of a second stack to store the minimum elements.",
+    "common_mistake": "A common mistake is to incorrectly implement the 'getMin' operation, such as forgetting to update the minimum stack when pushing or popping elements.",
+    "time_complexity": "O(1)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "longest-common-prefix",
+    "pattern_hint": "The problem involves finding the longest common prefix among a list of strings, which suggests using the Arrays & Hashing pattern to compare and store the common prefix. The presence of a list of strings also indicates the need for a string-based approach.",
+    "key_insight": "The key insight is to iterate through the characters of the strings and compare them, stopping at the first mismatch, to find the common prefix. This requires careful management of the iteration and comparison.",
+    "template_deviation": "This problem deviates from the standard Arrays & Hashing pattern by requiring the comparison of strings, which necessitates a character-by-character approach.",
+    "common_mistake": "A common mistake is to incorrectly handle the iteration and comparison, such as forgetting to check for the end of the strings or incorrectly handling the mismatch.",
+    "time_complexity": "O(n*m)",
+    "space_complexity": "O(m)"
+  },
+  {
+    "slug": "majority-element",
+    "pattern_hint": "The problem asks for a majority element, implying that one element occurs more than others, which suggests using a hashing approach to count occurrences. The fact that it's an array and we need to find a specific element also points towards hashing.",
+    "key_insight": "The key insight is to use a hash map to count the occurrences of each element and then find the one that occurs more than n/2 times. Alternatively, the Boyer-Moore Voting Algorithm can be used to find the majority element in linear time.",
+    "template_deviation": "This problem deviates from the standard hashing template in that it doesn't require finding all elements that meet a certain condition, but rather finding the one element that meets a specific threshold.",
+    "common_mistake": "A common mistake is to not consider the case where no majority element exists, or to not handle the input validation correctly.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "longest-consecutive-sequence",
+    "pattern_hint": "The problem involves finding a sequence within an array, which suggests using a hashing approach to efficiently look up elements. The fact that the sequence must be consecutive also implies a need to check for the presence of sequential numbers.",
+    "key_insight": "The key insight is to use a hash set to store the elements and then for each element, check if it's the start of a sequence by verifying if the previous number is in the set. If it's not, then check for the presence of the next numbers in sequence.",
+    "template_deviation": "This problem deviates from the standard hashing template in that it requires not just looking up elements, but also checking for the presence of a sequence of numbers.",
+    "common_mistake": "A common mistake is to not correctly handle the case where there are multiple sequences of the same length, or to not efficiently check for the presence of the next numbers in sequence.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "search-a-2d-matrix",
+    "pattern_hint": "The problem involves searching for an element in a 2D matrix that is sorted in a specific way, which suggests using a binary search approach. The fact that each row is sorted and the first element of each row is greater than the last element of the previous row also implies a binary search.",
+    "key_insight": "The key insight is to treat the 2D matrix as a 1D sorted array and apply binary search. The mapping from the 1D index to the 2D coordinates can be done using the formula row = index / num_cols and col = index % num_cols.",
+    "template_deviation": "This problem deviates from the standard binary search template in that it involves a 2D matrix rather than a 1D array, requiring a mapping from 1D to 2D coordinates.",
+    "common_mistake": "A common mistake is to not correctly calculate the 2D coordinates from the 1D index, or to not handle the case where the target element is not present in the matrix.",
+    "time_complexity": "O(log(m*n))",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "median-of-two-sorted-arrays",
+    "pattern_hint": "The problem involves finding the median of two sorted arrays, which suggests using a binary search approach to find the partition point. The fact that the arrays are sorted also implies a need to consider the total length of the combined array.",
+    "key_insight": "The key insight is to use binary search to find the partition point that divides the combined array into two halves with the same total length. The partition point can be found by considering the total length of the combined array and the lengths of the two individual arrays.",
+    "template_deviation": "This problem deviates from the standard binary search template in that it involves finding a partition point that satisfies a specific condition, rather than simply searching for an element.",
+    "common_mistake": "A common mistake is to not correctly handle the case where the total length of the combined array is odd or even, or to not efficiently calculate the median from the partition point.",
+    "time_complexity": "O(log(min(m,n)))",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "find-the-duplicate-number",
+    "pattern_hint": "The problem involves finding a duplicate in an array, which suggests using a hashing approach or a cycle detection approach. The fact that the numbers are in the range [1, n] and each number can be used as an index also implies a cycle detection approach.",
+    "key_insight": "The key insight is to use Floyd's Tortoise and Hare algorithm to detect the cycle in the array, where each number is used as an index to the next number. The start of the cycle corresponds to the duplicate number.",
+    "template_deviation": "This problem deviates from the standard cycle detection template in that it involves using the numbers as indices to detect the cycle, rather than simply following a linked list.",
+    "common_mistake": "A common mistake is to not correctly implement the cycle detection algorithm, or to not efficiently find the start of the cycle.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "binary-tree-inorder-traversal",
+    "pattern_hint": "The problem mentions a binary tree and asks for a traversal, indicating the use of a tree pattern. The specific request for inorder traversal suggests a left-root-right approach.",
+    "key_insight": "The core idea is to use recursion or a stack to traverse the tree in an inorder manner, visiting the left subtree, the current node, and then the right subtree. This ensures that nodes are visited in ascending order.",
+    "template_deviation": "This problem deviates from the standard tree pattern by requiring a specific traversal order, which dictates the order of operations in the recursive or iterative solution.",
+    "common_mistake": "A common mistake is forgetting to properly handle the recursive calls or stack operations, leading to incorrect traversal order or runtime errors.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "diameter-of-binary-tree",
+    "pattern_hint": "The problem asks for the diameter of a binary tree, which is the longest path between any two nodes, signaling the use of a tree pattern and path calculations. The mention of a diameter implies a need to consider all possible paths.",
+    "key_insight": "The key insight is to calculate the diameter by considering the maximum path length through each node, which can be achieved by finding the maximum depth of the left and right subtrees for each node. The diameter is then the maximum of these path lengths.",
+    "template_deviation": "This problem deviates from the standard tree pattern by requiring the calculation of path lengths and the consideration of all possible paths through the tree.",
+    "common_mistake": "A common mistake is incorrectly calculating the path lengths or failing to update the maximum diameter found so far.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "balanced-binary-tree",
+    "pattern_hint": "The problem asks whether a binary tree is balanced, indicating the use of a tree pattern and height calculations. The definition of a balanced tree suggests a need to compare the heights of subtrees.",
+    "key_insight": "The core idea is to calculate the height of each subtree and compare the heights of the left and right subtrees for each node, ensuring that the difference in heights does not exceed 1. This can be achieved through a recursive or iterative approach.",
+    "template_deviation": "This problem deviates from the standard tree pattern by requiring the calculation of subtree heights and comparisons to determine balance.",
+    "common_mistake": "A common mistake is incorrectly calculating the heights of subtrees or failing to properly handle the base cases for the recursive solution.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(h)"
+  },
+  {
+    "slug": "same-tree",
+    "pattern_hint": "The problem asks whether two binary trees are the same, indicating the use of a tree pattern and node comparisons. The requirement for sameness suggests a need to compare the structure and values of the trees.",
+    "key_insight": "The key insight is to use a recursive approach to compare the structure and values of the two trees, ensuring that the trees have the same structure and node values. This can be achieved by comparing the values of corresponding nodes and the existence of child nodes.",
+    "template_deviation": "This problem deviates from the standard tree pattern by requiring a comparison of two trees rather than a single tree operation.",
+    "common_mistake": "A common mistake is incorrectly handling the base cases for the recursive solution or failing to properly compare the values and structure of the trees.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(h)"
+  },
+  {
+    "slug": "kth-smallest-element-in-a-bst",
+    "pattern_hint": "The problem asks for the kth smallest element in a binary search tree, indicating the use of a tree pattern and inorder traversal. The requirement for the kth smallest element suggests a need to traverse the tree in ascending order.",
+    "key_insight": "The core idea is to use an inorder traversal to visit nodes in ascending order and keep track of the current node index, stopping when the kth node is reached. This can be achieved through a recursive or iterative approach.",
+    "template_deviation": "This problem deviates from the standard tree pattern by requiring a specific node to be found based on its index in the inorder traversal.",
+    "common_mistake": "A common mistake is incorrectly implementing the inorder traversal or failing to properly keep track of the current node index.",
+    "time_complexity": "O(h + k)",
+    "space_complexity": "O(h)"
+  },
+  {
+    "slug": "kth-largest-element-in-a-stream",
+    "pattern_hint": "The problem asks for the kth largest element in a stream, indicating the use of a data structure that can efficiently handle a stream of data and maintain a sorted order, such as a Heap or Priority Queue. The mention of 'stream' and 'kth largest' are key indicators of this pattern.",
+    "key_insight": "The core idea is to use a min-heap of size k to store the k largest elements seen so far, and whenever a new element is added to the stream, we check if it's larger than the smallest element in the heap and update the heap accordingly. This ensures that the heap always contains the k largest elements.",
+    "template_deviation": "This problem deviates from the standard Heap pattern in that it requires maintaining a heap of a fixed size k, rather than the typical use case of a heap as a priority queue.",
+    "common_mistake": "A common mistake is to use a max-heap instead of a min-heap, which would require additional logic to remove the largest element when the heap size exceeds k.",
+    "time_complexity": "O(log k) for each insertion",
+    "space_complexity": "O(k)"
+  },
+  {
+    "slug": "kth-largest-element-in-an-array",
+    "pattern_hint": "The problem asks for the kth largest element in an array, suggesting the use of a data structure that can efficiently find the kth largest element, such as a Heap or Priority Queue. The mention of 'kth largest' is a key indicator of this pattern.",
+    "key_insight": "The core idea is to use a min-heap to store the k largest elements, and then return the smallest element in the heap, which is the kth largest element in the array. Alternatively, we can use the QuickSelect algorithm, which is a variant of QuickSort.",
+    "template_deviation": "This problem deviates from the standard Heap pattern in that it requires finding the kth largest element in a fixed array, rather than a stream of data.",
+    "common_mistake": "A common mistake is to sort the entire array, which has a higher time complexity than using a Heap or QuickSelect.",
+    "time_complexity": "O(n log k) using a Heap, or O(n) on average using QuickSelect",
+    "space_complexity": "O(k) using a Heap, or O(1) using QuickSelect"
+  },
+  {
+    "slug": "subsets-ii",
+    "pattern_hint": "The problem asks for all subsets of a given set, with the additional constraint that the set may contain duplicates, indicating the use of a Backtracking approach. The mention of 'subsets' and 'duplicates' are key indicators of this pattern.",
+    "key_insight": "The core idea is to use a recursive Backtracking approach to generate all subsets, and to avoid duplicates, we skip over duplicate elements in the recursive calls. This ensures that each subset is generated only once.",
+    "template_deviation": "This problem deviates from the standard Backtracking pattern in that it requires handling duplicates, which adds an additional layer of complexity to the recursive calls.",
+    "common_mistake": "A common mistake is to not skip over duplicate elements, resulting in duplicate subsets being generated.",
+    "time_complexity": "O(2^n) in the worst case, where n is the size of the set",
+    "space_complexity": "O(2^n) for storing the subsets"
+  },
+  {
+    "slug": "maximum-product-subarray",
+    "pattern_hint": "The problem asks for the maximum product of a subarray, indicating the use of a Dynamic Programming (DP) approach. The mention of 'maximum product' and 'subarray' are key indicators of this pattern.",
+    "key_insight": "The core idea is to use a 1-D DP array to store the maximum and minimum product ending at each position, and to update these values based on the current element and the previous maximum and minimum products. This allows us to handle negative numbers, which can change the maximum product to a minimum product and vice versa.",
+    "template_deviation": "This problem deviates from the standard DP pattern in that it requires maintaining two arrays, one for the maximum product and one for the minimum product, to handle the case where a negative number is encountered.",
+    "common_mistake": "A common mistake is to not handle the case where a negative number is encountered, which can change the maximum product to a minimum product and vice versa.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "rotate-image",
+    "pattern_hint": "The problem asks to rotate an image by 90 degrees, indicating the use of a Math and Geometry approach. The mention of 'rotate' and 'image' are key indicators of this pattern.",
+    "key_insight": "The core idea is to use a transpose and reverse approach to rotate the image, where we first transpose the matrix (i.e., swap the rows and columns) and then reverse each row. This has the effect of rotating the image by 90 degrees.",
+    "template_deviation": "This problem deviates from the standard Math and Geometry pattern in that it requires a specific sequence of operations (transpose and reverse) to achieve the desired rotation.",
+    "common_mistake": "A common mistake is to not reverse each row after transposing the matrix, resulting in an incorrect rotation.",
+    "time_complexity": "O(n^2) where n is the size of the image",
+    "space_complexity": "O(1) if done in-place, or O(n^2) if a new matrix is created"
+  },
+  {
+    "slug": "pascals-triangle",
+    "pattern_hint": "The problem mentions generating a triangle with numbers, which hints at using arrays to store and calculate each row. The relationship between adjacent numbers in the triangle suggests a hashing or array-based approach.",
+    "key_insight": "The core idea is to understand that each number in Pascal's Triangle is the sum of the two numbers directly above it, and to use this relationship to generate each row iteratively. This can be achieved by initializing the first row and then calculating subsequent rows based on the previous one.",
+    "template_deviation": "This problem deviates from the standard array template by requiring the generation of a specific pattern (Pascal's Triangle) rather than simply manipulating or searching through existing data.",
+    "common_mistake": "A common mistake is to incorrectly calculate the values for each row or to fail to initialize the base case (the first row) correctly.",
+    "time_complexity": "O(n^2)",
+    "space_complexity": "O(n^2)"
+  },
+  {
+    "slug": "sort-colors",
+    "pattern_hint": "The problem involves sorting an array of colors (represented by integers), which suggests using an array-based sorting approach, possibly with hashing to keep track of color counts. The constraint of only having three distinct colors hints at a more specialized sorting technique.",
+    "key_insight": "The key insight is to use a variation of the Dutch National Flag algorithm, which is a three-way partitioning algorithm that can efficiently sort the array in a single pass. This involves maintaining pointers to track the positions of the different colors.",
+    "template_deviation": "This problem deviates from the standard array and hashing template by requiring an in-place sorting solution with a limited number of distinct elements, which allows for a more efficient algorithm than general-purpose sorting.",
+    "common_mistake": "A common mistake is to overlook the constraint that the solution must be in-place, leading to incorrect approaches that use extra space.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "remove-duplicates-from-sorted-array",
+    "pattern_hint": "The problem involves removing duplicates from a sorted array, which suggests using a two-pointer technique to track unique elements and their positions. The fact that the array is sorted is a critical hint towards this approach.",
+    "key_insight": "The core idea is to maintain two pointers, one for reading and one for writing, where the writing pointer only moves forward when a new unique element is encountered, effectively overwriting duplicates. This approach preserves the first occurrence of each element.",
+    "template_deviation": "This problem deviates from the standard two-pointer template by requiring the modification of the input array in-place and returning the length of the modified array, rather than simply finding or counting elements.",
+    "common_mistake": "A common mistake is to incorrectly handle the edge cases, such as an empty array or an array with all duplicate elements.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "implement-stack-using-queues",
+    "pattern_hint": "The problem asks for implementing a stack using queues, which directly hints at using queue operations to mimic stack behavior. Understanding how stacks and queues differ in their operation (LIFO vs FIFO) is key.",
+    "key_insight": "The key insight is to use two queues to implement the stack, where one queue is used to store the elements and the other is used temporarily to reverse the order of elements when pushing or popping, thus achieving the LIFO behavior of a stack.",
+    "template_deviation": "This problem deviates from the standard stack template by requiring the implementation of stack operations (push, pop, top, empty) using a different data structure (queues), which involves creative use of queue operations.",
+    "common_mistake": "A common mistake is to incorrectly implement the pop operation, failing to properly handle the case when the stack is empty or not correctly removing the top element.",
+    "time_complexity": "O(n) for push and pop operations in the worst case",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "middle-of-the-linked-list",
+    "pattern_hint": "The problem involves finding the middle of a linked list, which suggests using a traversal approach. The fact that linked lists are inherently sequential hints at using a two-pointer technique.",
+    "key_insight": "The core idea is to use two pointers that move at different speeds (one moves twice as fast as the other) through the list. When the faster pointer reaches the end, the slower pointer will be at the middle of the list.",
+    "template_deviation": "This problem deviates from the standard linked list template by requiring the identification of a specific node (the middle one) rather than simply traversing the list or searching for a specific value.",
+    "common_mistake": "A common mistake is to incorrectly handle the case of an empty list or a list with an even number of nodes, where the definition of 'middle' might need clarification.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "remove-nth-node-from-end-of-list",
+    "pattern_hint": "The problem mentions a linked list and removing a node, indicating a linked list pattern. The phrase 'from the end' suggests a two-pointer approach.",
+    "key_insight": "The key insight is to use two pointers, one of which is nth nodes ahead of the other, to find the node to be removed. When the leading pointer reaches the end, the trailing pointer will be at the node to be removed.",
+    "template_deviation": "This problem deviates from the standard linked list template by requiring a two-pointer approach to find the node to be removed.",
+    "common_mistake": "A common mistake is to try to find the length of the linked list first and then remove the node, which is unnecessary and can be avoided with the two-pointer approach.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "copy-list-with-random-pointer",
+    "pattern_hint": "The problem mentions a linked list with random pointers, indicating a need for a hash map to store the copied nodes. The phrase 'random pointer' suggests a non-linear structure.",
+    "key_insight": "The key insight is to use a hash map to store the copied nodes and then update the random pointers of the copied nodes.",
+    "template_deviation": "This problem deviates from the standard linked list template by requiring a hash map to store the copied nodes and update the random pointers.",
+    "common_mistake": "A common mistake is to try to update the random pointers before all nodes are copied, which can lead to incorrect results.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "reverse-nodes-in-k-group",
+    "pattern_hint": "The problem mentions reversing nodes in a linked list in groups of k, indicating a need for a recursive or iterative approach. The phrase 'in k group' suggests a divide-and-conquer strategy.",
+    "key_insight": "The key insight is to use a recursive or iterative approach to reverse the nodes in each group of k and then connect the reversed groups.",
+    "template_deviation": "This problem deviates from the standard linked list template by requiring a recursive or iterative approach to reverse the nodes in each group.",
+    "common_mistake": "A common mistake is to try to reverse the entire linked list at once, which can lead to incorrect results.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "binary-tree-right-side-view",
+    "pattern_hint": "The problem mentions a binary tree and finding the rightmost node at each level, indicating a need for a level-order traversal. The phrase 'right side view' suggests a focus on the rightmost nodes.",
+    "key_insight": "The key insight is to use a level-order traversal and keep track of the rightmost node at each level.",
+    "template_deviation": "This problem deviates from the standard tree template by requiring a level-order traversal and focusing on the rightmost nodes.",
+    "common_mistake": "A common mistake is to try to use a recursive approach, which can lead to incorrect results or excessive memory usage.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "binary-tree-maximum-path-sum",
+    "pattern_hint": "The problem mentions a binary tree and finding the maximum path sum, indicating a need for a recursive or dynamic programming approach. The phrase 'path sum' suggests a focus on the sum of node values.",
+    "key_insight": "The key insight is to use a recursive or dynamic programming approach to calculate the maximum path sum, considering all possible paths.",
+    "template_deviation": "This problem deviates from the standard tree template by requiring a recursive or dynamic programming approach to calculate the maximum path sum.",
+    "common_mistake": "A common mistake is to try to use a greedy approach, which can lead to incorrect results.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "combination-sum-ii",
+    "pattern_hint": "The problem asks for combinations and has a constraint on the input array, signaling the use of Backtracking. The presence of a 'result' array to store combinations also hints at this pattern.",
+    "key_insight": "The core idea is to use Backtracking to explore all possible combinations while avoiding duplicates by skipping the same elements in the current iteration. This is achieved by sorting the array and then using a 'used' array or similar mechanism to track visited elements.",
+    "template_deviation": "This problem deviates from the standard Backtracking template by requiring the avoidance of duplicate combinations, which is achieved through sorting and skipping duplicate elements.",
+    "common_mistake": "A common mistake is not properly handling the skipping of duplicate elements, leading to incorrect results or unnecessary complexity.",
+    "time_complexity": "O(2^n * n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "n-queens",
+    "pattern_hint": "The problem involves placing items (queens) in a grid under certain constraints, which is a classic indication of the Backtracking pattern. The need to explore all possible configurations also points towards Backtracking.",
+    "key_insight": "The key insight is to use Backtracking to try placing queens in each column of the board, ensuring that each placement is safe from attack by previously placed queens. This involves checking rows, diagonals, and columns for conflicts.",
+    "template_deviation": "This problem deviates from the standard Backtracking template by requiring the maintenance of a complex state (the board) and checking for conflicts between placed queens, which adds complexity to the backtracking process.",
+    "common_mistake": "A common mistake is not properly checking for conflicts between queens, leading to incorrect solutions or failure to find all possible configurations.",
+    "time_complexity": "O(N!)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "slug": "longest-palindromic-substring",
+    "pattern_hint": "The problem asks for the longest substring that is a palindrome, suggesting the use of dynamic programming to track and compare substrings. The symmetry of palindromes also hints at this approach.",
+    "key_insight": "The core idea is to use dynamic programming to build a table that stores whether each substring is a palindrome, starting from the smallest substrings and expanding outward. This approach leverages the symmetry of palindromes to efficiently find the longest palindromic substring.",
+    "template_deviation": "This problem deviates from the standard dynamic programming template by requiring the expansion around the center of potential palindromes, which can be either a single character or a pair of characters.",
+    "common_mistake": "A common mistake is not properly handling the case where the palindrome has an even length, which requires considering pairs of characters as the center.",
+    "time_complexity": "O(n^2)",
+    "space_complexity": "O(n^2)"
+  },
+  {
+    "slug": "set-matrix-zeroes",
+    "pattern_hint": "The problem involves modifying a matrix based on the presence of zeros in specific rows and columns, suggesting a mathematical or geometric approach to track and update the matrix.",
+    "key_insight": "The key insight is to use the first row and first column of the matrix as markers to track which rows and columns need to be zeroed out, avoiding the need for additional space. This involves two passes over the matrix to mark and then update the rows and columns.",
+    "template_deviation": "This problem deviates from standard mathematical or geometric problems by requiring the use of the input matrix itself as a marker for modifications, which adds a layer of complexity to the solution.",
+    "common_mistake": "A common mistake is not properly handling the first row and column as special cases, leading to incorrect results or unnecessary complexity.",
+    "time_complexity": "O(m*n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "powx-n",
+    "pattern_hint": "The problem involves exponentiation, suggesting a mathematical approach to efficiently calculate the power. The presence of a negative exponent also hints at the need for a clever mathematical trick.",
+    "key_insight": "The core idea is to use the property of exponents that a^(b+c) = a^b * a^c to divide the problem into smaller sub-problems, reducing the number of multiplications required. This approach is known as 'exponentiation by squaring'.",
+    "template_deviation": "This problem deviates from standard mathematical problems by requiring the use of a recursive or iterative approach to divide the exponent into smaller parts, which significantly reduces the computational complexity.",
+    "common_mistake": "A common mistake is not properly handling the case of a negative exponent, which requires taking the reciprocal of the result for the positive exponent.",
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "next-greater-element-i",
+    "pattern_hint": "The problem asks for the next greater element, indicating the use of a stack to keep track of elements. The presence of two arrays suggests a hashing approach to store and retrieve elements efficiently.",
+    "key_insight": "The key insight is to use a stack to store indices of the elements from the first array and iterate through the second array to find the next greater element for each index in the stack.",
+    "template_deviation": "This problem deviates from the standard hashing template by incorporating a stack to handle the 'next greater' requirement.",
+    "common_mistake": "A common mistake is to iterate through the second array for each element in the first array, resulting in inefficient time complexity.",
+    "time_complexity": "O(n + m)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "merge-sorted-array",
+    "pattern_hint": "The problem involves merging two sorted arrays, which immediately suggests using a two-pointer technique to compare and merge elements efficiently.",
+    "key_insight": "The core idea is to start from the end of both arrays and merge them in reverse order, ensuring the resulting array is sorted.",
+    "template_deviation": "This problem deviates from the standard two-pointer template by requiring in-place modification of one of the input arrays.",
+    "common_mistake": "A common mistake is to start merging from the beginning of the arrays, which can lead to incorrect results or unnecessary complexity.",
+    "time_complexity": "O(n + m)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "construct-binary-tree-from-preorder-and-inorder-traversal",
+    "pattern_hint": "The problem provides preorder and inorder traversal sequences, indicating the use of tree construction techniques. The recursive nature of tree construction suggests a divide-and-conquer approach.",
+    "key_insight": "The key insight is to identify the root node from the preorder sequence and then recursively construct the left and right subtrees based on the inorder sequence.",
+    "template_deviation": "This problem deviates from the standard tree construction template by using both preorder and inorder sequences to determine the tree structure.",
+    "common_mistake": "A common mistake is to incorrectly identify the root node or fail to properly divide the inorder sequence for recursive subtree construction.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "rotting-oranges",
+    "pattern_hint": "The problem involves a grid and the spread of a condition (rotting oranges), suggesting the use of graph traversal techniques, specifically BFS.",
+    "key_insight": "The core idea is to use BFS to simulate the spread of rotting oranges, keeping track of the number of minutes passed and the number of fresh oranges remaining.",
+    "template_deviation": "This problem deviates from the standard BFS template by requiring the tracking of time and the state of cells (fresh or rotten) over time.",
+    "common_mistake": "A common mistake is to fail to properly handle the queue for BFS or to not keep track of visited cells to avoid revisiting them.",
+    "time_complexity": "O(n*m)",
+    "space_complexity": "O(n*m)"
+  },
+  {
+    "slug": "roman-to-integer",
+    "pattern_hint": "The problem involves converting Roman numerals to integers, suggesting a mapping or hashing approach to handle the different numeral values.",
+    "key_insight": "The key insight is to iterate through the Roman numeral string from left to right, adding the value of each numeral to a total, but subtracting the value if the next numeral is greater.",
+    "template_deviation": "This problem deviates from the standard mapping template by requiring a conditional subtraction based on the comparison of adjacent numerals.",
+    "common_mistake": "A common mistake is to not handle the subtraction rule correctly, especially for cases like IV (4) and IX (9).",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "4sum",
+    "pattern_hint": "The problem asks for four numbers that sum to a target, indicating a need for a Two Pointers approach to find pairs that sum to a remaining target. The presence of a target sum and the need to find multiple elements that add up to it suggests using Two Pointers.",
+    "key_insight": "The core idea is to fix two numbers and then use Two Pointers to find the remaining two numbers that sum to the target. Sorting the array is crucial to apply the Two Pointers technique.",
+    "template_deviation": "This problem deviates from the standard Two Pointers template by requiring a nested loop to fix two numbers before applying the Two Pointers technique.",
+    "common_mistake": "A common mistake is not skipping duplicate quadruplets, leading to incorrect results.",
+    "time_complexity": "O(n^3)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "binary-tree-preorder-traversal",
+    "pattern_hint": "The problem involves traversing a binary tree, and the word 'preorder' specifically indicates a Trees pattern where we visit the root before the children. The tree structure itself signals the use of a recursive or iterative tree traversal approach.",
+    "key_insight": "The key insight is to understand the order of visitation in a preorder traversal: root, left subtree, right subtree. This can be achieved through recursion or iteration using a stack.",
+    "template_deviation": "This problem does not significantly deviate from the standard tree traversal template, as it directly applies the preorder traversal algorithm.",
+    "common_mistake": "A common mistake is forgetting to handle the case where a node is null, leading to runtime errors.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "binary-tree-postorder-traversal",
+    "pattern_hint": "Similar to the preorder traversal, the word 'postorder' in the problem statement indicates a Trees pattern, but with a visitation order of left subtree, right subtree, and then the root. The tree structure signals the use of a recursive or iterative approach.",
+    "key_insight": "The core idea is to understand the postorder traversal visitation order and implement it using recursion or iteration, possibly using a stack to manage node visitation.",
+    "template_deviation": "This problem deviates slightly from the standard tree traversal template in that it requires visiting the children before the parent, which can be more complex to implement iteratively.",
+    "common_mistake": "A common mistake is incorrectly ordering the visitation of nodes, leading to an incorrect traversal order.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "online-stock-span",
+    "pattern_hint": "The problem involves processing a stream of stock prices and maintaining a span of consecutive days where the price is less than or equal to the current price, indicating a Stack pattern. The need to efficiently add and remove elements based on a condition suggests using a stack.",
+    "key_insight": "The key insight is to use a stack to keep track of the indices of the prices, where the stack is updated based on whether the current price is greater than the price at the top of the stack.",
+    "template_deviation": "This problem deviates from the standard stack template by requiring the maintenance of a 'span' which involves calculating the difference between the current index and the index at the top of the stack plus one.",
+    "common_mistake": "A common mistake is not correctly updating the stack when a new price is encountered, leading to incorrect span calculations.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "single-element-in-a-sorted-array",
+    "pattern_hint": "The problem involves finding a single element in a sorted array, with the hint that the array is sorted and that each element appears twice except for one, indicating a Binary Search pattern. The sorted nature and the specific condition of elements appearing twice except for one signal the use of Binary Search.",
+    "key_insight": "The core idea is to use Binary Search to find the single element by comparing the middle element with its adjacent elements and adjusting the search range accordingly.",
+    "template_deviation": "This problem deviates from the standard Binary Search template by requiring a comparison that involves the index of the element and its value to determine which half to continue searching in.",
+    "common_mistake": "A common mistake is not correctly handling the case when the single element is at an even or odd index, leading to incorrect search range adjustments.",
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "palindrome-linked-list",
+    "pattern_hint": "The problem mentions a linked list and asks to determine if it's a palindrome, indicating the use of a linked list pattern. The word 'palindrome' suggests a comparison of the list's elements from both ends.",
+    "key_insight": "The core idea is to compare elements from the start and end of the list, moving towards the center. This can be achieved by reversing the second half of the list and comparing it with the first half.",
+    "template_deviation": "This problem deviates from the standard linked list template by requiring the comparison of elements from both ends, rather than just traversing the list in one direction.",
+    "common_mistake": "A common mistake is to try to reverse the entire list, which is unnecessary and inefficient.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "intersection-of-two-linked-lists",
+    "pattern_hint": "The problem involves two linked lists and asks to find their intersection, indicating the use of a linked list pattern. The word 'intersection' suggests a meeting point between the two lists.",
+    "key_insight": "The key idea is to calculate the lengths of both lists and then move the longer list's pointer forward by the difference in lengths, so that both pointers are the same distance from the end. Then, move both pointers one step at a time and check for intersection.",
+    "template_deviation": "This problem deviates from the standard linked list template by requiring the calculation of list lengths and the synchronization of pointers.",
+    "common_mistake": "A common mistake is to try to compare the lists element by element without considering their lengths.",
+    "time_complexity": "O(n + m)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "convert-sorted-array-to-binary-search-tree",
+    "pattern_hint": "The problem involves a sorted array and asks to convert it into a binary search tree, indicating the use of a tree pattern. The word 'sorted' suggests a natural ordering of the elements.",
+    "key_insight": "The core idea is to recursively select the middle element of the array as the root of the tree, and then construct the left and right subtrees from the elements before and after the middle element.",
+    "template_deviation": "This problem deviates from the standard tree template by requiring the construction of a balanced tree from a sorted array.",
+    "common_mistake": "A common mistake is to try to construct the tree in a way that doesn't maintain the balance property.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(log n)"
+  },
+  {
+    "slug": "symmetric-tree",
+    "pattern_hint": "The problem involves a tree and asks to check if it's symmetric, indicating the use of a tree pattern. The word 'symmetric' suggests a mirror-like property.",
+    "key_insight": "The key idea is to compare the left and right subtrees by recursively checking if they are mirror images of each other.",
+    "template_deviation": "This problem deviates from the standard tree template by requiring a comparison of subtrees rather than just traversing the tree.",
+    "common_mistake": "A common mistake is to try to compare the subtrees without considering their mirror-like property.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "populating-next-right-pointers-in-each-node",
+    "pattern_hint": "The problem involves a binary tree and asks to populate the next right pointers, indicating the use of a tree pattern. The word 'next right' suggests a connection between nodes at the same level.",
+    "key_insight": "The core idea is to use a level-order traversal to populate the next right pointers, by iterating through each level and connecting the nodes.",
+    "template_deviation": "This problem deviates from the standard tree template by requiring the population of next right pointers, which is not a standard tree operation.",
+    "common_mistake": "A common mistake is to try to populate the next right pointers using a recursive approach, which can be inefficient.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "binary-tree-zigzag-level-order-traversal",
+    "pattern_hint": "The problem mentions a binary tree and level order traversal, indicating a tree pattern. The zigzag requirement suggests a need to alternate the order of nodes at each level.",
+    "key_insight": "The core idea is to use a queue to perform level order traversal and a flag to track whether to reverse the nodes at each level. This flag is toggled after processing each level.",
+    "template_deviation": "This problem deviates from the standard tree traversal template by requiring the reversal of nodes at alternating levels.",
+    "common_mistake": "A common mistake is forgetting to toggle the flag after processing each level, resulting in incorrect zigzag ordering.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "rotate-list",
+    "pattern_hint": "The problem involves a linked list and rotation, indicating a linked list pattern. The requirement to rotate the list suggests a need to manipulate the list's connections.",
+    "key_insight": "The key idea is to find the new tail of the rotated list and connect it to None, then find the new head and connect the old tail to it.",
+    "template_deviation": "This problem deviates from the standard linked list template by requiring the manipulation of the list's connections to achieve rotation.",
+    "common_mistake": "A common mistake is incorrectly calculating the new tail or head of the rotated list, resulting in a corrupted list structure.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "construct-binary-tree-from-inorder-and-postorder-traversal",
+    "pattern_hint": "The problem involves constructing a binary tree from two types of traversals, indicating a tree pattern. The use of inorder and postorder traversals suggests a need to identify the root and recursively construct the tree.",
+    "key_insight": "The core idea is to use the postorder traversal to identify the root, then use the inorder traversal to find the left and right subtrees, and recursively construct the tree.",
+    "template_deviation": "This problem deviates from the standard tree construction template by requiring the use of two types of traversals to construct the tree.",
+    "common_mistake": "A common mistake is incorrectly identifying the root or subtrees, resulting in an incorrect tree structure.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "binary-search-tree-iterator",
+    "pattern_hint": "The problem involves a binary search tree and iteration, indicating a tree pattern. The requirement to implement an iterator suggests a need to traverse the tree in a specific order.",
+    "key_insight": "The key idea is to use a stack to store the nodes to be visited, and use a flag to track whether to yield the node's value or push its children onto the stack.",
+    "template_deviation": "This problem deviates from the standard tree traversal template by requiring the implementation of an iterator to traverse the tree in ascending order.",
+    "common_mistake": "A common mistake is incorrectly implementing the iterator's next method, resulting in incorrect or missing values.",
+    "time_complexity": "O(h) for next, O(1) for hasNext",
+    "space_complexity": "O(h)"
+  },
+  {
+    "slug": "minimum-path-sum",
+    "pattern_hint": "The problem involves a grid and a path sum, indicating a 2D DP pattern. The requirement to find the minimum path sum suggests a need to use dynamic programming to build up the solution.",
+    "key_insight": "The core idea is to use a 2D array to store the minimum path sum to each cell, and fill it in row by row or column by column using the minimum path sum to the adjacent cells.",
+    "template_deviation": "This problem deviates from the standard 2D DP template by requiring the use of a 2D array to store the minimum path sum to each cell.",
+    "common_mistake": "A common mistake is incorrectly initializing the 2D array or filling it in incorrectly, resulting in an incorrect minimum path sum.",
+    "time_complexity": "O(m*n)",
+    "space_complexity": "O(m*n)"
+  },
+  {
+    "slug": "lfu-cache",
+    "pattern_hint": "The problem mentions a cache with a limited capacity and a frequency of usage, hinting at a Linked List pattern to track the order and frequency of elements. The need to remove the least frequently used item when the cache is full also suggests a Linked List.",
+    "key_insight": "The core idea is to use a combination of a hash map and a doubly linked list to store the cache elements, with the linked list ordered by frequency and the hash map providing O(1) access to the elements. This allows for efficient insertion, deletion, and updating of elements.",
+    "template_deviation": "This problem deviates from the standard Linked List template by requiring the use of a hash map to store the frequency of each element and a linked list to track the order of elements with the same frequency.",
+    "common_mistake": "A common mistake is to implement the cache using only a linked list, which would result in O(n) time complexity for insertion and deletion operations.",
+    "time_complexity": "O(1)",
+    "space_complexity": "O(capacity)"
+  },
+  {
+    "slug": "maximum-width-of-binary-tree",
+    "pattern_hint": "The problem involves a binary tree, which immediately suggests a tree pattern, and the need to calculate the width of the tree at each level hints at a level-order traversal.",
+    "key_insight": "The key idea is to perform a level-order traversal of the tree and calculate the width of the tree at each level by keeping track of the minimum and maximum column indices of the nodes at each level.",
+    "template_deviation": "This problem deviates from the standard tree template by requiring the use of a queue to perform a level-order traversal and a hash map to store the column indices of the nodes.",
+    "common_mistake": "A common mistake is to calculate the width of the tree by simply counting the number of nodes at each level, which would not take into account the actual positions of the nodes.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "is-graph-bipartite",
+    "pattern_hint": "The problem involves a graph and the need to determine if it can be colored with two colors such that no two adjacent nodes have the same color, which suggests a graph pattern and a coloring approach.",
+    "key_insight": "The core idea is to use a graph traversal algorithm, such as BFS or DFS, to assign a color to each node and check if the graph can be colored with two colors such that no two adjacent nodes have the same color.",
+    "template_deviation": "This problem deviates from the standard graph template by requiring the use of a coloring approach to solve the problem, rather than simply traversing the graph.",
+    "common_mistake": "A common mistake is to assume that the graph is bipartite if it is possible to color the graph with two colors, without checking if the coloring is valid for all nodes.",
+    "time_complexity": "O(n + m)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "concatenation-of-array",
+    "pattern_hint": "The problem involves an array and the need to concatenate it with itself, which suggests an array pattern and a simple iteration approach.",
+    "key_insight": "The key idea is to simply concatenate the array with itself and return the resulting array, which can be done using a simple iteration and array concatenation.",
+    "template_deviation": "This problem deviates from the standard array template by requiring a simple iteration and array concatenation, rather than a more complex algorithm.",
+    "common_mistake": "A common mistake is to overcomplicate the solution by using unnecessary data structures or algorithms.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "length-of-last-word",
+    "pattern_hint": "The problem involves a string and the need to find the length of the last word, which suggests an array and hashing pattern and a simple iteration approach.",
+    "key_insight": "The core idea is to split the string into words and return the length of the last word, which can be done using a simple iteration and string splitting.",
+    "template_deviation": "This problem deviates from the standard array and hashing template by requiring a simple iteration and string splitting, rather than a more complex algorithm.",
+    "common_mistake": "A common mistake is to overcomplicate the solution by using unnecessary data structures or algorithms, such as regular expressions.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "min-cost-climbing-stairs",
+    "pattern_hint": "The problem involves finding a minimum cost path in a sequence, which hints at using dynamic programming. The fact that we can climb one or two stairs at a time suggests a 1-D DP approach.",
+    "key_insight": "The key insight is to realize that the minimum cost to reach a step is the minimum of the costs to reach the two previous steps. We can use a bottom-up DP approach to calculate this.",
+    "template_deviation": "This problem deviates from the standard 1-D DP template in that we need to consider two previous steps instead of just one.",
+    "common_mistake": "A common mistake is to forget to consider the base cases, such as the minimum cost to reach the first or second step.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "replace-elements-with-greatest-element-on-right-side",
+    "pattern_hint": "The problem involves replacing elements in an array based on a condition, which hints at using arrays and hashing. The fact that we need to find the greatest element on the right side suggests a single pass through the array.",
+    "key_insight": "The key insight is to realize that we can use a single pass through the array to keep track of the maximum element seen so far from the right.",
+    "template_deviation": "This problem deviates from the standard arrays and hashing template in that we don't need to use any additional data structures like hash maps or sets.",
+    "common_mistake": "A common mistake is to forget to handle the edge case where the input array is empty or has only one element.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "is-subsequence",
+    "pattern_hint": "The problem involves checking if one string is a subsequence of another, which hints at using arrays and hashing. The fact that we need to find a sequence of characters in a specific order suggests a two-pointer approach.",
+    "key_insight": "The key insight is to realize that we can use two pointers to iterate through both strings and check if the characters match in the correct order.",
+    "template_deviation": "This problem deviates from the standard arrays and hashing template in that we don't need to use any additional data structures like hash maps or sets, and instead use a simple two-pointer approach.",
+    "common_mistake": "A common mistake is to forget to handle the edge case where one or both of the input strings are empty.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "valid-sudoku",
+    "pattern_hint": "The problem involves checking if a Sudoku board is valid, which hints at using arrays and hashing. The fact that we need to check each row, column, and 3x3 box suggests a systematic approach.",
+    "key_insight": "The key insight is to realize that we can use hash sets to keep track of the numbers seen in each row, column, and 3x3 box, and check for duplicates.",
+    "template_deviation": "This problem deviates from the standard arrays and hashing template in that we need to use multiple hash sets to keep track of the different regions of the Sudoku board.",
+    "common_mistake": "A common mistake is to forget to check all three regions (rows, columns, and 3x3 boxes) for duplicates.",
+    "time_complexity": "O(1)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "largest-number",
+    "pattern_hint": "The problem involves finding the largest number that can be formed by concatenating a list of numbers, which hints at using arrays and hashing. The fact that we need to compare numbers based on their concatenated values suggests a custom sorting approach.",
+    "key_insight": "The key insight is to realize that we can use a custom sorting approach to compare numbers based on their concatenated values, and then concatenate the sorted numbers to form the largest number.",
+    "template_deviation": "This problem deviates from the standard arrays and hashing template in that we need to use a custom sorting approach instead of a standard sorting algorithm.",
+    "common_mistake": "A common mistake is to forget to handle the edge case where the input list is empty or contains only zeros.",
+    "time_complexity": "O(n log n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "two-sum-ii-input-array-is-sorted",
+    "pattern_hint": "The problem statement mentions that the input array is sorted, which immediately suggests using a Two Pointers approach to find the two sum. The fact that the array is sorted allows for a more efficient solution than a brute force approach.",
+    "key_insight": "The key insight is to use two pointers, one starting from the beginning of the array and one from the end, and move them towards each other based on the sum of the values at the pointers. This approach allows for a time complexity of O(n).",
+    "template_deviation": "This problem deviates from the standard Two Pointers template in that the pointers are moving towards each other, rather than both moving in the same direction.",
+    "common_mistake": "A common mistake is to not handle the case where the two pointers meet, which can happen if the two sum values are adjacent in the array.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "evaluate-reverse-polish-notation",
+    "pattern_hint": "The problem statement mentions that the input is in Reverse Polish Notation, which is a notation where operators follow their operands, suggesting the use of a Stack to evaluate the expression. The fact that the input is a list of tokens, where each token is either an operator or an operand, also suggests using a Stack.",
+    "key_insight": "The key insight is to use a Stack to store the operands and then pop them off the Stack when an operator is encountered, applying the operator to the popped operands and pushing the result back onto the Stack.",
+    "template_deviation": "This problem deviates from the standard Stack template in that the Stack is used to store operands, rather than just to keep track of function calls or recursion.",
+    "common_mistake": "A common mistake is to not handle the case where there are not enough operands on the Stack for an operator, which can happen if the input expression is invalid.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "find-minimum-in-rotated-sorted-array",
+    "pattern_hint": "The problem statement mentions that the input array is sorted, but rotated, which suggests using a Binary Search approach to find the minimum value. The fact that the array is rotated, but still sorted, allows for a more efficient solution than a brute force approach.",
+    "key_insight": "The key insight is to use a modified Binary Search approach, where the search space is reduced by half at each step, but the direction of the search is determined by the comparison of the middle element with the rightmost element.",
+    "template_deviation": "This problem deviates from the standard Binary Search template in that the search space is not necessarily reduced by half at each step, but rather the direction of the search is determined by the comparison of the middle element with the rightmost element.",
+    "common_mistake": "A common mistake is to not handle the case where the minimum value is at the beginning of the array, which can happen if the array is not rotated.",
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "subtree-of-another-tree",
+    "pattern_hint": "The problem statement mentions that we need to check if a tree is a subtree of another tree, which suggests using a recursive approach to traverse the trees and compare the nodes. The fact that the trees are not necessarily balanced also suggests using a recursive approach.",
+    "key_insight": "The key insight is to use a recursive approach to traverse the trees and compare the nodes, and to use a helper function to check if a tree is a subtree of another tree.",
+    "template_deviation": "This problem deviates from the standard tree traversal template in that we need to compare the nodes of two trees, rather than just traversing a single tree.",
+    "common_mistake": "A common mistake is to not handle the case where the subtree is not found in the main tree, which can happen if the subtree is not a subtree of the main tree.",
+    "time_complexity": "O(m*n)",
+    "space_complexity": "O(h)"
+  },
+  {
+    "slug": "design-add-and-search-words-data-structure",
+    "pattern_hint": "The problem statement mentions that we need to design a data structure to store words and search for words, which suggests using a Trie data structure. The fact that we need to search for words with wildcards also suggests using a Trie.",
+    "key_insight": "The key insight is to use a Trie data structure to store the words, and to use a recursive approach to search for words with wildcards.",
+    "template_deviation": "This problem deviates from the standard Trie template in that we need to handle wildcards in the search query, which requires a recursive approach to search for all possible matches.",
+    "common_mistake": "A common mistake is to not handle the case where the search query contains multiple wildcards, which can happen if the query is complex.",
+    "time_complexity": "O(m)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "house-robber",
+    "pattern_hint": "The problem involves maximizing a sum by making choices that depend on previous decisions, which suggests using dynamic programming. The 1-D array of houses indicates a sequential decision-making process.",
+    "key_insight": "The key insight is to realize that the decision to rob a house depends only on the decision made for the previous house, allowing for a simple recursive relationship. This relationship can be expressed as choosing the maximum between including the current house and excluding it.",
+    "template_deviation": "This problem deviates from the standard 1-D DP template by having a direct dependency only on the immediately preceding element, simplifying the transition function.",
+    "common_mistake": "A common mistake is to overlook the dependency between houses and try to solve it using a greedy approach without considering the impact of future decisions.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "house-robber-ii",
+    "pattern_hint": "Similar to the first house robber problem, this involves maximizing a sum in a sequence, but the circular arrangement of houses introduces a twist. The problem statement's mention of a circular array hints at the need to adjust the standard 1-D DP approach.",
+    "key_insight": "The core idea is to recognize that the circular nature of the houses means the first and last houses are adjacent, requiring a modification to the standard approach to handle this edge case. This can be solved by considering two separate cases: one where the first house is robbed and one where it is not.",
+    "template_deviation": "This problem deviates from the standard 1-D DP template by requiring consideration of the circular boundary condition, which affects how the base cases are defined.",
+    "common_mistake": "A common mistake is failing to account for the circular dependency between the first and last houses, leading to incorrect handling of the boundary conditions.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "single-number",
+    "pattern_hint": "The problem statement's mention of finding a single number in an array where every other number appears twice hints at using a bitwise operation. The uniqueness of the single number suggests that XOR could be used to eliminate the pairs.",
+    "key_insight": "The key insight is to recognize that XORing all numbers in the array will eliminate the numbers that appear twice, leaving only the single number. This is because XOR of a number with itself is 0, and XOR of a number with 0 is the number itself.",
+    "template_deviation": "This problem deviates from more complex bit manipulation problems by requiring only a simple, iterative XOR operation without needing to consider bit positions or masks.",
+    "common_mistake": "A common mistake is to overlook the properties of XOR and try to solve the problem using sorting or hashing, which are less efficient.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "reverse-integer",
+    "pattern_hint": "The problem involves manipulating the digits of an integer, which suggests using bit manipulation or arithmetic operations to reverse the number. The need to handle overflow indicates careful consideration of the integer's sign and magnitude.",
+    "key_insight": "The core idea is to repeatedly take the last digit of the number (using the modulo operator), add it to the reversed number (after shifting its current digits to the left), and then remove the last digit from the original number. Special care must be taken to handle the sign and potential overflow.",
+    "template_deviation": "This problem deviates from standard bit manipulation problems by focusing on arithmetic operations and the specific challenge of handling integer overflow.",
+    "common_mistake": "A common mistake is to forget to check for overflow after reversing the integer, which can lead to incorrect results for large inputs.",
+    "time_complexity": "O(log(n))",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "remove-element",
+    "pattern_hint": "The problem involves modifying an array in-place, which suggests using array manipulation techniques. The requirement to remove elements based on a condition hints at using a two-pointer approach.",
+    "key_insight": "The key insight is to use two pointers, one for reading and one for writing, to iterate through the array and only write elements that do not match the condition to be removed. This approach ensures that all elements not equal to the target value are moved to the front of the array.",
+    "template_deviation": "This problem deviates from the standard two-pointer technique by requiring in-place modification and a specific condition for element removal, which affects how the pointers are moved.",
+    "common_mistake": "A common mistake is to try to solve the problem by shifting all elements after the removed one, which is inefficient and not necessary with the two-pointer approach.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "unique-email-addresses",
+    "pattern_hint": "The problem involves counting unique email addresses, which suggests using a hashing approach to store and compare the addresses. The presence of rules for handling local names and domain names indicates a need for string manipulation and normalization before hashing.",
+    "key_insight": "The core idea is to normalize the email addresses by removing dots from the local name and handling the '+' character as a delimiter to ignore everything after it, then use a set to count unique addresses. This normalization step is crucial for correctly identifying unique addresses.",
+    "template_deviation": "This problem deviates from the standard hashing template by requiring a preprocessing step to normalize the email addresses before they can be hashed and compared.",
+    "common_mistake": "A common mistake is forgetting to handle the '+' character correctly, leading to incorrect normalization and counting of unique addresses.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "product-of-array-except-self",
+    "pattern_hint": "The problem asks for the product of all numbers in an array except for the number at each index, suggesting a need to efficiently calculate products without directly using division. The constraint against using division indicates a need for a clever approach to calculate the products.",
+    "key_insight": "The key insight is to calculate the prefix products (products of all numbers to the left of each index) and suffix products (products of all numbers to the right of each index) separately, then multiply these two products together for each index to get the product of all other numbers.",
+    "template_deviation": "This problem deviates from the standard array and hashing template by requiring the calculation of prefix and suffix products, which is a specific technique used to avoid division.",
+    "common_mistake": "A common mistake is attempting to use division to solve the problem, which is explicitly disallowed, or failing to consider the edge case where the input array contains zeros.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "reverse-string",
+    "pattern_hint": "The problem involves reversing a string, which suggests using a two-pointer approach to swap characters from the beginning and end of the string, moving towards the center. The simplicity of the problem statement indicates a straightforward application of this technique.",
+    "key_insight": "The core idea is to initialize two pointers, one at the start and one at the end of the string, and then swap the characters at these positions, incrementing the left pointer and decrementing the right pointer until they meet in the middle.",
+    "template_deviation": "This problem does not significantly deviate from the standard two-pointer template, as it involves a straightforward application of the technique to reverse the string.",
+    "common_mistake": "A common mistake is forgetting to stop the swapping process when the pointers meet or cross each other, leading to incorrect results or unnecessary iterations.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "longest-repeating-character-replacement",
+    "pattern_hint": "The problem involves finding the longest substring with repeating characters, allowing for a limited number of replacements, which suggests using a sliding window approach to track the frequency of characters within a window. The presence of a limit on replacements indicates a need to carefully manage the window's boundaries.",
+    "key_insight": "The key insight is to maintain a sliding window and a frequency count of characters within the window, expanding the window to the right when possible and contracting it from the left when the number of replacements needed exceeds the limit.",
+    "template_deviation": "This problem deviates from the standard sliding window template by requiring the tracking of character frequencies and the management of a replacement limit, which adds complexity to the window expansion and contraction logic.",
+    "common_mistake": "A common mistake is incorrectly updating the frequency counts or the replacement limit, leading to incorrect calculations of the window's validity and the maximum length of the substring.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "generate-parentheses",
+    "pattern_hint": "The problem involves generating all possible combinations of well-formed parentheses, which suggests using a stack-based approach to ensure the parentheses are properly nested. The requirement for well-formedness indicates a need to carefully manage the balance between opening and closing parentheses.",
+    "key_insight": "The core idea is to use a recursive approach or a stack to generate the combinations, ensuring that at each step, the number of closing parentheses does not exceed the number of opening parentheses, which guarantees the well-formedness of the generated strings.",
+    "template_deviation": "This problem deviates from the standard stack template by requiring the generation of all possible combinations rather than just parsing or validating a given string, which involves recursive exploration of all possible paths.",
+    "common_mistake": "A common mistake is failing to correctly manage the balance between opening and closing parentheses, leading to the generation of malformed strings or missing valid combinations.",
+    "time_complexity": "O(4^n / n^(3/2))",
+    "space_complexity": "O(4^n / n^(3/2))"
+  },
+  {
+    "slug": "daily-temperatures",
+    "pattern_hint": "The problem requires finding the next warmer temperature for each day, which indicates a need for a stack to keep track of indices of temperatures. The phrase 'next warmer temperature' is a strong hint towards using a stack.",
+    "key_insight": "The key insight is to use a stack to store indices of temperatures and pop them when a warmer temperature is found, allowing for efficient calculation of the number of days until a warmer temperature. This approach enables a single pass through the temperatures array.",
+    "template_deviation": "This problem deviates from the standard stack template by using the stack to store indices instead of values, and by popping elements when a warmer temperature is found.",
+    "common_mistake": "A common mistake is to try to solve the problem using a brute force approach, comparing each temperature with all future temperatures, which leads to a time complexity of O(n^2).",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "car-fleet",
+    "pattern_hint": "The problem involves sorting cars by their positions and speeds, and then iterating through them to find the number of car fleets, which suggests using a stack to keep track of the fleets. The phrase 'car fleet' implies a need for a stack to manage the order of cars.",
+    "key_insight": "The key insight is to use a stack to store the arrival times of cars and pop them when a car with an earlier arrival time is found, allowing for efficient calculation of the number of car fleets. This approach enables a single pass through the cars array.",
+    "template_deviation": "This problem deviates from the standard stack template by using the stack to store arrival times instead of indices, and by popping elements when a car with an earlier arrival time is found.",
+    "common_mistake": "A common mistake is to try to solve the problem using a brute force approach, comparing each car with all other cars, which leads to a time complexity of O(n^2).",
+    "time_complexity": "O(n log n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "search-insert-position",
+    "pattern_hint": "The problem requires finding the position of a target value in a sorted array, which indicates a need for a binary search algorithm. The phrase 'sorted array' is a strong hint towards using binary search.",
+    "key_insight": "The key insight is to use a binary search algorithm to find the position of the target value, and if it's not found, return the position where it should be inserted to maintain the sorted order. This approach enables a efficient search in the array.",
+    "template_deviation": "This problem deviates from the standard binary search template by returning the position where the target value should be inserted if it's not found, instead of just returning a boolean indicating whether the value is present.",
+    "common_mistake": "A common mistake is to try to solve the problem using a linear search, which leads to a time complexity of O(n).",
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "time-based-key-value-store",
+    "pattern_hint": "The problem requires finding the value associated with a key at a given timestamp, which indicates a need for a binary search algorithm. The phrase 'timestamp' is a strong hint towards using binary search.",
+    "key_insight": "The key insight is to use a binary search algorithm to find the value associated with a key at a given timestamp, by searching through the list of values associated with the key. This approach enables a efficient search in the list of values.",
+    "template_deviation": "This problem deviates from the standard binary search template by using a list of values associated with each key, and by searching through this list to find the value at a given timestamp.",
+    "common_mistake": "A common mistake is to try to solve the problem using a linear search, which leads to a time complexity of O(n).",
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "last-stone-weight",
+    "pattern_hint": "The problem requires finding the last stone weight after repeatedly removing the two heaviest stones, which indicates a need for a heap or priority queue algorithm. The phrase 'heaviest stones' is a strong hint towards using a heap.",
+    "key_insight": "The key insight is to use a heap to store the stones and repeatedly remove the two heaviest stones, adding their difference back to the heap. This approach enables a efficient simulation of the stone removal process.",
+    "template_deviation": "This problem deviates from the standard heap template by using the heap to store the stones and repeatedly removing the two heaviest stones, instead of just using the heap to find the maximum or minimum value.",
+    "common_mistake": "A common mistake is to try to solve the problem using a sorting algorithm, which leads to a time complexity of O(n log n) for each removal, resulting in a total time complexity of O(n^2 log n).",
+    "time_complexity": "O(n log n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "decode-ways",
+    "pattern_hint": "The problem involves decoding a string into multiple possible ways, which hints at using dynamic programming to track the number of ways to decode the string up to each position. The presence of a recursive relationship between the number of ways to decode the string up to each position also suggests using 1-D DP.",
+    "key_insight": "The core idea is to use a dynamic programming approach to track the number of ways to decode the string up to each position, considering both single-digit and two-digit decodings. The key is to correctly handle the base cases and the recursive relationship between the number of ways to decode the string up to each position.",
+    "template_deviation": "This problem deviates from the standard 1-D DP template in that it requires considering two possible decodings (single-digit and two-digit) at each position, rather than just one.",
+    "common_mistake": "A common mistake is to forget to handle the base cases correctly, such as when the input string is empty or starts with a zero.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "jump-game-ii",
+    "pattern_hint": "The problem involves finding the minimum number of jumps to reach the end of an array, which hints at using a greedy approach to always choose the next jump that maximizes the reachable distance. The presence of a clear optimization goal (minimizing the number of jumps) also suggests using a greedy approach.",
+    "key_insight": "The core idea is to use a greedy approach to always choose the next jump that maximizes the reachable distance, and to keep track of the minimum number of jumps needed to reach each position. The key is to correctly update the minimum number of jumps needed to reach each position.",
+    "template_deviation": "This problem deviates from the standard greedy template in that it requires considering the maximum reachable distance from each position, rather than just the local optimum.",
+    "common_mistake": "A common mistake is to forget to update the minimum number of jumps needed to reach each position correctly, or to not consider the maximum reachable distance from each position.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "non-overlapping-intervals",
+    "pattern_hint": "The problem involves finding the maximum number of non-overlapping intervals, which hints at using a sorting-based approach to first sort the intervals by their end points. The presence of intervals with clear start and end points also suggests using an interval-based approach.",
+    "key_insight": "The core idea is to use a sorting-based approach to first sort the intervals by their end points, and then to iterate through the sorted intervals to find the maximum number of non-overlapping intervals. The key is to correctly handle the case where two intervals overlap.",
+    "template_deviation": "This problem deviates from the standard interval-based template in that it requires considering the maximum number of non-overlapping intervals, rather than just checking for overlap between two intervals.",
+    "common_mistake": "A common mistake is to forget to sort the intervals by their end points, or to not correctly handle the case where two intervals overlap.",
+    "time_complexity": "O(n log n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "happy-number",
+    "pattern_hint": "The problem involves finding whether a number is happy, which hints at using a mathematical approach to calculate the sum of the squares of the digits of the number. The presence of a clear mathematical definition of a happy number also suggests using a mathematical approach.",
+    "key_insight": "The core idea is to use a mathematical approach to calculate the sum of the squares of the digits of the number, and to repeatedly apply this process until the number becomes happy or a cycle is detected. The key is to correctly handle the case where a cycle is detected.",
+    "template_deviation": "This problem deviates from the standard mathematical template in that it requires considering the sum of the squares of the digits of the number, rather than just the number itself.",
+    "common_mistake": "A common mistake is to forget to handle the case where a cycle is detected, or to not correctly calculate the sum of the squares of the digits of the number.",
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "plus-one",
+    "pattern_hint": "The problem involves adding one to a number represented as an array of digits, which hints at using a mathematical approach to handle the carry from one digit to the next. The presence of a clear mathematical definition of the problem also suggests using a mathematical approach.",
+    "key_insight": "The core idea is to use a mathematical approach to handle the carry from one digit to the next, starting from the least significant digit and moving to the most significant digit. The key is to correctly handle the case where a carry is generated.",
+    "template_deviation": "This problem deviates from the standard mathematical template in that it requires considering the carry from one digit to the next, rather than just the digits themselves.",
+    "common_mistake": "A common mistake is to forget to handle the case where a carry is generated, or to not correctly handle the most significant digit.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "missing-number",
+    "pattern_hint": "The problem involves finding a missing number in a sequence, which hints at using Bit Manipulation to find the missing number. The presence of XOR operation is a clear indication of this pattern.",
+    "key_insight": "The key insight is to use XOR operation to find the missing number, as XOR of all numbers from 0 to n and XOR of all numbers in the array will give the missing number. This works because XOR of a number with itself is 0 and XOR of a number with 0 is the number itself.",
+    "template_deviation": "This problem deviates from the standard Bit Manipulation template as it involves finding a missing number in a sequence, which requires a different approach than the usual bit manipulation problems.",
+    "common_mistake": "A common mistake people make is not considering the XOR operation and trying to solve the problem using simple arithmetic operations.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "sum-of-two-integers",
+    "pattern_hint": "The problem statement asks to find the sum of two integers without using the '+' operator, which is a clear indication of using Bit Manipulation. The presence of bitwise operators is a hint towards this pattern.",
+    "key_insight": "The key insight is to use bitwise operators to add two numbers, by using the fact that a + b = (a ^ b) + ((a & b) << 1), where '^' is XOR and '&' is AND operator. This is the core idea behind adding two numbers using bitwise operators.",
+    "template_deviation": "This problem deviates from the standard Bit Manipulation template as it involves adding two numbers without using the '+' operator, which requires a different approach than the usual bit manipulation problems.",
+    "common_mistake": "A common mistake people make is not considering the carry-over effect when adding two numbers using bitwise operators.",
+    "time_complexity": "O(log min(a, b))",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "isomorphic-strings",
+    "pattern_hint": "The problem involves checking if two strings are isomorphic, which means checking if the characters in one string can be replaced to get the other string. This hints at using Arrays & Hashing to keep track of the mapping between characters.",
+    "key_insight": "The key insight is to use two hash maps to keep track of the mapping between characters in the two strings. One hash map is used to store the mapping from the first string to the second string, and the other hash map is used to store the mapping from the second string to the first string.",
+    "template_deviation": "This problem deviates from the standard Arrays & Hashing template as it involves checking if two strings are isomorphic, which requires a different approach than the usual array and hashing problems.",
+    "common_mistake": "A common mistake people make is not considering the one-to-one mapping between characters in the two strings.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "can-place-flowers",
+    "pattern_hint": "The problem involves checking if flowers can be planted in a given array, which hints at using Arrays & Hashing to keep track of the empty plots. The presence of an array with 0s and 1s is a clear indication of this pattern.",
+    "key_insight": "The key insight is to use a simple iteration over the array to check if a flower can be planted at each plot. A flower can be planted if the plot is empty and the adjacent plots are also empty.",
+    "template_deviation": "This problem deviates from the standard Arrays & Hashing template as it involves checking if flowers can be planted in a given array, which requires a different approach than the usual array and hashing problems.",
+    "common_mistake": "A common mistake people make is not considering the edge cases, such as the first and last plots in the array.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "find-pivot-index",
+    "pattern_hint": "The problem involves finding the pivot index in an array, which hints at using Arrays & Hashing to keep track of the sum of elements on the left and right sides of each index. The presence of an array with integers is a clear indication of this pattern.",
+    "key_insight": "The key insight is to use a simple iteration over the array to find the pivot index. The pivot index is the index where the sum of elements on the left side is equal to the sum of elements on the right side.",
+    "template_deviation": "This problem deviates from the standard Arrays & Hashing template as it involves finding the pivot index in an array, which requires a different approach than the usual array and hashing problems.",
+    "common_mistake": "A common mistake people make is not considering the case where the pivot index is at the beginning or end of the array.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "range-sum-query-immutable",
+    "pattern_hint": "The problem asks for the sum of elements in a given range, indicating the use of prefix sum arrays, a common technique in Arrays & Hashing problems. The word 'immutable' also hints at the need for a pre-computation step.",
+    "key_insight": "The key idea is to pre-compute the prefix sum array, allowing for constant time range sum queries. This is achieved by storing the cumulative sum of elements up to each index.",
+    "template_deviation": "This problem deviates from the standard Arrays & Hashing template by requiring a pre-computation step to create the prefix sum array, which is then used to answer range sum queries.",
+    "common_mistake": "A common mistake is to try to compute the range sum on the fly, without pre-computing the prefix sum array, leading to inefficient time complexity.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "encode-and-decode-strings",
+    "pattern_hint": "The problem involves encoding and decoding strings, suggesting the use of Arrays & Hashing to store and retrieve the encoded strings. The need to uniquely identify each string also hints at the use of a hash function.",
+    "key_insight": "The core idea is to use a delimiter to separate the length of each string from the string itself, allowing for efficient encoding and decoding. A hash function can be used to map the encoded string to its original index.",
+    "template_deviation": "This problem deviates from the standard Arrays & Hashing template by requiring the use of a delimiter to separate the length of each string from the string itself, allowing for efficient encoding and decoding.",
+    "common_mistake": "A common mistake is to forget to include the length of each string in the encoded string, making it difficult to decode the strings correctly.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "encode-and-decode-tinyurl",
+    "pattern_hint": "The problem involves encoding and decoding URLs, suggesting the use of Arrays & Hashing to store and retrieve the encoded URLs. The need to generate a unique tiny URL for each original URL also hints at the use of a hash function.",
+    "key_insight": "The key idea is to use a hash function to map the original URL to a unique tiny URL, and store the mapping in a hash table. This allows for efficient encoding and decoding of URLs.",
+    "template_deviation": "This problem deviates from the standard Arrays & Hashing template by requiring the use of a hash function to generate a unique tiny URL for each original URL.",
+    "common_mistake": "A common mistake is to use a hash function that can generate duplicate tiny URLs, leading to incorrect decoding of URLs.",
+    "time_complexity": "O(1)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "subarray-sum-equals-k",
+    "pattern_hint": "The problem asks for the number of subarrays with a sum equal to a given target, indicating the use of Arrays & Hashing to store and retrieve the cumulative sum of elements. The word 'subarray' also hints at the use of a sliding window approach.",
+    "key_insight": "The core idea is to use a hash table to store the cumulative sum of elements and their frequencies, allowing for efficient lookup of subarrays with a sum equal to the target. A sliding window approach can be used to iterate over the array and update the cumulative sum.",
+    "template_deviation": "This problem deviates from the standard Arrays & Hashing template by requiring the use of a sliding window approach to iterate over the array and update the cumulative sum.",
+    "common_mistake": "A common mistake is to forget to update the cumulative sum correctly when iterating over the array, leading to incorrect results.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "move-zeroes",
+    "pattern_hint": "The problem involves moving all zeros to the end of the array, suggesting the use of Two Pointers to track the position of non-zero elements. The need to maintain the relative order of non-zero elements also hints at the use of a two-pointer approach.",
+    "key_insight": "The key idea is to use two pointers, one to track the position of the next non-zero element and another to iterate over the array, swapping non-zero elements with the next available position.",
+    "template_deviation": "This problem deviates from the standard Two Pointers template by requiring the use of a two-pointer approach to track the position of non-zero elements and maintain their relative order.",
+    "common_mistake": "A common mistake is to forget to increment the pointer tracking the position of the next non-zero element after swapping, leading to incorrect results.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "permutation-in-string",
+    "pattern_hint": "The problem asks for a permutation of a string within another string, hinting at a sliding window approach to compare character frequencies. The presence of two strings and the need to find a permutation suggests using a window to track character matches.",
+    "key_insight": "The core idea is to use a sliding window of the same length as the first string and compare the character frequencies within this window to the first string. This involves maintaining a frequency count of characters within the window and updating it as the window slides.",
+    "template_deviation": "This problem deviates from the standard sliding window template by requiring the comparison of character frequencies rather than just matching characters or sums.",
+    "common_mistake": "A common mistake is not properly updating the frequency counts when the window slides, leading to incorrect comparisons.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "baseball-game",
+    "pattern_hint": "The problem involves a sequence of operations (scores) that can be undone (e.g., 'C' to cancel the previous score), suggesting the use of a stack to keep track of scores. The operations 'D' and 'C' also hint at stack operations.",
+    "key_insight": "The key insight is to use a stack to store the scores and apply the operations ('D', 'C', '+', and numbers) to the top elements of the stack, effectively undoing or modifying previous scores.",
+    "template_deviation": "This problem deviates from the standard stack template by applying specific operations to the stack elements rather than just pushing and popping.",
+    "common_mistake": "A common mistake is not correctly handling the 'C' operation to remove the last score from the stack.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "reorder-list",
+    "pattern_hint": "The problem involves rearranging the nodes of a linked list, hinting at the need to traverse and manipulate the list. The requirement to reorder the list in a specific way suggests using pointers to track and rearrange nodes.",
+    "key_insight": "The core idea is to find the middle of the list, reverse the second half, and then merge the two halves in an alternating manner, requiring the use of pointers to track and rearrange nodes.",
+    "template_deviation": "This problem deviates from the standard linked list template by requiring the reversal of a portion of the list and then merging two lists in an alternating pattern.",
+    "common_mistake": "A common mistake is not correctly finding the middle of the list or reversing the second half, leading to incorrect reordering.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "count-good-nodes-in-binary-tree",
+    "pattern_hint": "The problem involves traversing a binary tree and evaluating each node based on a condition, hinting at a tree traversal approach. The need to compare node values to the maximum value seen so far suggests using a recursive or iterative traversal method.",
+    "key_insight": "The key insight is to use a recursive or iterative traversal (e.g., DFS) to visit each node and keep track of the maximum value seen on the path from the root to the current node, counting nodes that meet the given condition.",
+    "template_deviation": "This problem deviates from the standard tree traversal template by requiring the tracking of the maximum value seen on the path to each node and counting nodes based on this value.",
+    "common_mistake": "A common mistake is not correctly updating the maximum value seen as the traversal progresses, leading to incorrect counts.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(h)"
+  },
+  {
+    "slug": "palindrome-partitioning",
+    "pattern_hint": "The problem involves generating all possible partitions of a string and checking if each partition is a palindrome, hinting at a backtracking approach. The need to explore all possible partitions suggests using recursion to generate combinations.",
+    "key_insight": "The core idea is to use backtracking to generate all possible partitions of the string and check each partition to see if it is a palindrome, requiring a recursive function to explore all combinations.",
+    "template_deviation": "This problem deviates from the standard backtracking template by requiring the generation of all possible string partitions and checking each for palindromes.",
+    "common_mistake": "A common mistake is not correctly generating all possible partitions or not efficiently checking for palindromes, leading to incorrect results or inefficiency.",
+    "time_complexity": "O(2^n * n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "letter-combinations-of-a-phone-number",
+    "pattern_hint": "The problem asks for all possible combinations of letters that a phone number could represent, indicating a need for backtracking to explore all possibilities. The presence of a mapping between digits and letters also suggests a recursive approach.",
+    "key_insight": "The key insight is to use a recursive function to generate all combinations of letters, exploring each possible letter for each digit in the phone number. This involves using a dictionary to map digits to their corresponding letters.",
+    "template_deviation": "This problem deviates from the standard backtracking template by requiring the use of a dictionary to map digits to letters, adding an extra layer of complexity to the recursive function.",
+    "common_mistake": "A common mistake is to forget to backtrack properly, failing to remove the last added letter from the current combination when exploring other branches.",
+    "time_complexity": "O(4^n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "max-area-of-island",
+    "pattern_hint": "The problem involves finding the maximum area of an island in a grid, which suggests using a graph traversal algorithm to explore connected land cells. The presence of a grid and the need to find connected components indicates a graph-based approach.",
+    "key_insight": "The key insight is to use a depth-first search (DFS) algorithm to traverse the grid and calculate the area of each island, keeping track of the maximum area found. This involves using a visited set to avoid revisiting cells.",
+    "template_deviation": "This problem deviates from the standard graph traversal template by requiring the calculation of the area of each island, which involves keeping a running sum of visited cells.",
+    "common_mistake": "A common mistake is to fail to properly reset the area calculation for each new island, resulting in incorrect area calculations.",
+    "time_complexity": "O(m*n)",
+    "space_complexity": "O(m*n)"
+  },
+  {
+    "slug": "pacific-atlantic-water-flow",
+    "pattern_hint": "The problem involves finding cells in a grid that can flow to both the Pacific and Atlantic oceans, which suggests using a graph traversal algorithm to explore connected cells. The presence of a grid and the need to find connected components indicates a graph-based approach.",
+    "key_insight": "The key insight is to use a depth-first search (DFS) algorithm to traverse the grid from both the Pacific and Atlantic oceans, marking cells that can flow to each ocean. This involves using two separate visited sets to keep track of cells that can flow to each ocean.",
+    "template_deviation": "This problem deviates from the standard graph traversal template by requiring the use of two separate DFS traversals, one from the Pacific and one from the Atlantic, to find cells that can flow to both oceans.",
+    "common_mistake": "A common mistake is to fail to properly handle the boundary cells, which can flow to both oceans, resulting in incorrect results.",
+    "time_complexity": "O(m*n)",
+    "space_complexity": "O(m*n)"
+  },
+  {
+    "slug": "surrounded-regions",
+    "pattern_hint": "The problem involves finding regions in a grid that are surrounded by a boundary, which suggests using a graph traversal algorithm to explore connected cells. The presence of a grid and the need to find connected components indicates a graph-based approach.",
+    "key_insight": "The key insight is to use a depth-first search (DFS) algorithm to traverse the grid from the boundary cells, marking cells that are connected to the boundary. This involves using a visited set to keep track of cells that are not surrounded.",
+    "template_deviation": "This problem deviates from the standard graph traversal template by requiring the use of a DFS traversal from the boundary cells, rather than from a specific starting cell.",
+    "common_mistake": "A common mistake is to fail to properly handle the boundary cells, which should not be marked as surrounded, resulting in incorrect results.",
+    "time_complexity": "O(m*n)",
+    "space_complexity": "O(m*n)"
+  },
+  {
+    "slug": "redundant-connection",
+    "pattern_hint": "The problem involves finding a redundant connection in a graph, which suggests using a graph traversal algorithm to detect cycles. The presence of a graph and the need to find a cycle indicates a graph-based approach.",
+    "key_insight": "The key insight is to use a union-find algorithm to detect cycles in the graph, keeping track of the parent and rank of each node. This involves using a find function to determine the root of each node and a union function to merge nodes.",
+    "template_deviation": "This problem deviates from the standard graph traversal template by requiring the use of a union-find algorithm to detect cycles, rather than a simple DFS or BFS traversal.",
+    "common_mistake": "A common mistake is to fail to properly handle the union operation, resulting in incorrect cycle detection.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "palindromic-substrings",
+    "pattern_hint": "The problem asks for the count of all palindromic substrings, indicating a need to break down the string into smaller parts and check for symmetry, which is a hallmark of 1-D DP problems. The presence of substrings and palindromic conditions suggests a dynamic programming approach.",
+    "key_insight": "The core idea is to expand around the center of potential palindromes, considering both odd and even length palindromes, and use a 2D array to store whether each substring is palindromic or not. However, a more efficient approach involves using a 1D DP array to store the count of palindromic substrings ending at each position.",
+    "template_deviation": "This problem deviates from the standard 1-D DP template by requiring the expansion around the center of potential palindromes and considering both odd and even length palindromes.",
+    "common_mistake": "A common mistake is to forget to consider both odd and even length palindromes when expanding around the center.",
+    "time_complexity": "O(n^2)",
+    "space_complexity": "O(n^2)"
+  },
+  {
+    "slug": "best-time-to-buy-and-sell-stock-with-cooldown",
+    "pattern_hint": "The problem involves making decisions based on previous states (buy, sell, cooldown), which is characteristic of DP problems, and the presence of two states (buy and sell) suggests a 2-D DP approach. The cooldown period adds a layer of complexity that requires tracking the previous state.",
+    "key_insight": "The key insight is to use a 2D DP array to track the maximum profit after the last transaction was a buy or a sell, and consider the cooldown period when making decisions.",
+    "template_deviation": "This problem deviates from the standard 2-D DP template by requiring the consideration of a cooldown period, which affects the transition between states.",
+    "common_mistake": "A common mistake is to forget to consider the cooldown period when transitioning from a sell state to a buy state.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "coin-change-ii",
+    "pattern_hint": "The problem involves finding the number of ways to make change for a given amount using coins of different denominations, which is a classic example of a 2-D DP problem. The presence of multiple coins and a target amount suggests a DP approach.",
+    "key_insight": "The core idea is to use a 2D DP array to store the number of ways to make change for each amount using each coin, and build up the solution by considering each coin and each amount.",
+    "template_deviation": "This problem deviates from the standard 2-D DP template by requiring the consideration of multiple coins and a target amount, which affects the transition between states.",
+    "common_mistake": "A common mistake is to forget to initialize the base case correctly, where there is one way to make change for an amount of 0 (using no coins).",
+    "time_complexity": "O(n*m)",
+    "space_complexity": "O(n*m)"
+  },
+  {
+    "slug": "interleaving-string",
+    "pattern_hint": "The problem involves checking if a string can be formed by interleaving two other strings, which suggests a 2-D DP approach. The presence of two input strings and a target string indicates a need to compare and combine the input strings.",
+    "key_insight": "The key insight is to use a 2D DP array to store whether the first i characters of the first string and the first j characters of the second string can be interleaved to form the first i+j characters of the target string.",
+    "template_deviation": "This problem deviates from the standard 2-D DP template by requiring the comparison of two input strings and a target string, which affects the transition between states.",
+    "common_mistake": "A common mistake is to forget to check if the current characters in the input strings match the current character in the target string before transitioning to the next state.",
+    "time_complexity": "O(n*m)",
+    "space_complexity": "O(n*m)"
+  },
+  {
+    "slug": "gas-station",
+    "pattern_hint": "The problem involves finding a starting point that allows a car to complete a circuit around a set of gas stations, which suggests a greedy approach. The presence of a limited amount of gas at each station and a need to complete a circuit indicates a need to make locally optimal choices.",
+    "key_insight": "The core idea is to use a greedy approach to find the starting point, by tracking the total amount of gas and the current tank level, and making locally optimal choices at each station.",
+    "template_deviation": "This problem deviates from the standard greedy template by requiring the consideration of a circular route and a limited amount of gas at each station.",
+    "common_mistake": "A common mistake is to forget to consider the total amount of gas and the current tank level when making decisions at each station.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "hand-of-straights",
+    "pattern_hint": "The problem involves a sequence of numbers and the goal is to form groups of consecutive numbers, which hints at using a greedy approach to construct these groups. The presence of a specific sequence length (W) also points towards a greedy strategy.",
+    "key_insight": "The core idea is to use a greedy approach to form groups of consecutive numbers by always trying to extend the current group with the next number in the sequence. This involves using a data structure like a hashmap or a multiset to keep track of the available numbers.",
+    "template_deviation": "This problem deviates from the standard greedy template by requiring the maintenance of a data structure to track the available numbers and their counts.",
+    "common_mistake": "A common mistake is to not properly handle the case when a number cannot be added to any existing group, leading to incorrect results.",
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "slug": "valid-parenthesis-string",
+    "pattern_hint": "The problem involves validating a string of parentheses, which hints at using a greedy approach to match opening and closing parentheses. The presence of a wildcard character (*) also points towards a greedy strategy.",
+    "key_insight": "The core idea is to use a greedy approach to match opening and closing parentheses by maintaining a count of open parentheses and using the wildcard character to either match an open or close parenthesis. This involves using two pointers to track the minimum and maximum possible open counts.",
+    "template_deviation": "This problem deviates from the standard greedy template by requiring the consideration of a wildcard character that can be used to match either an open or close parenthesis.",
+    "common_mistake": "A common mistake is to not properly handle the case when the wildcard character is used to match an open parenthesis, leading to incorrect results.",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "spiral-matrix",
+    "pattern_hint": "The problem involves traversing a matrix in a spiral order, which hints at using a mathematical approach to calculate the next element in the sequence. The presence of a matrix with a specific number of rows and columns also points towards a mathematical strategy.",
+    "key_insight": "The core idea is to use a mathematical approach to calculate the next element in the sequence by maintaining four pointers (top, bottom, left, right) to track the current boundaries of the matrix and moving them accordingly.",
+    "template_deviation": "This problem deviates from the standard mathematical template by requiring the maintenance of multiple pointers to track the boundaries of the matrix.",
+    "common_mistake": "A common mistake is to not properly handle the case when the matrix has an odd number of rows or columns, leading to incorrect results.",
+    "time_complexity": "O(N*M)",
+    "space_complexity": "O(N*M)"
+  },
+  {
+    "slug": "multiply-strings",
+    "pattern_hint": "The problem involves multiplying two numbers represented as strings, which hints at using a mathematical approach to perform the multiplication. The presence of a specific algorithm for multiplying numbers also points towards a mathematical strategy.",
+    "key_insight": "The core idea is to use a mathematical approach to perform the multiplication by treating the strings as numbers and using the grade-school multiplication algorithm, taking care to handle the carry-over values.",
+    "template_deviation": "This problem deviates from the standard mathematical template by requiring the implementation of a specific algorithm for multiplying numbers represented as strings.",
+    "common_mistake": "A common mistake is to not properly handle the case when the result of the multiplication has a leading zero, leading to incorrect results.",
+    "time_complexity": "O(N*M)",
+    "space_complexity": "O(N*M)"
+  },
+  {
+    "slug": "find-all-numbers-disappeared-in-an-array",
+    "pattern_hint": "The problem involves finding the missing numbers in an array, which hints at using an array-based approach to mark the presence of numbers. The presence of a specific range of numbers (1 to N) also points towards an array-based strategy.",
+    "key_insight": "The core idea is to use an array-based approach to mark the presence of numbers by negating the value at the index corresponding to the number, and then finding the indices with non-negated values.",
+    "template_deviation": "This problem deviates from the standard array-based template by requiring the use of negation to mark the presence of numbers, rather than using a separate data structure.",
+    "common_mistake": "A common mistake is to not properly handle the case when the input array contains duplicate numbers, leading to incorrect results.",
+    "time_complexity": "O(N)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "maximum-number-of-balloons",
+    "pattern_hint": "The problem involves finding the maximum number of occurrences of a word 'balloon' in a given text, which hints at using a hashing approach to count character frequencies. The presence of a string and the need to count characters points towards using Arrays & Hashing.",
+    "key_insight": "The core idea is to count the frequency of each character in the word 'balloon' and then find the minimum count of these characters in the given text, as this will determine the maximum number of 'balloon' words that can be formed. This involves dividing the count of each character by its frequency in 'balloon' and taking the minimum.",
+    "template_deviation": "This problem deviates from the standard hashing template by requiring the division of character counts by their respective frequencies in the word 'balloon', which adds an extra step to the typical hashing approach.",
+    "common_mistake": "A common mistake is forgetting to divide the count of each character by its frequency in 'balloon', leading to incorrect results.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "word-pattern",
+    "pattern_hint": "The problem involves matching words to a given pattern, which suggests using a hashing approach to map words to their corresponding patterns. The presence of a pattern and the need to match words to it points towards using Arrays & Hashing.",
+    "key_insight": "The key idea is to use two hash maps, one to store the mapping from pattern characters to words and another to store the mapping from words to pattern characters, ensuring a two-way mapping to correctly match words to the pattern. This allows for efficient lookups and comparisons.",
+    "template_deviation": "This problem deviates from the standard hashing template by requiring two hash maps for two-way mapping, which is not typically seen in standard hashing problems.",
+    "common_mistake": "A common mistake is using only one hash map, which can lead to incorrect results due to the lack of two-way mapping.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "design-hashset",
+    "pattern_hint": "The problem involves designing a data structure to store unique elements, which directly points towards using a hashing approach. The need for fast lookup, insertion, and deletion operations hints at using Arrays & Hashing.",
+    "key_insight": "The core idea is to use an array and a hashing function to map elements to their corresponding indices in the array, allowing for efficient storage and retrieval of unique elements. This involves handling collisions and ensuring that the hash set can resize dynamically.",
+    "template_deviation": "This problem deviates from the standard hashing template by requiring the implementation of a dynamic resizing mechanism to handle a varying number of elements, which is not typically seen in standard hashing problems.",
+    "common_mistake": "A common mistake is not handling collisions properly or not implementing dynamic resizing, leading to inefficient or incorrect results.",
+    "time_complexity": "O(1) for average case",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "design-hashmap",
+    "pattern_hint": "The problem involves designing a data structure to store key-value pairs, which directly points towards using a hashing approach. The need for fast lookup, insertion, and deletion operations hints at using Arrays & Hashing.",
+    "key_insight": "The key idea is to use an array of linked lists (or another data structure) and a hashing function to map keys to their corresponding indices in the array, allowing for efficient storage and retrieval of key-value pairs. This involves handling collisions and ensuring that the hash map can resize dynamically.",
+    "template_deviation": "This problem deviates from the standard hashing template by requiring the implementation of a dynamic resizing mechanism and handling collisions using a secondary data structure like linked lists, which adds complexity to the standard hashing approach.",
+    "common_mistake": "A common mistake is not handling collisions properly or not implementing dynamic resizing, leading to inefficient or incorrect results.",
+    "time_complexity": "O(1) for average case",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "sort-an-array",
+    "pattern_hint": "The problem involves sorting an array, which can be solved using various sorting algorithms that utilize Arrays & Hashing for efficiency. The presence of an array and the need to sort it points towards using Arrays & Hashing.",
+    "key_insight": "The core idea is to choose an appropriate sorting algorithm (like quicksort, mergesort, or heapsort) that can efficiently sort the array, considering factors like time complexity, space complexity, and stability. This involves understanding the trade-offs between different algorithms and selecting the most suitable one.",
+    "template_deviation": "This problem deviates from the standard hashing template by requiring the implementation of a sorting algorithm, which may not necessarily involve hashing but can benefit from it in certain scenarios like counting sort or radix sort.",
+    "common_mistake": "A common mistake is choosing an inappropriate sorting algorithm for the given scenario, leading to inefficient or incorrect results.",
+    "time_complexity": "O(n log n)",
+    "space_complexity": "O(n) for some algorithms, O(1) for others"
+  },
+  {
+    "slug": "brick-wall",
+    "pattern_hint": "The problem involves a list of edges and a width, hinting at using a hash map to store the frequency of edge positions. The goal is to find the minimum number of cuts, which suggests using a hashing approach to count the edges at each position.",
+    "key_insight": "The core idea is to use a hash map to store the frequency of edge positions and find the maximum frequency, which represents the minimum number of cuts. This is because the maximum frequency of edge positions corresponds to the minimum number of cuts needed to avoid a straight line.",
+    "template_deviation": "This problem deviates from the standard hashing template by requiring the use of a hash map to store the frequency of edge positions, rather than just storing unique elements.",
+    "common_mistake": "A common mistake is to forget to consider the case where the width of the wall is not a factor of the total width, which can lead to incorrect calculations.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "maximum-product-of-the-length-of-two-palindromic-subsequences",
+    "pattern_hint": "The problem involves finding palindromic subsequences, which suggests using a hashing approach to store the subsequences and their lengths. The goal is to find the maximum product of two palindromic subsequences, which hints at using a dynamic programming approach.",
+    "key_insight": "The core idea is to use dynamic programming to store the lengths of palindromic subsequences and then find the maximum product of two palindromic subsequences. This involves using a 2D array to store the lengths of palindromic subsequences and then iterating over the array to find the maximum product.",
+    "template_deviation": "This problem deviates from the standard hashing template by requiring the use of dynamic programming to store the lengths of palindromic subsequences, rather than just storing unique elements.",
+    "common_mistake": "A common mistake is to forget to consider the case where the two palindromic subsequences are not disjoint, which can lead to incorrect calculations.",
+    "time_complexity": "O(n^2)",
+    "space_complexity": "O(n^2)"
+  },
+  {
+    "slug": "find-all-anagrams-in-a-string",
+    "pattern_hint": "The problem involves finding anagrams in a string, which suggests using a hashing approach to store the frequency of characters in the anagram and the string. The goal is to find all starting indices of anagrams, which hints at using a sliding window approach.",
+    "key_insight": "The core idea is to use a sliding window approach to compare the frequency of characters in the anagram and the string, and then use a hash map to store the frequency of characters. This involves using a hash map to store the frequency of characters in the anagram and the string, and then iterating over the string to find the anagrams.",
+    "template_deviation": "This problem deviates from the standard hashing template by requiring the use of a sliding window approach to compare the frequency of characters, rather than just storing unique elements.",
+    "common_mistake": "A common mistake is to forget to consider the case where the anagram is not a contiguous substring, which can lead to incorrect calculations.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "find-the-index-of-the-first-occurrence-in-a-string",
+    "pattern_hint": "The problem involves finding the index of the first occurrence of a substring, which suggests using a hashing approach to store the frequency of characters in the substring and the string. The goal is to find the index of the first occurrence, which hints at using a simple iteration approach.",
+    "key_insight": "The core idea is to use a simple iteration approach to compare the substring and the string, and then return the index of the first occurrence. This involves using a loop to iterate over the string and compare the substring, and then returning the index of the first occurrence.",
+    "template_deviation": "This problem deviates from the standard hashing template by requiring the use of a simple iteration approach, rather than using a hash map to store unique elements.",
+    "common_mistake": "A common mistake is to forget to consider the case where the substring is not found, which can lead to incorrect calculations.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "non-decreasing-array",
+    "pattern_hint": "The problem involves checking if an array is non-decreasing, which suggests using a simple iteration approach to compare adjacent elements. The goal is to find if the array can be made non-decreasing by changing at most one element, which hints at using a simple iteration approach.",
+    "key_insight": "The core idea is to use a simple iteration approach to compare adjacent elements and find the first decreasing pair, and then check if changing one element can make the array non-decreasing. This involves using a loop to iterate over the array and compare adjacent elements, and then checking if changing one element can make the array non-decreasing.",
+    "template_deviation": "This problem deviates from the standard hashing template by requiring the use of a simple iteration approach, rather than using a hash map to store unique elements.",
+    "common_mistake": "A common mistake is to forget to consider the case where changing one element can make the array non-decreasing, which can lead to incorrect calculations.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "valid-palindrome-ii",
+    "pattern_hint": "The problem asks to determine if a string can be a palindrome by removing at most one character, which suggests using two pointers to compare characters from both ends. The presence of a condition that allows for one character removal indicates a variation of the two pointers technique.",
+    "key_insight": "The core idea is to use two pointers, one at the start and one at the end of the string, and move them towards each other, skipping one character if a mismatch is found. The key is to decide which pointer to move based on the comparison of the characters at the pointers and the characters next to them.",
+    "template_deviation": "This problem deviates from the standard two pointers template by introducing the possibility of removing one character, which requires additional logic to handle the removal and continue the comparison.",
+    "common_mistake": "A common mistake is not correctly handling the case when the removal of a character creates a new palindrome, or not considering all possible removals.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "minimum-difference-between-highest-and-lowest-of-k-scores",
+    "pattern_hint": "The problem involves finding the minimum difference between the highest and lowest scores among any k consecutive scores, which suggests using a sliding window approach with two pointers. The requirement for k consecutive scores indicates a fixed-size window.",
+    "key_insight": "The key idea is to maintain a window of k scores and calculate the difference between the highest and lowest scores within this window, then slide the window to the next set of k scores and repeat the calculation.",
+    "template_deviation": "This problem deviates from the standard two pointers template by using a fixed-size window (k scores) instead of a variable-size window or pointers moving towards each other.",
+    "common_mistake": "A common mistake is not correctly updating the minimum difference as the window slides, or not handling the edge case where the window reaches the end of the scores list.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "contains-duplicate-ii",
+    "pattern_hint": "The problem asks to find if there are any duplicate elements within a certain distance (k) in the array, which suggests using a sliding window approach. The presence of a distance constraint (k) indicates a fixed-size window.",
+    "key_insight": "The core idea is to use a sliding window of size k and check for duplicates within this window, utilizing a data structure like a set to efficiently track unique elements within the current window.",
+    "template_deviation": "This problem deviates from the standard sliding window template by focusing on detecting duplicates within a fixed-size window rather than calculating a sum or average.",
+    "common_mistake": "A common mistake is not correctly updating the window boundaries or not removing elements that fall out of the window from the set of unique elements.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(k)"
+  },
+  {
+    "slug": "frequency-of-the-most-frequent-element",
+    "pattern_hint": "The problem involves maximizing the frequency of the most frequent element in an array by adding k elements, which suggests using a sliding window approach to identify the most frequent element and calculate the maximum frequency. The presence of a constraint (k) indicates a variable-size window.",
+    "key_insight": "The key idea is to use a sliding window to identify the most frequent element and calculate the maximum frequency achievable by adding k elements, considering the size of the window and the frequency of the most frequent element within it.",
+    "template_deviation": "This problem deviates from the standard sliding window template by focusing on maximizing the frequency of the most frequent element rather than calculating a sum or average, and by considering the addition of elements to achieve this goal.",
+    "common_mistake": "A common mistake is not correctly calculating the maximum frequency achievable by adding k elements, or not considering the optimal size of the window to maximize the frequency.",
+    "time_complexity": "O(n log n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "guess-number-higher-or-lower",
+    "pattern_hint": "The problem involves guessing a number within a range by repeatedly asking if the guess is higher or lower than the target number, which suggests using a binary search approach. The presence of feedback (higher or lower) indicates a divide-and-conquer strategy.",
+    "key_insight": "The core idea is to use binary search to divide the search space in half with each guess, adjusting the range based on the feedback (higher or lower) to converge on the target number.",
+    "template_deviation": "This problem deviates from the standard binary search template by using a dynamic range that changes with each guess, rather than a fixed array or list.",
+    "common_mistake": "A common mistake is not correctly updating the search range based on the feedback, or not using the optimal midpoint as the next guess.",
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "k-closest-points-to-origin",
+    "pattern_hint": "The problem asks for the 'K Closest' points, indicating a need to prioritize or rank items, which is a clear signal for using a Heap or Priority Queue. The distance formula also hints at a comparison-based approach.",
+    "key_insight": "The core idea is to use a max heap to store points based on their distance from the origin, and then extract the K smallest elements. The key is to define a custom comparator for the heap.",
+    "template_deviation": "This problem deviates from the standard heap template by requiring a custom distance calculation as the comparison metric.",
+    "common_mistake": "A common mistake is to calculate the distance incorrectly or to forget to consider the case where two points have the same distance from the origin.",
+    "time_complexity": "O(n log k)",
+    "space_complexity": "O(k)"
+  },
+  {
+    "slug": "task-scheduler",
+    "pattern_hint": "The problem involves scheduling tasks with a cooldown period, which suggests the need to manage a queue or priority of tasks based on their cooldown status. The requirement to find the least number of units of time indicates an optimization problem.",
+    "key_insight": "The key insight is to use a max heap to store tasks based on their cooldown period, and a queue to manage the tasks that are cooling down. The max heap ensures that the task with the longest cooldown period is executed first.",
+    "template_deviation": "This problem deviates from the standard heap template by requiring a combination of a max heap and a queue to manage the cooldown periods.",
+    "common_mistake": "A common mistake is to forget to consider the case where multiple tasks have the same cooldown period.",
+    "time_complexity": "O(n log n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "word-ladder",
+    "pattern_hint": "The problem involves transforming one word into another by changing one character at a time, which suggests a graph-based approach where each word is a node and the edges represent possible transformations.",
+    "key_insight": "The core idea is to use a breadth-first search (BFS) algorithm to traverse the graph of word transformations, starting from the given word and exploring all possible transformations until the target word is found.",
+    "template_deviation": "This problem deviates from the standard graph template by requiring a custom graph construction based on word transformations.",
+    "common_mistake": "A common mistake is to forget to consider the case where a word has multiple possible transformations.",
+    "time_complexity": "O(n * m^2)",
+    "space_complexity": "O(n * m)"
+  },
+  {
+    "slug": "reconstruct-itinerary",
+    "pattern_hint": "The problem involves reconstructing a flight itinerary from a given list of tickets, which suggests a graph-based approach where each city is a node and the edges represent flights.",
+    "key_insight": "The key insight is to use a depth-first search (DFS) algorithm to traverse the graph of flights, starting from a given city and exploring all possible itineraries until a valid one is found.",
+    "template_deviation": "This problem deviates from the standard graph template by requiring a custom graph construction based on flight tickets and a DFS approach to find the correct itinerary.",
+    "common_mistake": "A common mistake is to forget to consider the case where a city has multiple outgoing flights.",
+    "time_complexity": "O(n * m)",
+    "space_complexity": "O(n * m)"
+  },
+  {
+    "slug": "min-cost-to-connect-all-points",
+    "pattern_hint": "The problem involves connecting a set of points with the minimum total cost, which suggests a graph-based approach where each point is a node and the edges represent possible connections.",
+    "key_insight": "The core idea is to use a minimum spanning tree (MST) algorithm, such as Kruskal's or Prim's, to find the optimal set of connections that minimize the total cost.",
+    "template_deviation": "This problem deviates from the standard graph template by requiring a custom edge weight calculation based on the distance between points.",
+    "common_mistake": "A common mistake is to forget to consider the case where a point has multiple possible connections.",
+    "time_complexity": "O(n^2 log n)",
+    "space_complexity": "O(n^2)"
+  },
+  {
+    "slug": "swim-in-rising-water",
+    "pattern_hint": "The problem involves finding a path in a grid with increasing values, which hints at using a graph traversal algorithm. The use of a priority queue to select the next cell to visit is also a strong indicator of a graph pattern.",
+    "key_insight": "The key insight is to use a priority queue to select the next cell to visit based on its value, and to use a visited set to keep track of the cells that have been visited. This allows us to efficiently find the shortest path to the bottom right cell.",
+    "template_deviation": "This problem deviates from the standard graph template by using a priority queue to select the next cell to visit, rather than a standard queue or stack.",
+    "common_mistake": "A common mistake is to not properly handle the case where the priority queue is empty, or to not correctly update the visited set.",
+    "time_complexity": "O(n log n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "target-sum",
+    "pattern_hint": "The problem involves finding the number of ways to reach a target sum using a set of numbers, which hints at using dynamic programming. The use of a recursive formula to calculate the number of ways to reach each sum also indicates a 2-D DP pattern.",
+    "key_insight": "The key insight is to use a 2-D DP array to store the number of ways to reach each sum, and to use a recursive formula to calculate the number of ways to reach each sum. This allows us to efficiently calculate the number of ways to reach the target sum.",
+    "template_deviation": "This problem deviates from the standard 2-D DP template by using a recursive formula to calculate the number of ways to reach each sum, rather than a standard iterative approach.",
+    "common_mistake": "A common mistake is to not properly handle the base case, or to not correctly update the DP array.",
+    "time_complexity": "O(n * sum)",
+    "space_complexity": "O(n * sum)"
+  },
+  {
+    "slug": "regular-expression-matching",
+    "pattern_hint": "The problem involves matching a string with a regular expression, which hints at using dynamic programming. The use of a 2-D array to store the match status of each substring also indicates a 2-D DP pattern.",
+    "key_insight": "The key insight is to use a 2-D DP array to store the match status of each substring, and to use a recursive formula to calculate the match status of each substring. This allows us to efficiently match the string with the regular expression.",
+    "template_deviation": "This problem deviates from the standard 2-D DP template by using a recursive formula to calculate the match status of each substring, rather than a standard iterative approach.",
+    "common_mistake": "A common mistake is to not properly handle the base case, or to not correctly update the DP array.",
+    "time_complexity": "O(n * m)",
+    "space_complexity": "O(n * m)"
+  },
+  {
+    "slug": "merge-triplets-to-form-target-triplet",
+    "pattern_hint": "The problem involves merging triplets to form a target triplet, which hints at using a greedy algorithm. The use of a sorting step to prioritize the triplets also indicates a greedy pattern.",
+    "key_insight": "The key insight is to use a greedy approach to merge the triplets, and to use a sorting step to prioritize the triplets. This allows us to efficiently merge the triplets to form the target triplet.",
+    "template_deviation": "This problem deviates from the standard greedy template by using a sorting step to prioritize the triplets, rather than a standard iterative approach.",
+    "common_mistake": "A common mistake is to not properly handle the case where a triplet cannot be merged, or to not correctly update the target triplet.",
+    "time_complexity": "O(n log n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "partition-labels",
+    "pattern_hint": "The problem involves partitioning a string into labels, which hints at using a greedy algorithm. The use of a two-pointer approach to find the partition points also indicates a greedy pattern.",
+    "key_insight": "The key insight is to use a greedy approach to partition the string, and to use a two-pointer approach to find the partition points. This allows us to efficiently partition the string into labels.",
+    "template_deviation": "This problem deviates from the standard greedy template by using a two-pointer approach to find the partition points, rather than a standard iterative approach.",
+    "common_mistake": "A common mistake is to not properly handle the case where a partition point cannot be found, or to not correctly update the partition labels.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "palindrome-number",
+    "pattern_hint": "The problem asks to determine if a number is a palindrome, which hints at using mathematical operations to reverse the number and compare it with the original. The presence of the word 'palindrome' is a clear indicator of this pattern.",
+    "key_insight": "The core idea is to reverse the number and compare it with the original, but to avoid integer overflow, we can compare the digits from both ends towards the center. This approach allows us to solve the problem efficiently.",
+    "template_deviation": "This problem deviates from the standard template by requiring a mathematical approach to reverse the number, rather than using a straightforward string or array reversal.",
+    "common_mistake": "A common mistake is to convert the number to a string and then check if it's a palindrome, which is not necessary and can be inefficient for large numbers.",
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "ugly-number",
+    "pattern_hint": "The problem statement mentions 'ugly numbers' and provides a definition that involves multiplication by 2, 3, or 5, which hints at using a mathematical approach to generate these numbers. The presence of these specific factors is a clear indicator of this pattern.",
+    "key_insight": "The key idea is to use a dynamic programming approach to generate the ugly numbers in ascending order, by multiplying the previous numbers by 2, 3, or 5 and keeping track of the indices.",
+    "template_deviation": "This problem deviates from the standard template by requiring a custom dynamic programming approach to generate the ugly numbers, rather than using a standard array or string manipulation.",
+    "common_mistake": "A common mistake is to try to generate all possible multiples of 2, 3, and 5 and then filter out the duplicates, which can be inefficient and lead to incorrect results.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "minimum-number-of-swaps-to-make-the-string-balanced",
+    "pattern_hint": "The problem involves a string with 'L' and 'R' characters and asks to find the minimum number of swaps to balance the string, which hints at using a hashing or array-based approach to count the characters. The presence of the 'L' and 'R' characters and the concept of balance is a clear indicator of this pattern.",
+    "key_insight": "The core idea is to count the number of 'L' and 'R' characters and then use a two-pointer approach to find the minimum number of swaps required to balance the string.",
+    "template_deviation": "This problem deviates from the standard template by requiring a custom two-pointer approach to find the minimum number of swaps, rather than using a standard sorting or searching algorithm.",
+    "common_mistake": "A common mistake is to try to use a brute-force approach to generate all possible swaps and then count the minimum number of swaps, which can be inefficient and lead to incorrect results.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "slug": "insert-delete-getrandom-o1",
+    "pattern_hint": "The problem requires implementing an insert, delete, and get random operation in O(1) time complexity, which hints at using a hashing and array-based approach. The presence of the O(1) time complexity requirement is a clear indicator of this pattern.",
+    "key_insight": "The key idea is to use a hash map to store the indices of the elements in the array and then use the array to store the elements, allowing for O(1) insertion, deletion, and random access.",
+    "template_deviation": "This problem deviates from the standard template by requiring a custom implementation of the insert, delete, and get random operations, rather than using standard library functions.",
+    "common_mistake": "A common mistake is to try to use a standard library data structure, such as a set or list, which may not provide O(1) time complexity for all operations.",
+    "time_complexity": "O(1)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "slug": "sign-of-the-product-of-an-array",
+    "pattern_hint": "The problem involves calculating the sign of the product of an array, which hints at using a mathematical approach to count the number of negative numbers. The presence of the word 'sign' and the concept of product is a clear indicator of this pattern.",
+    "key_insight": "The core idea is to count the number of negative numbers in the array and then determine the sign of the product based on this count, taking into account the presence of zeros.",
+    "template_deviation": "This problem deviates from the standard template by requiring a custom mathematical approach to calculate the sign of the product, rather than using a standard array or string manipulation.",
+    "common_mistake": "A common mistake is to try to calculate the actual product of the array, which can lead to overflow or underflow issues, rather than just calculating the sign.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  }
+]

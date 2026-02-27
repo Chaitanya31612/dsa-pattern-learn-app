@@ -1,0 +1,821 @@
+[
+  {
+    "slug": "set-matrix-zeroes",
+    "title": "Set Matrix Zeroes",
+    "leetcode_url": "https://leetcode.com/problems/set-matrix-zeroes/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "pascals-triangle",
+    "title": "Pascal's Triangle I",
+    "leetcode_url": "https://leetcode.com/problems/pascals-triangle/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "next-permutation",
+    "title": "Next Permutation",
+    "leetcode_url": "https://leetcode.com/problems/next-permutation/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "sort-colors",
+    "title": "Kadane's Algorithm",
+    "leetcode_url": "https://leetcode.com/problems/sort-colors/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "best-time-to-buy-and-sell-stock",
+    "title": "Stock Buy and Sell",
+    "leetcode_url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "rotate-image",
+    "title": "Rotate matrix by 90 degrees",
+    "leetcode_url": "https://leetcode.com/problems/rotate-image/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "merge-intervals",
+    "title": "Merge Overlapping Subintervals",
+    "leetcode_url": "https://leetcode.com/problems/merge-intervals/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "merge-sorted-array",
+    "title": "Merge two sorted arrays without extra space",
+    "leetcode_url": "https://leetcode.com/problems/merge-sorted-array/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "find-the-duplicate-number",
+    "title": "Find the Duplicate Number",
+    "leetcode_url": "https://leetcode.com/problems/find-the-duplicate-number/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "search-a-2d-matrix",
+    "title": "Find the repeating and missing number",
+    "leetcode_url": "https://leetcode.com/problems/search-a-2d-matrix/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "powx-n",
+    "title": "Pow(x, n)",
+    "leetcode_url": "https://leetcode.com/problems/powx-n/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "majority-element",
+    "title": "Majority Element-I",
+    "leetcode_url": "https://leetcode.com/problems/majority-element/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "majority-element-ii",
+    "title": "Majority Element-II",
+    "leetcode_url": "https://leetcode.com/problems/majority-element-ii/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "unique-paths",
+    "title": "Grid unique paths",
+    "leetcode_url": "https://leetcode.com/problems/unique-paths/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "reverse-pairs",
+    "title": "Reverse Pairs",
+    "leetcode_url": "https://leetcode.com/problems/reverse-pairs/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "two-sum",
+    "title": "Two Sum",
+    "leetcode_url": "https://leetcode.com/problems/two-sum/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "4sum",
+    "title": "4 Sum",
+    "leetcode_url": "https://leetcode.com/problems/4sum/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "longest-consecutive-sequence",
+    "title": "Longest Consecutive Sequence in an Array",
+    "leetcode_url": "https://leetcode.com/problems/longest-consecutive-sequence/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "longest-substring-without-repeating-characters",
+    "title": "Largest Subarray with K sum",
+    "leetcode_url": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "reverse-linked-list",
+    "title": "Reverse a LL",
+    "leetcode_url": "https://leetcode.com/problems/reverse-linked-list/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "middle-of-the-linked-list",
+    "title": "Find Middle of Linked List",
+    "leetcode_url": "https://leetcode.com/problems/middle-of-the-linked-list/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "merge-two-sorted-lists",
+    "title": "Merge two Sorted Lists ",
+    "leetcode_url": "https://leetcode.com/problems/merge-two-sorted-lists/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "remove-nth-node-from-end-of-list",
+    "title": "Remove Nth node from the back of the LL",
+    "leetcode_url": "https://leetcode.com/problems/remove-nth-node-from-end-of-list/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "add-two-numbers",
+    "title": "Add two numbers as LinkedList",
+    "leetcode_url": "https://leetcode.com/problems/add-two-numbers/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "delete-node-in-a-linked-list",
+    "title": "Delete Node in a Linked List O(1)",
+    "leetcode_url": "https://leetcode.com/problems/delete-node-in-a-linked-list/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "intersection-of-two-linked-lists",
+    "title": "Find the intersection point of Y LL",
+    "leetcode_url": "https://leetcode.com/problems/intersection-of-two-linked-lists/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "linked-list-cycle",
+    "title": "Detect a loop in LL",
+    "leetcode_url": "https://leetcode.com/problems/linked-list-cycle/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "reverse-nodes-in-k-group",
+    "title": "Reverse LL in group of given size K",
+    "leetcode_url": "https://leetcode.com/problems/reverse-nodes-in-k-group/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "palindrome-linked-list",
+    "title": "Check if LL is palindrome or not",
+    "leetcode_url": "https://leetcode.com/problems/palindrome-linked-list/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "linked-list-cycle-ii",
+    "title": "Find the starting point in LL",
+    "leetcode_url": "https://leetcode.com/problems/linked-list-cycle-ii/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "rotate-list",
+    "title": "Flattening of LL",
+    "leetcode_url": "https://leetcode.com/problems/rotate-list/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "copy-list-with-random-pointer",
+    "title": "Clone a LL with random and next pointer",
+    "leetcode_url": "https://leetcode.com/problems/copy-list-with-random-pointer/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "3sum",
+    "title": "3 Sum",
+    "leetcode_url": "https://leetcode.com/problems/3sum/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "trapping-rain-water",
+    "title": "Trapping Rainwater",
+    "leetcode_url": "https://leetcode.com/problems/trapping-rain-water/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "remove-duplicates-from-sorted-array",
+    "title": "Remove duplicates from sorted array",
+    "leetcode_url": "https://leetcode.com/problems/remove-duplicates-from-sorted-array/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "max-consecutive-ones",
+    "title": "Maximum Consecutive Ones",
+    "leetcode_url": "https://leetcode.com/problems/max-consecutive-ones/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "coin-change",
+    "title": "N meetings in one room",
+    "leetcode_url": "https://leetcode.com/problems/coin-change/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "assign-cookies",
+    "title": "Assign Cookies",
+    "leetcode_url": "https://leetcode.com/problems/assign-cookies/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "subsets-ii",
+    "title": "Subset Sums",
+    "leetcode_url": "https://leetcode.com/problems/subsets-ii/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "combination-sum",
+    "title": "Combination Sum",
+    "leetcode_url": "https://leetcode.com/problems/combination-sum/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "combination-sum-ii",
+    "title": "Combination Sum II",
+    "leetcode_url": "https://leetcode.com/problems/combination-sum-ii/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "permutation-sequence",
+    "title": "Palindrome partitioning",
+    "leetcode_url": "https://leetcode.com/problems/permutation-sequence/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "permutations",
+    "title": "Permutations of a String",
+    "leetcode_url": "https://leetcode.com/problems/permutations/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "n-queens",
+    "title": "N Queen",
+    "leetcode_url": "https://leetcode.com/problems/n-queens/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "sudoku-solver",
+    "title": "Sudoku Solver",
+    "leetcode_url": "https://leetcode.com/problems/sudoku-solver/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "single-element-in-a-sorted-array",
+    "title": "M Coloring Problem",
+    "leetcode_url": "https://leetcode.com/problems/single-element-in-a-sorted-array/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "search-in-rotated-sorted-array",
+    "title": "Search element in a sorted and rotated array/ find pivot where it is rotated",
+    "leetcode_url": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "median-of-two-sorted-arrays",
+    "title": "Median of 2 sorted arrays",
+    "leetcode_url": "https://leetcode.com/problems/median-of-two-sorted-arrays/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "find-median-from-data-stream",
+    "title": "Kth element of 2 sorted arrays",
+    "leetcode_url": "https://leetcode.com/problems/find-median-from-data-stream/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "top-k-frequent-elements",
+    "title": "Merge K Sorted Arrays",
+    "leetcode_url": "https://leetcode.com/problems/top-k-frequent-elements/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "implement-stack-using-queues",
+    "title": "Implement Stack using Arrays",
+    "leetcode_url": "https://leetcode.com/problems/implement-stack-using-queues/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "implement-queue-using-stacks",
+    "title": "Implement Queue using Stack",
+    "leetcode_url": "https://leetcode.com/problems/implement-queue-using-stacks/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "valid-parentheses",
+    "title": "Balanced Paranthesis",
+    "leetcode_url": "https://leetcode.com/problems/valid-parentheses/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "next-greater-element-i",
+    "title": "Next Greater Element",
+    "leetcode_url": "https://leetcode.com/problems/next-greater-element-i/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "lfu-cache",
+    "title": "Sort a Stack",
+    "leetcode_url": "https://leetcode.com/problems/lfu-cache/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "largest-rectangle-in-histogram",
+    "title": "Largest rectangle in a histogram",
+    "leetcode_url": "https://leetcode.com/problems/largest-rectangle-in-histogram/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "sliding-window-maximum",
+    "title": "Sliding Window Maximum",
+    "leetcode_url": "https://leetcode.com/problems/sliding-window-maximum/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "min-stack",
+    "title": "Implement Min Stack",
+    "leetcode_url": "https://leetcode.com/problems/min-stack/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "rotting-oranges",
+    "title": "Rotten Oranges",
+    "leetcode_url": "https://leetcode.com/problems/rotting-oranges/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "online-stock-span",
+    "title": "Stock span problem",
+    "leetcode_url": "https://leetcode.com/problems/online-stock-span/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "reverse-words-in-a-string",
+    "title": "Maximum of Minimums for Every Window Size",
+    "leetcode_url": "https://leetcode.com/problems/reverse-words-in-a-string/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "longest-palindromic-substring",
+    "title": "Longest Palindrome in a string",
+    "leetcode_url": "https://leetcode.com/problems/longest-palindromic-substring/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "roman-to-integer",
+    "title": "Roman to Integer",
+    "leetcode_url": "https://leetcode.com/problems/roman-to-integer/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "string-to-integer-atoi",
+    "title": "Implement ATOI/STRSTR",
+    "leetcode_url": "https://leetcode.com/problems/string-to-integer-atoi/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "longest-common-prefix",
+    "title": "Longest Common Prefix",
+    "leetcode_url": "https://leetcode.com/problems/longest-common-prefix/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "repeated-string-match",
+    "title": "Rabin Karp Algorithm",
+    "leetcode_url": "https://leetcode.com/problems/repeated-string-match/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "implement-strstr",
+    "title": "Z function",
+    "leetcode_url": "https://leetcode.com/problems/implement-strstr/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "minimum-insertion-steps-to-make-a-string-palindrome",
+    "title": "Minimum insertions to make string palindrome",
+    "leetcode_url": "https://leetcode.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "valid-anagram",
+    "title": "Valid Anagram",
+    "leetcode_url": "https://leetcode.com/problems/valid-anagram/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "count-and-say",
+    "title": "Count and say",
+    "leetcode_url": "https://leetcode.com/problems/count-and-say/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "compare-version-numbers",
+    "title": "Compare version numbers",
+    "leetcode_url": "https://leetcode.com/problems/compare-version-numbers/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "binary-tree-inorder-traversal",
+    "title": "Inorder Traversal",
+    "leetcode_url": "https://leetcode.com/problems/binary-tree-inorder-traversal/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "binary-tree-preorder-traversal",
+    "title": "Preorder Traversal",
+    "leetcode_url": "https://leetcode.com/problems/binary-tree-preorder-traversal/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "binary-tree-postorder-traversal",
+    "title": "Postorder Traversal",
+    "leetcode_url": "https://leetcode.com/problems/binary-tree-postorder-traversal/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "binary-tree-right-side-view",
+    "title": "Right/Left View of BT",
+    "leetcode_url": "https://leetcode.com/problems/binary-tree-right-side-view/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "vertical-order-traversal-of-a-binary-tree",
+    "title": "Bottom view of BT",
+    "leetcode_url": "https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "maximum-width-of-binary-tree",
+    "title": "Print root to leaf path in BT",
+    "leetcode_url": "https://leetcode.com/problems/maximum-width-of-binary-tree/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "binary-tree-level-order-traversal",
+    "title": "Level Order Traversal",
+    "leetcode_url": "https://leetcode.com/problems/binary-tree-level-order-traversal/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "maximum-depth-of-binary-tree",
+    "title": "Maximum Depth in BT",
+    "leetcode_url": "https://leetcode.com/problems/maximum-depth-of-binary-tree/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "diameter-of-binary-tree",
+    "title": "Diameter of Binary Tree",
+    "leetcode_url": "https://leetcode.com/problems/diameter-of-binary-tree/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "balanced-binary-tree",
+    "title": "Check for balanced binary tree",
+    "leetcode_url": "https://leetcode.com/problems/balanced-binary-tree/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "lowest-common-ancestor-of-a-binary-tree",
+    "title": "LCA in BT",
+    "leetcode_url": "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "same-tree",
+    "title": "Check if two trees are identical or not",
+    "leetcode_url": "https://leetcode.com/problems/same-tree/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "binary-tree-zigzag-level-order-traversal",
+    "title": "Zig Zag or Spiral Traversal",
+    "leetcode_url": "https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "boundary-of-binary-tree",
+    "title": "Boundary Traversal",
+    "leetcode_url": "https://leetcode.com/problems/boundary-of-binary-tree/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "binary-tree-maximum-path-sum",
+    "title": "Maximum path sum ",
+    "leetcode_url": "https://leetcode.com/problems/binary-tree-maximum-path-sum/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "construct-binary-tree-from-preorder-and-inorder-traversal",
+    "title": "Construct a BT from Preorder and Inorder",
+    "leetcode_url": "https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "construct-binary-tree-from-inorder-and-postorder-traversal",
+    "title": "Construct a BT from Postorder and Inorder",
+    "leetcode_url": "https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "symmetric-tree",
+    "title": "Symmetric Binary Tree",
+    "leetcode_url": "https://leetcode.com/problems/symmetric-tree/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "flatten-binary-tree-to-linked-list",
+    "title": "Flatten Binary Tree to Linked List",
+    "leetcode_url": "https://leetcode.com/problems/flatten-binary-tree-to-linked-list/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "populating-next-right-pointers-in-each-node",
+    "title": "Children Sum Property in Binary Tree",
+    "leetcode_url": "https://leetcode.com/problems/populating-next-right-pointers-in-each-node/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "search-in-a-binary-search-tree",
+    "title": "Search in BST",
+    "leetcode_url": "https://leetcode.com/problems/search-in-a-binary-search-tree/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "convert-sorted-array-to-binary-search-tree",
+    "title": "Construct BST from given keys",
+    "leetcode_url": "https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "construct-binary-search-tree-from-preorder-traversal",
+    "title": "Construct a BST from a preorder traversal",
+    "leetcode_url": "https://leetcode.com/problems/construct-binary-search-tree-from-preorder-traversal/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "validate-binary-search-tree",
+    "title": "Check if a tree is a BST or not",
+    "leetcode_url": "https://leetcode.com/problems/validate-binary-search-tree/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "lowest-common-ancestor-of-a-binary-search-tree",
+    "title": "LCA in BST",
+    "leetcode_url": "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "inorder-successor-in-bst",
+    "title": "Inorder successor and predecessor in BST",
+    "leetcode_url": "https://leetcode.com/problems/inorder-successor-in-bst/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "kth-smallest-element-in-a-bst",
+    "title": "Floor in a BST",
+    "leetcode_url": "https://leetcode.com/problems/kth-smallest-element-in-a-bst/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "two-sum-iv-input-is-a-bst",
+    "title": "Two sum in BST",
+    "leetcode_url": "https://leetcode.com/problems/two-sum-iv-input-is-a-bst/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "binary-search-tree-iterator",
+    "title": "BST iterator",
+    "leetcode_url": "https://leetcode.com/problems/binary-search-tree-iterator/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "maximum-sum-bst-in-binary-tree",
+    "title": "Size of the largest BST in a Binary Tree",
+    "leetcode_url": "https://leetcode.com/problems/maximum-sum-bst-in-binary-tree/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "serialize-and-deserialize-binary-tree",
+    "title": "Serialize and De-serialize BT",
+    "leetcode_url": "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "kth-largest-element-in-a-stream",
+    "title": "Kth largest element in a stream of running integers",
+    "leetcode_url": "https://leetcode.com/problems/kth-largest-element-in-a-stream/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "kth-largest-element-in-an-array",
+    "title": "Distinct Numbers in Each Subarray",
+    "leetcode_url": "https://leetcode.com/problems/kth-largest-element-in-an-array/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "flood-fill",
+    "title": "Flood-fill Algorithm",
+    "leetcode_url": "https://leetcode.com/problems/flood-fill/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "clone-graph",
+    "title": "Clone Graph",
+    "leetcode_url": "https://leetcode.com/problems/clone-graph/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "course-schedule",
+    "title": "DFS",
+    "leetcode_url": "https://leetcode.com/problems/course-schedule/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "number-of-islands",
+    "title": "Topological Sort BFS",
+    "leetcode_url": "https://leetcode.com/problems/number-of-islands/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "is-graph-bipartite",
+    "title": "Bipartite graph",
+    "leetcode_url": "https://leetcode.com/problems/is-graph-bipartite/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "maximum-number-of-non-overlapping-substrings",
+    "title": "Strongly Connected Component(using KosaRaju\u0393\u00c7\u00d6s algo)",
+    "leetcode_url": "https://leetcode.com/problems/maximum-number-of-non-overlapping-substrings/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "maximum-product-subarray",
+    "title": "Dijkstra's algorithm",
+    "leetcode_url": "https://leetcode.com/problems/maximum-product-subarray/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "edit-distance",
+    "title": "Longest Increasing Subsequence",
+    "leetcode_url": "https://leetcode.com/problems/edit-distance/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "minimum-path-sum",
+    "title": "Maximum Sum Increasing Subsequence",
+    "leetcode_url": "https://leetcode.com/problems/minimum-path-sum/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "coin-change-2",
+    "title": "Coin change II",
+    "leetcode_url": "https://leetcode.com/problems/coin-change-2/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "implement-trie-prefix-tree",
+    "title": "Rod cutting problem",
+    "leetcode_url": "https://leetcode.com/problems/implement-trie-prefix-tree/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "maximum-xor-of-two-numbers-in-an-array",
+    "title": "Trie Implementation and Advanced Operations",
+    "leetcode_url": "https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/",
+    "section": "Unknown",
+    "source": "striver"
+  },
+  {
+    "slug": "maximum-xor-with-an-element-from-array",
+    "title": "Maximum Xor with an element from an array",
+    "leetcode_url": "https://leetcode.com/problems/maximum-xor-with-an-element-from-array/",
+    "section": "Unknown",
+    "source": "striver"
+  }
+]

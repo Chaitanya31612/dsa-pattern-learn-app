@@ -1,0 +1,7 @@
+venv/
+.env
+__pycache__/
+*.pyc
+output/
+*.xlsx
+!companies_template.xlsx

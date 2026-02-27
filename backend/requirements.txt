@@ -1,0 +1,12 @@
+# Scraping & parsing
+requests
+beautifulsoup4
+crawl4ai
+
+# AI providers
+groq
+google-genai
+ollama
+
+# Config
+python-dotenv

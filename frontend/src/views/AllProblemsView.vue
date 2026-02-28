@@ -2,10 +2,13 @@
 import { computed, ref } from 'vue'
 import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
-import type { Problem } from '../types'
+import { useSmartRandom } from '../composables/useSmartRandom'
 
 const { getAllProblems, patterns, loading } = usePatterns()
 const { isSolved, markSolved, unmarkSolved } = useProgress()
+const { navigateSmartRandom } = useSmartRandom()
+
+const showBridge = ref(false)
 
 const search = ref('')
 const filterDiff = ref<string>('all')
@@ -36,6 +39,11 @@ const filteredProblems = computed(() => {
     list = list.filter(p => p.pattern_id === filterPattern.value)
   }
 
+  // Bridge filter
+  if (showBridge.value) {
+    list = list.filter(p => p.in_both)
+  }
+
   // Status filter
   if (filterStatus.value === 'solved') {
     list = list.filter(p => isSolved(p.slug))
@@ -64,6 +72,10 @@ function toggleSolved(slug: string) {
 function getDiffClass(diff: string | null): string {
   if (!diff) return ''
   return `badge-${diff.toLowerCase()}`
+}
+
+function toggleBridge() {
+  showBridge.value = !showBridge.value
 }
 </script>
 
@@ -113,6 +125,20 @@ function getDiffClass(diff: string | null): string {
           <button class="tab-btn" :class="{ active: sortBy === 'difficulty' }" @click="sortBy = 'difficulty'">Diff</button>
           <button class="tab-btn" :class="{ active: sortBy === 'acceptance' }" @click="sortBy = 'acceptance'">AC%</button>
         </div>
+
+        <div style="flex: 1"></div>
+
+        <button
+          class="btn"
+          :class="{ 'btn-primary': showBridge }"
+          @click="toggleBridge"
+          :title="showBridge ? 'Show all problems' : 'Problems that appear in both NeetCode and Striver sheets \u2014 highest-value overlap'"
+        >
+          {{ showBridge ? '✕ Hide Bridge' : '🔗 Bridge Problems' }}
+        </button>
+        <button class="btn btn-ghost" @click="navigateSmartRandom()" title="Picks a problem based on your progress, confidence, difficulty curve, and momentum">
+          ⚡ Smart Random
+        </button>
       </div>
     </div>
 

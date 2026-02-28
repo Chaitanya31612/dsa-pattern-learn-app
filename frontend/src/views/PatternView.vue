@@ -3,12 +3,13 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
+import CodeHighlight from '../components/CodeHighlight.vue'
 
 const route = useRoute()
 const patternId = computed(() => route.params.id as string)
 
 const { getPattern, getProblemsForPattern, loading } = usePatterns()
-const { isSolved, getConfidence, markSolved, unmarkSolved, patternCompletion } = useProgress()
+const { isSolved, markSolved, unmarkSolved, patternCompletion } = useProgress()
 
 const pattern = computed(() => getPattern(patternId.value))
 const problems = computed(() => getProblemsForPattern(patternId.value))
@@ -172,10 +173,7 @@ function getDiffClass(diff: string | null): string {
         </button>
       </div>
 
-      <div class="code-block">
-        <span class="code-lang">{{ codeLang }}</span>
-        <pre><code>{{ templateCode }}</code></pre>
-      </div>
+      <CodeHighlight :code="templateCode" :language="codeLang" />
     </div>
 
     <!-- ═══ Problems Tab ═══ -->

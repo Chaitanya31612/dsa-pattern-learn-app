@@ -4,7 +4,7 @@ import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
 
 const { patterns, meta, loading } = usePatterns()
-const { totalSolved, patternCompletion, getDueForReview, isSolved } = useProgress()
+const { totalSolved, patternCompletion, getDueForReview } = useProgress()
 
 const overallPercent = computed(() => {
   if (!meta.value.total_problems) return 0
@@ -388,6 +388,70 @@ function getPatternAccent(index: number): string {
   pointer-events: none;
 }
 
+/* ── Bridge Problems ──────────────────────────── */
+.bridge-section {
+  margin-top: var(--space-2xl);
+}
+
+.bridge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-sm);
+}
+
+.bridge-card {
+  text-decoration: none;
+  color: inherit;
+  padding: var(--space-md);
+  position: relative;
+  transition: all var(--transition-fast);
+  border-left: 3px solid var(--accent-purple);
+}
+
+.bridge-card:hover {
+  border-color: var(--accent-cyan);
+}
+
+.bridge-solved {
+  opacity: 0.5;
+}
+
+.bridge-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: 6px;
+}
+
+.bridge-num {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.bridge-title {
+  display: block;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bridge-pattern {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.bridge-check {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  color: var(--accent-green);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
 /* ── Loading ──────────────────────────────────── */
 .loading-state {
   display: flex;
@@ -415,6 +479,10 @@ function getPatternAccent(index: number): string {
   }
 
   .pattern-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bridge-grid {
     grid-template-columns: 1fr;
   }
 }

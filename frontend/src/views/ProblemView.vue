@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
+import { useSmartRandom } from '../composables/useSmartRandom'
 import ReflectionModal from '../components/ReflectionModal.vue'
 
 const route = useRoute()
@@ -10,6 +11,7 @@ const slug = computed(() => route.params.slug as string)
 
 const { problems, loading } = usePatterns()
 const { isSolved, markSolved, unmarkSolved, getConfidence, getNote, addNote, getReflection } = useProgress()
+const { navigateSmartRandom } = useSmartRandom()
 
 const problem = computed(() => problems.value[slug.value])
 
@@ -88,6 +90,9 @@ function getDiffClass(diff: string | null): string {
         </a>
         <button class="btn btn-ghost" @click="showNotes = !showNotes">
           {{ showNotes ? 'Hide Notes' : '✎ Notes' }}
+        </button>
+        <button class="btn btn-ghost" @click="navigateSmartRandom(slug)" title="Smart pick based on your progress, confidence, and momentum">
+          ⚡ Next Problem
         </button>
       </div>
 

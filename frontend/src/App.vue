@@ -46,6 +46,9 @@ const router = useRouter()
             <span class="stat-value">{{ totalSolved }}</span>
             <span class="stat-label">/{{ meta.total_problems }}</span>
           </div>
+          <router-link to="/settings" class="btn btn-ghost theme-toggle" title="Settings">
+            ⚙
+          </router-link>
           <button class="btn btn-ghost theme-toggle" @click="toggleTheme" :title="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`">
             {{ theme === 'dark' ? '☀' : '◑' }}
           </button>

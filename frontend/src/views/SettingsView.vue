@@ -199,9 +199,40 @@ const totalReflections = Object.keys(state.reflections).length
         17 patterns · 200 problems · 100% local · zero backend
       </p>
       <p class="setting-desc mono" style="font-size: var(--text-xs); margin-top: var(--space-sm)">
-        Architected by Human Overlord: Chaitanya Gupta 🧠✨
+        Human Involved: <strong>Chaitanya Gupta</strong>
+        <br/><br/>
+        <a
+          class="dev-link mono"
+          href="https://github.com/Chaitanya31612"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          github.com/Chaitanya31612 ↗
+        </a>
       </p>
     </section>
+
+    <!-- <section class="card card-flat animate-in stagger-5 dev-corner">
+      <h3 class="section-heading">🧑‍💻 Dev Corner</h3>
+      <p class="setting-desc">
+        Human Involved: <strong>Chaitanya Gupta</strong>
+      </p>
+      <div class="dev-notes mono">
+        <p>// STACK: 1 human brain + a small AI orchestra</p>
+        <p>// CREDIT: Drafted with AI, designed and orchestrated by a caffeinated human.</p>
+      </div>
+      <p class="setting-desc mono" style="font-size: var(--text-xs); margin-top: var(--space-sm)">
+        If it looks smooth, thank orchestration and suspiciously many console.logs.
+      </p>
+      <a
+        class="dev-link mono"
+        href="https://github.com/Chaitanya31612"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        github.com/Chaitanya31612 ↗
+      </a>
+    </section> -->
   </div>
 </template>
 
@@ -368,6 +399,43 @@ const totalReflections = Object.keys(state.reflections).length
   font-size: var(--text-xs);
   color: var(--text-muted);
   line-height: 1.5;
+}
+
+.dev-corner {
+  border-style: dashed;
+  background:
+    radial-gradient(circle at top right, rgba(56, 189, 248, 0.1), transparent 55%),
+    var(--bg-card);
+}
+
+.dev-notes {
+  margin: var(--space-sm) 0 var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.dev-notes p + p {
+  margin-top: 4px;
+}
+
+.dev-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-xs);
+  letter-spacing: 0.02em;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-elevated);
+}
+
+.dev-link:hover {
+  border-color: var(--accent-green);
 }
 
 @media (max-width: 768px) {

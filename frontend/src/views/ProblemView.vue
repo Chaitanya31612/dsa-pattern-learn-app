@@ -3,12 +3,13 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
+import ReflectionModal from '../components/ReflectionModal.vue'
 
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
 const { problems, loading } = usePatterns()
-const { isSolved, markSolved, unmarkSolved, getConfidence, getNote, addNote } = useProgress()
+const { isSolved, markSolved, unmarkSolved, getConfidence, getNote, addNote, getReflection } = useProgress()
 
 const problem = computed(() => problems.value[slug.value])
 
@@ -17,6 +18,7 @@ const confidence = computed(() => getConfidence(slug.value))
 
 const noteText = ref('')
 const showNotes = ref(false)
+const showReflection = ref(false)
 
 // Load existing note
 import { watchEffect } from 'vue'
@@ -30,7 +32,8 @@ function toggleSolved() {
   if (solved.value) {
     unmarkSolved(slug.value)
   } else {
-    markSolved(slug.value, 2)
+    // Open reflection modal instead of directly marking
+    showReflection.value = true
   }
 }
 
@@ -78,7 +81,7 @@ function getDiffClass(diff: string | null): string {
 
       <div class="prob-actions">
         <button class="btn" :class="{ 'btn-primary': solved }" @click="toggleSolved">
-          {{ solved ? '✓ Solved' : 'Mark Solved' }}
+          {{ solved ? '✓ Solved' : '◉ Mark Solved' }}
         </button>
         <a :href="problem.leetcode_url" target="_blank" rel="noopener" class="btn">
           Open on LeetCode ↗
@@ -87,6 +90,15 @@ function getDiffClass(diff: string | null): string {
           {{ showNotes ? 'Hide Notes' : '✎ Notes' }}
         </button>
       </div>
+
+      <!-- Reflection Modal -->
+      <ReflectionModal
+        v-if="showReflection && problem"
+        :slug="slug"
+        :pattern-name="problem.pattern_name"
+        :problem-title="problem.title"
+        @close="showReflection = false"
+      />
 
       <!-- Confidence selector -->
       <div class="confidence-row" v-if="solved">
@@ -102,6 +114,27 @@ function getDiffClass(diff: string | null): string {
         </button>
       </div>
     </header>
+
+    <!-- ═══ Previous Reflection ═══ -->
+    <section v-if="getReflection(slug)" class="reflection-section animate-in" style="margin-bottom: var(--space-md)">
+      <div class="card card-flat">
+        <h3 class="section-heading">🪞 Your Reflection</h3>
+        <div class="reflection-grid">
+          <div class="reflection-item">
+            <span class="refl-label">🎯 Pattern identified</span>
+            <span class="refl-val">{{ getReflection(slug)!.pattern }}</span>
+          </div>
+          <div class="reflection-item">
+            <span class="refl-label">🔍 What signaled it</span>
+            <span class="refl-val">{{ getReflection(slug)!.signal }}</span>
+          </div>
+          <div class="reflection-item">
+            <span class="refl-label">🔧 Template deviation</span>
+            <span class="refl-val">{{ getReflection(slug)!.deviation }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- ═══ Notes ═══ -->
     <section v-if="showNotes" class="notes-section animate-in" style="margin-bottom: var(--space-xl)">
@@ -381,6 +414,34 @@ function getDiffClass(diff: string | null): string {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-xs);
+}
+
+/* ── Reflection Grid ────────────────── */
+.reflection-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+}
+
+.reflection-item {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.refl-label {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.refl-val {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  line-height: 1.5;
 }
 
 .loading-state {

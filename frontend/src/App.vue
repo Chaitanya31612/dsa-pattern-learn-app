@@ -33,6 +33,12 @@ const router = useRouter()
           <router-link to="/problems" class="nav-link" active-class="active">
             <span class="nav-icon">▤</span> Problems
           </router-link>
+          <router-link to="/review" class="nav-link" active-class="active">
+            <span class="nav-icon">↻</span> Review
+          </router-link>
+          <router-link to="/quiz" class="nav-link" active-class="active">
+            <span class="nav-icon">?</span> Quiz
+          </router-link>
         </nav>
 
         <div class="header-right">

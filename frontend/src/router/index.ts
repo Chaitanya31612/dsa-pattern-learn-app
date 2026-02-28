@@ -3,6 +3,8 @@ import DashboardView from '../views/DashboardView.vue'
 import PatternView from '../views/PatternView.vue'
 import ProblemView from '../views/ProblemView.vue'
 import AllProblemsView from '../views/AllProblemsView.vue'
+import ReviewView from '../views/ReviewView.vue'
+import PatternQuizView from '../views/PatternQuizView.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -28,6 +30,18 @@ const routes: RouteRecordRaw[] = [
     name: 'all-problems',
     component: AllProblemsView,
     meta: { title: 'All Problems' },
+  },
+  {
+    path: '/review',
+    name: 'review',
+    component: ReviewView,
+    meta: { title: 'Review Queue' },
+  },
+  {
+    path: '/quiz',
+    name: 'quiz',
+    component: PatternQuizView,
+    meta: { title: 'Pattern Quiz' },
   },
 ]
 

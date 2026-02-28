@@ -88,12 +88,12 @@ function getPatternAccent(index: number): string {
           </div>
         </div>
 
-        <div class="stat-card" v-if="dueCount > 0">
+        <router-link to="/review" class="stat-card stat-card-link" v-if="dueCount > 0">
           <div class="stat-info">
             <span class="stat-number" style="color: var(--accent-orange)">{{ dueCount }}</span>
-            <span class="stat-text">due for review</span>
+            <span class="stat-text">due for review →</span>
           </div>
-        </div>
+        </router-link>
       </div>
     </section>
 

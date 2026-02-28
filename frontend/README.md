@@ -1,306 +1,349 @@
 # DSA Pattern Lab Frontend
 
-A Vue 3 + TypeScript + Vite frontend for learning DSA through pattern-based practice.
+A Vue 3 + TypeScript + Vite frontend for pattern-first DSA learning.
 
-This guide explains how this folder is organized, how views/composables connect, how `db.json` is consumed, and how user progress/preferences persist.
+This README is a detailed technical guide for this folder: architecture, navigation, data flow, composables, feature workflows, and Smart Random internals.
 
-## 1) Quick Start
+## 1) What Changed In This Branch
 
-| Task | Command | Notes |
-|---|---|---|
-| Install deps | `npm install` | Creates `node_modules/` |
-| Run dev server | `npm run dev` | Opens Vite app (usually `http://localhost:5173`) |
-| Build production | `npm run build` | Type-check + Vite bundle |
-| Preview build | `npm run preview` | Serves `dist/` output |
+| Area                | Change                                                                       |
+| ------------------- | ---------------------------------------------------------------------------- |
+| Navigation          | Added routes and header links for `Review`, `Quiz`, and `Settings`     |
+| Smart selection     | Added `useSmartRandom.ts` and Smart Random actions in problem list/detail  |
+| Reflection workflow | Added `ReflectionModal.vue` and solve-time reflection capture              |
+| Review system       | Added `ReviewView.vue` with spaced-repetition queue and confidence updates |
+| Quiz system         | Added `PatternQuizView.vue` for pattern identification practice            |
+| Settings            | Added `SettingsView.vue` for export/import/clear local progress            |
+| Code templates      | Added `CodeHighlight.vue` with `highlight.js` syntax highlighting        |
+| Problem list UX     | Added bridge filter and Smart Random button in All Problems view             |
 
-## 2) Folder Navigation Map
+## 2) Quick Start
+
+| Task                     | Command             |
+| ------------------------ | ------------------- |
+| Install dependencies     | `npm install`     |
+| Start dev server         | `npm run dev`     |
+| Build production         | `npm run build`   |
+| Preview production build | `npm run preview` |
+
+## 3) Folder Map
 
 ```text
 frontend/
 ├── public/
-│   ├── db.json                # Main dataset: patterns + problems + metadata
+│   ├── db.json
 │   └── vite.svg
 ├── src/
-│   ├── App.vue                # Global layout (header/nav/footer + router-view)
-│   ├── main.ts                # App bootstrap (createApp + router)
-│   ├── style.css              # Global design system and utility classes
+│   ├── App.vue
+│   ├── main.ts
+│   ├── style.css
 │   ├── router/
-│   │   └── index.ts           # Route definitions + dynamic page titles
+│   │   └── index.ts
 │   ├── composables/
-│   │   ├── usePatterns.ts     # Data loading/querying from db.json
-│   │   ├── useProgress.ts     # Solved state, notes, confidence, review schedule
-│   │   └── useTheme.ts        # Dark/light theme persistence
+│   │   ├── usePatterns.ts
+│   │   ├── useProgress.ts
+│   │   ├── useTheme.ts
+│   │   └── useSmartRandom.ts
+│   ├── components/
+│   │   ├── CodeHighlight.vue
+│   │   └── ReflectionModal.vue
 │   ├── views/
-│   │   ├── DashboardView.vue  # Pattern dashboard and progress summary
-│   │   ├── PatternView.vue    # Pattern details + template + pattern problems
-│   │   ├── ProblemView.vue    # Individual problem page + notes/confidence
-│   │   └── AllProblemsView.vue# Search/filter/sort across all problems
-│   ├── types/
-│   │   └── index.ts           # Type contracts for DB and local progress
-│   └── components/
-│       └── HelloWorld.vue     # Template artifact (currently unused)
-├── index.html
+│   │   ├── DashboardView.vue
+│   │   ├── PatternView.vue
+│   │   ├── ProblemView.vue
+│   │   ├── AllProblemsView.vue
+│   │   ├── ReviewView.vue
+│   │   ├── PatternQuizView.vue
+│   │   └── SettingsView.vue
+│   └── types/
+│       └── index.ts
 ├── package.json
 └── README.md
 ```
 
-## 3) High-Level Architecture
+## 4) Route Map
+
+| Route              | View                | Purpose                                                      |
+| ------------------ | ------------------- | ------------------------------------------------------------ |
+| `/`              | `DashboardView`   | Pattern dashboard + macro progress                           |
+| `/pattern/:id`   | `PatternView`     | Pattern overview, templates, and problem list                |
+| `/problem/:slug` | `ProblemView`     | Problem details, solving, notes, reflection, next smart pick |
+| `/problems`      | `AllProblemsView` | Search/filter/sort all problems + bridge + smart random      |
+| `/review`        | `ReviewView`      | Spaced repetition queue                                      |
+| `/quiz`          | `PatternQuizView` | Pattern recognition training mode                            |
+| `/settings`      | `SettingsView`    | Backup/restore/clear progress data                           |
+
+Router behavior (`src/router/index.ts`):
+
+- Uses `createWebHistory()`.
+- Restores scroll position on browser back/forward.
+- Updates document title to `<Route> · DSA Pattern Lab`.
+
+## 5) High-Level Architecture
 
 ```mermaid
 flowchart TD
-    A[main.ts] --> B[App.vue]
-    B --> C[Vue Router]
+  A[main.ts] --> B[App.vue]
+  B --> C[Vue Router]
 
-    C --> D[/]
-    C --> E[/pattern/:id]
-    C --> F[/problem/:slug]
-    C --> G[/problems]
+  C --> D[DashboardView]
+  C --> E[PatternView]
+  C --> F[ProblemView]
+  C --> G[AllProblemsView]
+  C --> H[ReviewView]
+  C --> I[PatternQuizView]
+  C --> J[SettingsView]
 
-    D --> H[DashboardView]
-    E --> I[PatternView]
-    F --> J[ProblemView]
-    G --> K[AllProblemsView]
+  D --> P[usePatterns]
+  E --> P
+  F --> P
+  G --> P
+  H --> P
+  I --> P
 
-    H --> L[usePatterns]
-    H --> M[useProgress]
+  D --> R[useProgress]
+  E --> R
+  F --> R
+  G --> R
+  H --> R
+  I --> R
+  J --> R
 
-    I --> L
-    I --> M
+  B --> T[useTheme]
+  F --> S[useSmartRandom]
+  G --> S
 
-    J --> L
-    J --> M
-
-    K --> L
-    K --> M
-
-    B --> N[useTheme]
-
-    L --> O[public/db.json]
-    M --> P[localStorage:dsa-pattern-progress]
-    N --> Q[localStorage:dsa-theme]
+  P --> DB[public/db.json]
+  R --> LS1[localStorage: dsa-pattern-progress]
+  T --> LS2[localStorage: dsa-theme]
+  S --> LS3[localStorage: dsa-smart-random-history]
 ```
 
-## 4) Route and Navigation Behavior
-
-| Route | View | Param | How user gets there | Primary purpose |
-|---|---|---|---|---|
-| `/` | `DashboardView` | none | Header nav/logo | Overall progress + pattern cards |
-| `/pattern/:id` | `PatternView` | `id` = `pattern_id` | Click a pattern card/tag | Study one pattern (overview/template/problems tab) |
-| `/problem/:slug` | `ProblemView` | `slug` = problem slug | From pattern/all-problems table | Work on one specific problem |
-| `/problems` | `AllProblemsView` | none | Header nav | Global searchable/filterable problem index |
-
-Extra behavior from `src/router/index.ts`:
-- Uses `createWebHistory()`.
-- Restores scroll position on back/forward; otherwise scrolls to top.
-- Sets document title as `<Route Meta Title> · DSA Pattern Lab`.
-
-## 5) View-to-View User Journey
+## 6) Screen Navigation Workflows
 
 ```mermaid
 flowchart LR
-    D[Dashboard] -->|click pattern card| P[Pattern View]
-    D -->|header nav| A[All Problems]
+  D[Dashboard] -->|Pattern card| P[Pattern]
+  D -->|Header nav| AP[All Problems]
+  D -->|Review due card| RV[Review]
 
-    P -->|Problems tab -> click problem| R[Problem View]
-    P -->|related pattern tag| P2[Another Pattern View]
-    P -->|back link| D
+  P -->|Problem row| PR[Problem]
+  P -->|Related pattern| P2[Pattern]
 
-    A -->|click problem title| R
-    A -->|click pattern tag| P
+  AP -->|Problem title| PR
+  AP -->|Pattern tag| P
+  AP -->|Smart Random| PR
 
-    R -->|back link to pattern| P
-    R -->|external link| LC[(LeetCode)]
+  PR -->|Back to pattern| P
+  PR -->|Next Problem Smart Random| PR2[Another Problem]
+  PR -->|Mark solved| RM[Reflection Modal]
+
+  RV -->|View details| PR
+  RV -->|Update confidence| RV
+
+  Q[Quiz] -->|View details| PR
+  S[Settings] -->|Import/Export/Clear| S
 ```
 
-## 6) Composables: What They Do and How They Interact
+## 7) Core Composables
 
-### `usePatterns.ts` (data access layer)
+### `usePatterns.ts`
 
-| Concern | Implementation |
-|---|---|
-| Data source | Fetches `GET /db.json` from `public/db.json` |
-| Shared cache | Module-level `db`, `loaded`, `loading`, `error` refs |
-| Primary outputs | `patterns`, `problems`, `patternOrder`, `meta`, `loading`, `error` |
-| Query helpers | `getPattern(id)`, `getProblemsForPattern(patternId)`, `getAllProblems()` |
+| Responsibility | Notes                                                                          |
+| -------------- | ------------------------------------------------------------------------------ |
+| Load dataset   | Fetches `/db.json` once using module-level cache (`loaded`)                |
+| Expose data    | `patterns`, `problems`, `patternOrder`, `meta`, `loading`, `error` |
+| Query helpers  | `getPattern`, `getProblemsForPattern`, `getAllProblems`                  |
 
-Important details:
-- `loaded` is module-scoped, so all views share one dataset instance.
-- `pattern_order` is exposed as `patternOrder` but currently not used directly by views.
-- `error` is produced on fetch failure, but no view currently renders an error UI.
+### `useProgress.ts`
 
-### `useProgress.ts` (learning state + persistence)
+| Responsibility         | Notes                                                                          |
+| ---------------------- | ------------------------------------------------------------------------------ |
+| Persist learning state | Uses reactive `state` + deep watch to save in localStorage                   |
+| Storage key            | `dsa-pattern-progress`                                                       |
+| Solved API             | `markSolved`, `unmarkSolved`, `isSolved`, `getConfidence`              |
+| Notes API              | `addNote`, `getNote`                                                       |
+| Reflection API         | `addReflection`, `getReflection`                                           |
+| Review logic           | `getDueForReview()` by confidence intervals: 1d / 3d / 7d                    |
+| Progress utilities     | `totalSolved`, `patternCompletion`, `exportProgress`, `importProgress` |
 
-| Concern | Implementation |
-|---|---|
-| Local storage key | `dsa-pattern-progress` |
-| In-memory state | Reactive object: `{ solved, notes, reflections }` |
-| Auto-save | Deep `watch` persists every state change |
-| Solved tracking | `markSolved(slug, confidence)`, `unmarkSolved(slug)`, `isSolved(slug)` |
-| Confidence | `getConfidence(slug)` and confidence setter via `markSolved` |
-| Notes | `addNote(slug, note)`, `getNote(slug)` |
-| Review queue | `getDueForReview()` using confidence-based intervals |
-| Progress metrics | `totalSolved`, `patternCompletion(slugs)` |
-| Import/export | `exportProgress()`, `importProgress(json)` |
+### `useTheme.ts`
 
-Spaced repetition intervals:
+| Responsibility   | Notes                                         |
+| ---------------- | --------------------------------------------- |
+| Theme preference | Dark/light toggle                             |
+| Storage key      | `dsa-theme`                                 |
+| DOM integration  | Sets `document.documentElement[data-theme]` |
 
-| Confidence | Meaning | Review interval |
-|---|---|---|
-| `1` | Shaky | 1 day |
-| `2` | Okay | 3 days |
-| `3` | Solid | 7 days |
+### `useSmartRandom.ts`
 
-### `useTheme.ts` (UI preference)
+| Responsibility          | Notes                                                                  |
+| ----------------------- | ---------------------------------------------------------------------- |
+| Weighted recommendation | Computes learning-aware weights per candidate problem                  |
+| Duplicate prevention    | Tracks recent picks and avoids immediate/recent repeats                |
+| Navigation helper       | `navigateSmartRandom(excludeSlug?)` pushes to selected problem route |
+| Storage key             | `dsa-smart-random-history`                                           |
 
-| Concern | Implementation |
-|---|---|
-| Local storage key | `dsa-theme` |
-| Allowed values | `'dark'` \| `'light'` |
-| DOM sync | Sets `data-theme` on `document.documentElement` |
-| Public API | `theme`, `toggleTheme()` |
+## 8) Detailed Feature Workflows
 
-## 7) Data Source: `public/db.json`
+### 8.1 Solve + Reflection Workflow
 
-Top-level shape:
+When user clicks `Mark Solved` in `ProblemView`:
 
-| Key | Type | Purpose |
-|---|---|---|
-| `patterns` | `Pattern[]` | Pattern content, templates, and problem slug lists |
-| `problems` | `Record<string, Problem>` | Problem details keyed by slug |
-| `pattern_order` | `string[]` | Canonical learning order by `pattern_id` |
-| `meta` | object | Aggregate counts and difficulty distribution |
-
-Current dataset snapshot:
-
-| Metric | Value |
-|---|---|
-| Total patterns | `17` |
-| Total problems | `200` |
-| Difficulty split | Easy `70`, Medium `113`, Hard `17` |
-
-## 8) Type Contracts (`src/types/index.ts`)
-
-### `Pattern`
-
-| Key examples | Meaning |
-|---|---|
-| `pattern_id`, `name` | Identity and display |
-| `mental_model`, `explanation` | Conceptual learning content |
-| `template_code_python/javascript/java` | Multi-language starter templates |
-| `trigger_phrases`, `when_to_use`, `common_mistakes` | Pattern heuristics |
-| `problem_slugs`, `problem_count` | Links pattern to its problems |
-| `related_patterns` | Graph-like relationship between patterns |
-
-### `Problem`
-
-| Key examples | Meaning |
-|---|---|
-| `slug`, `title`, `number`, `leetcode_url` | Core identification |
-| `difficulty`, `acceptance_rate` | Difficulty metadata |
-| `pattern_id`, `pattern_name` | Parent pattern mapping |
-| `pattern_hint`, `key_insight`, `template_deviation`, `common_mistake` | Learning annotations |
-| `time_complexity`, `space_complexity`, `topic_tags` | Study and recall helpers |
-
-### `Progress`
-
-| Bucket | Stored data |
-|---|---|
-| `solved[slug]` | `{ date, confidence }` |
-| `notes[slug]` | Free-text notes |
-| `reflections[slug]` | `{ pattern, signal, deviation }` (ready for future UI) |
-
-## 9) Interaction and Persistence Flows
-
-### A) Marking a problem as solved
+1. Reflection modal opens (instead of immediate solve).
+2. User completes 4-step reflection.
+3. On submit: `markSolved(slug, confidence)` + `addReflection(slug, {...})`.
+4. Progress auto-persists in localStorage via `useProgress` deep watch.
 
 ```mermaid
 sequenceDiagram
-    participant U as User
-    participant V as View (Pattern/Problem/AllProblems)
-    participant P as useProgress
-    participant LS as localStorage
+  participant U as User
+  participant PV as ProblemView
+  participant RM as ReflectionModal
+  participant PR as useProgress
+  participant LS as localStorage
 
-    U->>V: Click solved toggle
-    V->>P: markSolved(slug, confidence)
-    P->>P: state.solved[slug] = {date, confidence}
-    P->>LS: auto-save via deep watch
+  U->>PV: Click Mark Solved
+  PV->>RM: Open modal
+  U->>RM: Fill pattern/signal/deviation/confidence
+  RM->>PR: markSolved(slug, confidence)
+  RM->>PR: addReflection(slug, reflection)
+  PR->>LS: Auto-save state
 ```
 
-### B) Notes lifecycle on problem page
+### 8.2 Review Queue Workflow (`/review`)
+
+1. `getDueForReview()` computes due slugs from solved dates + confidence intervals.
+2. View maps slugs to problems and sorts by lowest confidence first.
+3. User can update confidence quickly (`😟`, `😐`, `😎`) which refreshes solve date and confidence.
+
+### 8.3 Quiz Workflow (`/quiz`)
+
+1. Random problem chosen from opti	onal pattern-filtered pool.
+2. User guesses pattern.
+3. Reveal computes fuzzy correctness and updates session score/history.
+4. User jumps to problem detail or next quiz item.
+
+### 8.4 Settings Workflow (`/settings`)
+
+- Export: serializes progress state into downloadable JSON file.
+- Import: accepts pasted/file JSON and merges into current state.
+- Clear: deletes solved/notes/reflections in place.
+
+## 9) Smart Random Deep Dive
+
+### 9.1 Why it is “smart” instead of plain random
+
+Plain random ignores learning context. Smart Random uses weighted sampling based on:
+
+- current mastery,
+- confidence history,
+- pattern progression,
+- momentum and stale gaps,
+- high-value bridge problems,
+- diversity constraints (recent-pick avoidance).
+
+### 9.2 Weight model (current implementation)
+
+| Factor              | Condition                                   | Weight impact     |
+| ------------------- | ------------------------------------------- | ----------------- |
+| Unsolved base       | problem not solved                          | `+100`          |
+| Solved resurfacing  | confidence `1`                            | `+40`           |
+| Solved resurfacing  | confidence `2`                            | `+10`           |
+| Solid solved        | confidence `3`                            | excluded (`0`)  |
+| Difficulty ladder   | early pattern progress + Easy               | `+30`           |
+| Difficulty ladder   | mid progress + Medium                       | `+25`           |
+| Difficulty ladder   | late progress + Hard                        | `+20`           |
+| Pattern momentum    | solved in pattern within 24h                | `+20`           |
+| Pattern momentum    | solved in pattern within 72h                | `+10`           |
+| Stale-pattern nudge | no solved in pattern and candidate unsolved | `+15`           |
+| Bridge bonus        | `in_both === true`                        | `+10`           |
+| Jitter              | always                                      | `+0..15` random |
+
+### 9.3 Duplicate prevention strategy
+
+| Layer                     | Behavior                                                                       | Result                                |
+| ------------------------- | ------------------------------------------------------------------------------ | ------------------------------------- |
+| Current-problem exclusion | `excludeSlug` (e.g. ProblemView “Next Problem”) is filtered out            | Prevents same-page immediate repeat   |
+| Last-pick hard block      | Most recent smart-random slug is blocked when alternatives exist               | Prevents back-to-back duplicate picks |
+| Recent-window freshness   | Recently picked slugs (window up to 12) are excluded while fresh options exist | Strong short-term variety             |
+| Graceful fallback         | If pool exhausted, recent items are reintroduced with recency penalty          | Avoids dead-ends in small pools       |
+| Persistent history        | Recent picks saved in `dsa-smart-random-history` (max 40)                    | Variety survives page reloads         |
+
+### 9.4 Selection flow
 
 ```mermaid
-sequenceDiagram
-    participant R as Route /problem/:slug
-    participant V as ProblemView
-    participant P as useProgress
-    participant LS as localStorage
-
-    R->>V: slug changes
-    V->>P: getNote(slug)
-    P-->>V: existing note text
-    V->>P: addNote(slug, note) on textarea blur
-    P->>LS: auto-save note
+flowchart TD
+  A[Candidate problems] --> B[Exclude current slug]
+  B --> C[Exclude last smart-random pick if possible]
+  C --> D[Compute learning weight]
+  D --> E[Keep only weight > 0]
+  E --> F{Any not in recent window?}
+  F -->|Yes| G[Use unseen-recent pool]
+  F -->|No| H[Apply recency penalty and use full pool]
+  G --> I[Weighted random draw]
+  H --> I
+  I --> J[Record picked slug in history]
+  J --> K[Navigate to /problem/:slug]
 ```
 
-### C) Theme preference lifecycle
+## 10) Data Contracts and Storage
 
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant A as App Header Toggle
-    participant T as useTheme
-    participant D as documentElement
-    participant LS as localStorage
+### Dataset (`public/db.json`)
 
-    U->>A: Click theme button
-    A->>T: toggleTheme()
-    T->>D: set data-theme=dark/light
-    T->>LS: setItem('dsa-theme', theme)
-```
+| Top-level key     | Type                        | Purpose                                  |
+| ----------------- | --------------------------- | ---------------------------------------- |
+| `patterns`      | `Pattern[]`               | Pattern content and linked problem slugs |
+| `problems`      | `Record<string, Problem>` | Problem detail records keyed by slug     |
+| `pattern_order` | `string[]`                | Canonical pattern progression order      |
+| `meta`          | object                      | Total counts and difficulty distribution |
 
-## 10) Screen-by-Screen Behavior
+Current snapshot:
 
-| View | Reads from composables | Writes to composables | UI responsibilities |
-|---|---|---|---|
-| `DashboardView` | `patterns`, `meta`, `totalSolved`, `patternCompletion`, `getDueForReview()` | none | Pattern grid, overall completion ring, sort modes |
-| `PatternView` | `getPattern`, `getProblemsForPattern`, `isSolved`, `patternCompletion` | `markSolved`, `unmarkSolved` | Pattern learning tabs + per-problem solved toggles |
-| `ProblemView` | `problems`, `isSolved`, `getConfidence`, `getNote` | `markSolved`, `unmarkSolved`, `addNote` | Problem insights, confidence controls, notes |
-| `AllProblemsView` | `getAllProblems`, `patterns`, `isSolved` | `markSolved`, `unmarkSolved` | Search/filter/sort table and quick status toggles |
-| `App.vue` | `meta`, `totalSolved`, `theme` | `toggleTheme` | Shared shell, top nav, global counters, theme switch |
+- `17` patterns
+- `200` problems
+- Difficulty split: `Easy 70`, `Medium 113`, `Hard 17`
 
-## 11) Design System and Theming
+### Type files (`src/types/index.ts`)
 
-Global styling is centralized in `src/style.css`:
-- CSS variables for spacing, typography, radii, transitions.
-- Two theme palettes keyed by `[data-theme="dark"]` and `[data-theme="light"]`.
-- Shared utility classes (`.container`, `.badge`, `.card`, `.btn`, transitions, etc.).
+| Interface    | Key fields                                                                      |
+| ------------ | ------------------------------------------------------------------------------- |
+| `Pattern`  | identity, explanation, templates, triggers, mistakes, walkthrough, linked slugs |
+| `Problem`  | metadata, pattern mapping, insights, complexity, tags, source flags             |
+| `Progress` | `solved`, `notes`, `reflections`                                          |
+| `Database` | `patterns`, `problems`, `pattern_order`, `meta`                         |
 
-Theme is controlled entirely by `useTheme()` and persisted in `localStorage`.
+### localStorage keys
 
-## 12) Practical Development Notes
+| Key                          | Written by         | Contents                                    |
+| ---------------------------- | ------------------ | ------------------------------------------- |
+| `dsa-pattern-progress`     | `useProgress`    | solved dates/confidence, notes, reflections |
+| `dsa-theme`                | `useTheme`       | `'dark'` or `'light'`                   |
+| `dsa-smart-random-history` | `useSmartRandom` | recent picked problem slugs                 |
 
-| Topic | Guidance |
-|---|---|
-| Add/update problems | Edit `public/db.json` and keep fields consistent with `Problem` type |
-| Add new pattern | Add pattern object + slugs + `pattern_order` + update `meta` counts if needed |
-| New route/view | Register route in `src/router/index.ts`, create view in `src/views/`, wire links |
-| New shared state | Prefer adding a composable (module-level state if global sharing is needed) |
-| Unused artifacts | `src/components/HelloWorld.vue` and `highlight.js` dependency are currently unused |
+## 11) View-Level Responsibilities
 
-## 13) Caveats and Extension Points
+| View                | Reads                                               | Writes                                                       |
+| ------------------- | --------------------------------------------------- | ------------------------------------------------------------ |
+| `DashboardView`   | patterns/meta/progress/review due                   | none                                                         |
+| `PatternView`     | pattern + pattern problems + solved status          | mark/unmark solved                                           |
+| `ProblemView`     | problem details + solved/confidence/note/reflection | mark/unmark solved, notes, reflection, smart random navigate |
+| `AllProblemsView` | all problems + filters + solved status              | mark/unmark solved, smart random navigate                    |
+| `ReviewView`      | due problems + confidence/reflections               | confidence updates via `markSolved`                        |
+| `PatternQuizView` | random problems + solved status                     | quiz session score/history (in-memory only)                  |
+| `SettingsView`    | progress state                                      | export/import/clear progress                                 |
 
-- `usePatterns` exposes `error`, but no dedicated error UI is rendered yet.
-- `markSolved` updates the `date` each time (including confidence changes), which resets review timing.
-- `reflections` support exists in `useProgress`, but no current screen uses it.
-- `importProgress()` uses `Object.assign(state, imported)` and assumes compatible structure.
+## 12) Practical Notes For Future Changes
 
-## 14) Suggested Next Improvements
+1. If you add new learning signals, extend `getSmartWeight()` in `useSmartRandom.ts` and document each weight.
+2. If you add new persisted preference/state, define a clear localStorage key and migration strategy.
+3. If you modify `db.json` schema, update `src/types/index.ts` first to keep type safety tight.
+4. If you alter review intervals, keep `useProgress.getDueForReview()` and README docs in sync.
 
-1. Add explicit loading/error/empty-state patterns that include `usePatterns.error`.
-2. Add a Progress Settings page for import/export/reset and review queue management.
-3. Use `pattern_order` explicitly in dashboard sorting as a canonical fallback.
-4. Add schema validation for `db.json` at build time.
+## 13) Onboarding Order For New Contributors
 
----
-
-If you are onboarding: start with `src/App.vue`, then `src/router/index.ts`, then `src/composables/usePatterns.ts` and `src/composables/useProgress.ts`, and finally the `src/views/*.vue` pages.
+1. `src/App.vue` (app shell + nav)
+2. `src/router/index.ts` (route surface)
+3. `src/composables/usePatterns.ts` and `src/composables/useProgress.ts`
+4. `src/composables/useSmartRandom.ts`
+5. `src/views/*` and `src/components/*`

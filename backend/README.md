@@ -63,6 +63,7 @@ cd backend
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+cp .env.example .env
 ```
 
 ## 4. Environment Variables
@@ -73,11 +74,14 @@ Set these in `backend/.env`:
 | --- | --- | --- | --- |
 | `GEMINI_API_KEY` | No | `generate_patterns.py` via `AIAnalyzerFactory.create_default()` | If present, default provider prefers Gemini |
 | `GROQ_API_KEY` | No | `generate_problem_insights.py` and optional default fallback | Required for current problem-insight generation script |
+| `DEFAULT_AI_PROVIDER` | No | Reserved config default | Present in `.env.example` for future/provider pinning workflows |
+| `DEFAULT_AI_MODEL` | No | Reserved config default | Present in `.env.example` for future/model pinning workflows |
 | `LEETCODE_COOKIE` | No | `fetch_leetcode.py` | Optional browser cookie string for stricter anti-bot environments |
 
 Ollama fallback:
 
 - If no cloud key is present, factory can use local Ollama (`ollama` package + local daemon/model).
+- Default template for env file: `backend/.env.example`
 
 ## 5. Run the Full Pipeline
 
@@ -188,4 +192,3 @@ Practical regeneration patterns:
   - Keep batch delay in `generate_problem_insights.py` and avoid parallel runs.
 - Missing final data in UI:
   - Ensure `pipeline/data/db.json` is copied to `frontend/public/db.json`.
-

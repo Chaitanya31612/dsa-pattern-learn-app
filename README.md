@@ -144,3 +144,15 @@ cd frontend
 npm install
 npm run dev
 ```
+
+## 9. Open Source Readiness Roadmap
+
+Baseline docs and templates now included:
+
+- [LICENSE](LICENSE)
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- [SECURITY.md](SECURITY.md)
+- [Issue templates](.github/ISSUE_TEMPLATE)
+- [PR template](.github/pull_request_template.md)
+- [CODEOWNERS](.github/CODEOWNERS)

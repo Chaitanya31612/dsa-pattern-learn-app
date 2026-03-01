@@ -2,12 +2,10 @@
 import { useTheme } from './composables/useTheme'
 import { useProgress } from './composables/useProgress'
 import { usePatterns } from './composables/usePatterns'
-import { useRouter } from 'vue-router'
 
 const { theme, toggleTheme } = useTheme()
 const { totalSolved } = useProgress()
 const { meta } = usePatterns()
-const router = useRouter()
 </script>
 
 <template>

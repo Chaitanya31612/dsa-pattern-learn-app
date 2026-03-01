@@ -2,15 +2,16 @@
 import { computed, ref } from 'vue'
 import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
+import type { Problem } from '../types'
 
-const { problems, patterns, loading } = usePatterns()
-const { getDueForReview, isSolved, getConfidence, getReflection, markSolved, state } = useProgress()
+const { problems, loading } = usePatterns()
+const { getDueForReview, getConfidence, getReflection, markSolved, state } = useProgress()
 
 const dueSlugs = computed(() => getDueForReview())
-const dueProblems = computed(() =>
+const dueProblems = computed((): Problem[] =>
   dueSlugs.value
     .map(slug => problems.value[slug])
-    .filter(Boolean)
+    .filter((problem): problem is Problem => Boolean(problem))
     .sort((a, b) => {
       // Show lowest confidence first
       const confA = getConfidence(a.slug) ?? 0

@@ -35,7 +35,7 @@ function getPatternAccent(index: number): string {
     'var(--accent-yellow)',
     'var(--accent-red)',
   ]
-  return accents[index % accents.length]
+  return accents[index % accents.length] ?? 'var(--accent-cyan)'
 }
 </script>
 

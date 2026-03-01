@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
 import type { Problem } from '../types'
@@ -21,7 +21,9 @@ function pickRandom() {
   }
   if (pool.length === 0) return
   const idx = Math.floor(Math.random() * pool.length)
-  currentProblem.value = pool[idx]
+  const selected = pool[idx]
+  if (!selected) return
+  currentProblem.value = selected
   showAnswer.value = false
   userGuess.value = ''
 }
@@ -34,13 +36,15 @@ function reveal() {
   const guessNorm = userGuess.value.toLowerCase().trim()
   const patternNorm = currentProblem.value.pattern_name.toLowerCase()
   const patternId = currentProblem.value.pattern_id.toLowerCase()
+  const patternFirstToken = patternNorm.split(' ')[0] ?? ''
+  const patternIdFirstToken = patternId.split('-')[0] ?? ''
 
   // Fuzzy match: check if guess contains key words of the pattern
   const isCorrect =
     patternNorm.includes(guessNorm) ||
     patternId.includes(guessNorm.replace(/\s+/g, '-')) ||
-    guessNorm.includes(patternNorm.split(' ')[0]) ||
-    guessNorm.includes(patternId.split('-')[0])
+    guessNorm.includes(patternFirstToken) ||
+    guessNorm.includes(patternIdFirstToken)
 
   if (isCorrect && guessNorm.length > 1) {
     score.value.correct++

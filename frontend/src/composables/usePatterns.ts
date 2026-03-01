@@ -40,7 +40,7 @@ export function usePatterns() {
     if (!pattern) return []
     return pattern.problem_slugs
       .map(slug => problems.value[slug])
-      .filter(Boolean)
+      .filter((problem): problem is Problem => Boolean(problem))
   }
 
   function getAllProblems(): Problem[] {

@@ -15,7 +15,7 @@ const pattern = computed(() => getPattern(patternId.value))
 const problems = computed(() => getProblemsForPattern(patternId.value))
 
 const activeTab = ref<'overview' | 'template' | 'problems'>('overview')
-const codeLang = ref<'python' | 'javascript' | 'java'>('python')
+const codeLang = ref<'python' | 'javascript' | 'java'>('java')
 
 const completion = computed(() => {
   if (!pattern.value) return 0
@@ -25,9 +25,9 @@ const completion = computed(() => {
 const templateCode = computed(() => {
   if (!pattern.value) return ''
   const map: Record<string, string> = {
+    java: pattern.value.template_code_java,
     python: pattern.value.template_code_python,
     javascript: pattern.value.template_code_javascript,
-    java: pattern.value.template_code_java,
   }
   return map[codeLang.value] || ''
 })
@@ -163,7 +163,7 @@ function getDiffClass(diff: string | null): string {
     <div v-if="activeTab === 'template'" class="animate-in">
       <div class="lang-switcher">
         <button
-          v-for="lang in (['python', 'javascript', 'java'] as const)"
+          v-for="lang in (['java', 'python', 'javascript'] as const)"
           :key="lang"
           class="btn btn-ghost"
           :class="{ active: codeLang === lang }"

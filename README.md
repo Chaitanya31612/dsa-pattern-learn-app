@@ -6,6 +6,7 @@ The core idea: generate high-quality learning data once, then ship a fast client
 
 ## Table of Contents
 
+- [0. Demo](#0-Demo)
 - [1. High-Level Overview](#1-high-level-overview)
 - [2. System Architecture](#2-system-architecture)
 - [3. End-to-End Workflow](#3-end-to-end-workflow)
@@ -15,6 +16,14 @@ The core idea: generate high-quality learning data once, then ship a fast client
 - [7. Quick Start](#7-quick-start)
 - [8. Why This Repo Is Structured This Way](#8-why-this-repo-is-structured-this-way)
 - [9. Open Source Readiness Roadmap](#9-open-source-readiness-roadmap)
+
+## 0. Demo
+
+<img width="1776" height="1006" alt="image" src="https://github.com/user-attachments/assets/b4bad7e3-1fb4-411f-abf6-24d4b2d7537e" />
+
+
+https://github.com/user-attachments/assets/42d27613-cdf5-4888-9132-246e09eab491
+
 
 ## 1. High-Level Overview
 

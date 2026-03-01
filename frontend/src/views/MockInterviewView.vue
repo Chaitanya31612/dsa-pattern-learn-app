@@ -1,7 +1,25 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { usePatterns } from '../composables/usePatterns'
 import { useMockInterview } from '../composables/useMockInterview'
+import CodeHighlight from '../components/CodeHighlight.vue'
+
+/**
+ * MockInterviewView
+ * -----------------
+ * UI-only orchestration layer.
+ *
+ * This view deliberately keeps business logic inside `useMockInterview`.
+ * Here we focus on:
+ * - wiring composable state/actions into controls
+ * - handling local UI inputs (chat textbox, thought textbox)
+ * - editor typing UX enhancements (Tab indentation)
+ *
+ * Example user flow:
+ * - click "Need Hint" -> `requestHintMessage()` -> composable handles AI call
+ * - type code and press Tab -> inserts 4 spaces instead of focus change
+ */
 
 const {
   activeSession,
@@ -9,6 +27,8 @@ const {
   currentProblemState,
   canStartSession,
   featureFlags,
+  isInterviewerResponding,
+  isReportGenerating,
   timeRemainingLabel,
   defaultConfig,
   startSession,
@@ -20,10 +40,13 @@ const {
   endInterviewEarly,
   restartInterview,
   togglePause,
+  updateFeatureFlags,
   resumeIfNeeded,
 } = useMockInterview()
 
 const { problems, loading } = usePatterns()
+const route = useRoute()
+const router = useRouter()
 
 const setupConfig = ref({
   totalQuestions: defaultConfig.totalQuestions,
@@ -35,7 +58,10 @@ const setupConfig = ref({
 const setupError = ref('')
 const thoughtInput = ref('')
 const chatInput = ref('')
+const showSyntaxHighlight = ref(false)
+const lastHandledAutoStartKey = ref('')
 
+// Human-friendly labels for the header status chip.
 const sessionStatusLabel = computed(() => {
   if (!activeSession.value) return 'idle'
   if (activeSession.value.status === 'completed') return 'completed'
@@ -48,6 +74,54 @@ const currentQuestionLabel = computed(() => {
   return `${activeSession.value.currentIndex + 1} / ${activeSession.value.questionSlugs.length}`
 })
 
+const selectedProblemSlug = computed(() => {
+  return typeof route.query.slug === 'string' ? route.query.slug : ''
+})
+
+const selectedProblemTitle = computed(() => {
+  const slug = selectedProblemSlug.value
+  if (!slug) return ''
+  return problems.value[slug]?.title ?? slug
+})
+
+const shouldAutoStart = computed(() => {
+  const value = route.query.autostart
+  return value === '1' || value === 'true'
+})
+const shouldSingleQuestionMode = computed(() => {
+  const value = route.query.single
+  return value === '1' || value === 'true'
+})
+const autoStartKey = computed(() => {
+  if (!shouldAutoStart.value || !selectedProblemSlug.value) return ''
+  return `${selectedProblemSlug.value}|${String(route.query.autostart ?? '')}|${String(route.query.single ?? '')}`
+})
+
+function sanitizeDescriptionHtml(rawHtml: string): string {
+  /**
+   * Lightweight sanitization for LeetCode prompt snippets.
+   * We remove scripts/styles/images/event handlers to avoid noisy/broken rendering.
+   */
+  return rawHtml
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<img[^>]*>/gi, '')
+    .replace(/\son\w+="[^"]*"/gi, '')
+    .replace(/\son\w+='[^']*'/gi, '')
+}
+
+// Rich prompt preview shown in Problem Brief.
+const problemDescriptionPreview = computed(() => {
+  const html = currentProblem.value?.description_html ?? ''
+  if (html) return sanitizeDescriptionHtml(html)
+
+  const text = currentProblem.value?.description_text ?? ''
+  if (!text) return ''
+  return `<p>${text.replace(/\n+/g, '<br/>')}</p>`
+})
+
+// Clarification log filters user turns that look like assumptions/questions.
+// Example captured message: "Can I assume input is sorted?"
 const clarificationLog = computed(() => {
   return (
     currentProblemState.value?.chat.filter(
@@ -60,12 +134,16 @@ const chatMessages = computed(() => currentProblemState.value?.chat ?? [])
 const canSubmit = computed(() => Boolean(activeSession.value && currentProblemState.value))
 
 function startInterview() {
+  // Start always uses Java in current V2.
+  // The composable defaults to 3 questions, but allows 1 question for
+  // deep-link "Solve in Interview Mode" flow (slug + single query flag).
   setupError.value = ''
   const result = startSession({
-    totalQuestions: setupConfig.value.totalQuestions,
+    totalQuestions: selectedProblemSlug.value && shouldSingleQuestionMode.value ? 1 : setupConfig.value.totalQuestions,
     totalTimeMinutes: setupConfig.value.totalTimeMinutes,
     language: 'java',
     allowPause: setupConfig.value.allowPause,
+    preferredSlug: selectedProblemSlug.value || undefined,
   })
 
   if (!result.ok) {
@@ -75,6 +153,10 @@ function startInterview() {
 
   thoughtInput.value = ''
   chatInput.value = ''
+
+  if (selectedProblemSlug.value || shouldAutoStart.value) {
+    router.replace({ path: route.path, query: {} })
+  }
 }
 
 function submitThought() {
@@ -83,9 +165,9 @@ function submitThought() {
   thoughtInput.value = ''
 }
 
-function sendChat() {
+async function sendChat() {
   if (!chatInput.value.trim()) return
-  sendMessage(chatInput.value)
+  await sendMessage(chatInput.value)
   chatInput.value = ''
 }
 
@@ -95,18 +177,65 @@ function submitProblemAndContinue() {
   chatInput.value = ''
 }
 
+async function requestHintMessage() {
+  await requestHint()
+}
+
+function handleEditorKeydown(event: KeyboardEvent) {
+  /**
+   * Developer-friendly typing behavior for textarea-based editor.
+   *
+   * Before:
+   * - Pressing Tab moved focus to next input (browser default form behavior).
+   * After:
+   * - Pressing Tab inserts 4 spaces at cursor.
+   *
+   * Example:
+   *   if (x > 0) {|}
+   * becomes
+   *   if (x > 0) {    |}
+   */
+  if (event.key !== 'Tab') return
+  event.preventDefault()
+
+  const target = event.target as HTMLTextAreaElement
+  const start = target.selectionStart
+  const end = target.selectionEnd
+  const value = target.value
+  const indentation = '    '
+
+  const next = `${value.slice(0, start)}${indentation}${value.slice(end)}`
+  target.value = next
+  updateCode(next)
+
+  requestAnimationFrame(() => {
+    target.selectionStart = start + indentation.length
+    target.selectionEnd = start + indentation.length
+  })
+}
+
+function toggleSyntaxHighlight() {
+  // Toggle between:
+  // - editable code textarea
+  // - read-only highlighted syntax view
+  showSyntaxHighlight.value = !showSyntaxHighlight.value
+}
+
 function getDifficultyClass(diff: string | null | undefined): string {
   if (!diff) return ''
   return `badge-${diff.toLowerCase()}`
 }
 
 function onVisibilityChange() {
+  // Re-sync timer after tab/background transitions.
   if (!document.hidden) {
     resumeIfNeeded()
   }
 }
 
 onMounted(() => {
+  // Current product direction: AI interviewer should be on by default in V2.
+  updateFeatureFlags({ aiEnabled: true })
   resumeIfNeeded()
   document.addEventListener('visibilitychange', onVisibilityChange)
 })
@@ -114,12 +243,39 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('visibilitychange', onVisibilityChange)
 })
+
+watch(
+  () => [loading.value, autoStartKey.value] as const,
+  () => {
+    if (!autoStartKey.value) {
+      // Reset latch when no autostart query is present.
+      // This allows triggering autostart again later for the same slug.
+      lastHandledAutoStartKey.value = ''
+      return
+    }
+    if (loading.value) return
+
+    if (lastHandledAutoStartKey.value === autoStartKey.value) return
+    lastHandledAutoStartKey.value = autoStartKey.value
+
+    if (activeSession.value) {
+      // Explicit behavior requested:
+      // when URL contains slug+autostart, end/reset current interview session
+      // and start a new one anchored to that slug.
+      restartInterview()
+    }
+
+    startInterview()
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
   <div class="container mock-view" v-if="!loading">
+    <!-- Header summarizes mode and current session state -->
     <header class="mv-header animate-in">
-      <span class="terminal-prompt">mock.interview(mode='realistic-v1')</span>
+      <span class="terminal-prompt">mock.interview(mode='v2-ai')</span>
       <div class="title-row">
         <h1 class="mv-title">Mock Interview</h1>
         <span class="status-pill" :class="`status-${activeSession?.status ?? 'idle'}`">
@@ -127,10 +283,11 @@ onUnmounted(() => {
         </span>
       </div>
       <p class="mv-subtitle">
-        3-question interview simulation with timed pressure, Java-first coding, and offline interviewer chat.
+        3-question interview simulation with timed pressure, Java-first coding, and Groq-powered interviewer chat.
       </p>
     </header>
 
+    <!-- Setup screen appears when there is no active session in local storage -->
     <section v-if="!activeSession" class="setup-pane card card-flat animate-in stagger-1">
       <h2 class="section-heading">Session Setup</h2>
       <div class="setup-grid">
@@ -157,7 +314,7 @@ onUnmounted(() => {
         <ul class="policy-list">
           <li>Difficulty mix: Medium-focused with at most one Easy.</li>
           <li>Hard questions excluded in V1 for realistic timing.</li>
-          <li>Offline interviewer is active by default.</li>
+          <li>AI interviewer (Groq smart) is enabled, with offline fallback on failure.</li>
           <li>State persists across refresh.</li>
         </ul>
       </div>
@@ -165,6 +322,9 @@ onUnmounted(() => {
       <div class="flag-row">
         <span class="tag">AI Mode: {{ featureFlags.aiEnabled ? 'On' : 'Off' }}</span>
         <span class="tag">RAG Mode: {{ featureFlags.ragEnabled ? 'On' : 'Off' }}</span>
+        <span class="tag" v-if="selectedProblemSlug">
+          Selected: {{ selectedProblemTitle }}
+        </span>
       </div>
 
       <p v-if="setupError" class="setup-error">{{ setupError }}</p>
@@ -176,7 +336,9 @@ onUnmounted(() => {
       </div>
     </section>
 
+    <!-- Active interview workspace -->
     <section v-else-if="activeSession.status === 'active'" class="workspace animate-in stagger-1">
+      <!-- Sticky top bar: progress + timer + critical actions -->
       <div class="workspace-top card card-flat">
         <div class="meta-block">
           <span class="meta-label">Question</span>
@@ -193,7 +355,9 @@ onUnmounted(() => {
           </span>
         </div>
         <div class="workspace-actions">
-          <button class="btn" @click="requestHint">Need Hint</button>
+          <button class="btn" :disabled="isInterviewerResponding" @click="requestHintMessage">
+            {{ isInterviewerResponding ? 'Thinking...' : 'Need Hint' }}
+          </button>
           <button class="btn" @click="togglePause" :disabled="!activeSession.config.allowPause">
             {{ activeSession.paused ? 'Resume' : 'Pause' }}
           </button>
@@ -207,6 +371,7 @@ onUnmounted(() => {
       </div>
 
       <div class="workspace-grid">
+        <!-- Left panel: problem context + user notes -->
         <article class="panel card problem-panel">
           <header class="panel-head">
             <h2 class="panel-title">Problem Brief</h2>
@@ -223,10 +388,12 @@ onUnmounted(() => {
 
           <div v-if="currentProblem" class="brief-block">
             <h3 class="problem-title">{{ currentProblem.title }}</h3>
-            <p class="brief-text">
-              Use this as a real interview prompt. In V1, full statement text is external;
-              open the LeetCode tab and continue discussion here.
-            </p>
+            <div class="brief-description">
+              <div class="brief-rich" v-if="problemDescriptionPreview" v-html="problemDescriptionPreview"></div>
+              <p class="brief-text" v-else>
+                Prompt preview unavailable in local db. Open LeetCode for full statement.
+              </p>
+            </div>
             <div class="tag-wrap">
               <span class="tag">Pattern: {{ currentProblem.pattern_name }}</span>
               <span class="tag" v-if="currentProblem.acceptance_rate">AC {{ currentProblem.acceptance_rate }}%</span>
@@ -261,19 +428,27 @@ onUnmounted(() => {
           </div>
         </article>
 
+        <!-- Middle panel: code editor -->
         <article class="panel card editor-panel">
           <header class="panel-head">
             <h2 class="panel-title">Java Workspace</h2>
             <div class="editor-actions">
-              <button class="btn" disabled>Run code (coming next)</button>
+              <button class="btn" @click="toggleSyntaxHighlight">
+                {{ showSyntaxHighlight ? 'Code Editor' : 'Syntax Highlight' }}
+              </button>
             </div>
           </header>
 
+          <div v-if="showSyntaxHighlight" class="code-highlight-wrap">
+            <CodeHighlight :code="currentProblemState?.code ?? ''" language="java" />
+          </div>
           <textarea
+            v-else
             :value="currentProblemState?.code ?? ''"
             class="code-editor"
             spellcheck="false"
             @input="updateCode(($event.target as HTMLTextAreaElement).value)"
+            @keydown="handleEditorKeydown"
           ></textarea>
 
           <div class="editor-footer">
@@ -282,10 +457,11 @@ onUnmounted(() => {
           </div>
         </article>
 
+        <!-- Right panel: interviewer chat -->
         <article class="panel card chat-panel">
           <header class="panel-head">
             <h2 class="panel-title">Interviewer Chat</h2>
-            <span class="tag">Offline interviewer</span>
+            <span class="tag">{{ featureFlags.aiEnabled ? 'AI interviewer · Groq smart' : 'Offline interviewer' }}</span>
           </header>
 
           <div class="chat-thread">
@@ -306,13 +482,17 @@ onUnmounted(() => {
               class="chat-input"
               rows="3"
               placeholder="Ask for clarifications or explain your approach..."
+              :disabled="isInterviewerResponding"
             ></textarea>
-            <button class="btn" @click="sendChat">Send</button>
+            <button class="btn" :disabled="isInterviewerResponding" @click="sendChat">
+              {{ isInterviewerResponding ? 'Thinking...' : 'Send' }}
+            </button>
           </div>
         </article>
       </div>
     </section>
 
+    <!-- Final report view after completion/early end -->
     <section v-else class="report-pane animate-in stagger-1">
       <div class="card score-hero">
         <span class="terminal-prompt">interview.report()</span>
@@ -320,6 +500,9 @@ onUnmounted(() => {
         <p class="score-subtitle">
           Session {{ activeSession.status === 'abandoned' ? 'ended early' : 'completed' }} ·
           {{ activeSession.questionSlugs.length }} questions
+        </p>
+        <p v-if="isReportGenerating" class="score-subtitle report-refreshing">
+          Personalizing feedback from your code, notes, and interviewer chat...
         </p>
       </div>
 
@@ -587,6 +770,51 @@ onUnmounted(() => {
   margin-bottom: var(--space-sm);
 }
 
+.brief-description {
+  min-height: 220px;
+  height: 320px;
+  max-height: 560px;
+  overflow: auto;
+  resize: vertical;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  padding: var(--space-sm) var(--space-md);
+  padding-right: 2px;
+  margin-bottom: var(--space-sm);
+}
+
+.brief-rich :deep(p) {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+  line-height: 1.7;
+}
+
+.brief-rich :deep(li) {
+  color: var(--text-secondary);
+  margin-left: var(--space-md);
+  margin-bottom: 4px;
+}
+
+.brief-rich :deep(strong) {
+  color: var(--text-primary);
+}
+
+.brief-rich :deep(code) {
+  color: var(--accent-cyan);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.brief-rich :deep(.example),
+.brief-rich :deep(.example-block) {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm);
+  margin-bottom: var(--space-sm);
+  background: var(--bg-card);
+}
+
 .tag-wrap {
   display: flex;
   flex-wrap: wrap;
@@ -630,8 +858,8 @@ onUnmounted(() => {
 .code-editor {
   flex: 1;
   width: 100%;
-  min-height: 380px;
-  resize: vertical;
+  min-height: 560px;
+  resize: none;
   background: var(--bg-code);
   border: 1px solid var(--border-default);
   color: var(--text-primary);
@@ -639,7 +867,22 @@ onUnmounted(() => {
   padding: var(--space-md);
   font-family: var(--font-mono);
   font-size: var(--text-sm);
-  line-height: 1.6;
+  line-height: 1.7;
+}
+
+.code-highlight-wrap {
+  min-height: 560px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  overflow: auto;
+  background: var(--bg-code);
+}
+
+.code-highlight-wrap :deep(.code-block) {
+  min-height: 560px;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .editor-footer {
@@ -651,6 +894,9 @@ onUnmounted(() => {
 
 .chat-thread {
   flex: 1;
+  min-height: 0;
+  height: 420px;
+  max-height: 420px;
   overflow: auto;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
@@ -704,6 +950,10 @@ onUnmounted(() => {
 
 .score-subtitle {
   color: var(--text-secondary);
+}
+
+.report-refreshing {
+  color: var(--accent-cyan);
 }
 
 .report-grid {

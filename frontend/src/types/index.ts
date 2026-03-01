@@ -28,6 +28,12 @@ export interface Problem {
   title: string
   slug: string
   leetcode_url: string
+  // Raw LeetCode prompt HTML from the pipeline source.
+  // Example: "<p>Given an array of integers...</p>"
+  description_html?: string
+  // Plain-text prompt derived from description_html (tags removed).
+  // Example: "Given an array of integers nums and an integer target..."
+  description_text?: string
   difficulty: 'Easy' | 'Medium' | 'Hard' | null
   acceptance_rate: number | null
   topic_tags: string[]

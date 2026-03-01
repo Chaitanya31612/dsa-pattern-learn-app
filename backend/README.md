@@ -30,6 +30,8 @@ The backend produces:
 
 No persistent backend service is required at runtime. Frontend reads static JSON.
 
+V2 introduces an optional runtime API for Mock Interview AI chat (`backend/app.py`), which can be run locally when you want interviewer responses from Groq.
+
 ## 2. Architecture at a Glance
 
 ```mermaid
@@ -102,6 +104,21 @@ Publish to frontend:
 ```bash
 cp pipeline/data/db.json ../frontend/public/db.json
 ```
+
+## Runtime API (V2 Mock Interview)
+
+Run from `backend/`:
+
+```bash
+uvicorn app:app --reload --port 8000
+```
+
+Endpoints:
+
+- `GET /api/health`
+- `POST /api/mock-interview/respond`
+
+The server uses `AIAnalyzerFactory` and defaults to Groq smart model when `DEFAULT_AI_PROVIDER=groq` and `DEFAULT_AI_MODEL=smart`.
 
 ## 6. Pipeline Stages and File Contracts
 

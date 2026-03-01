@@ -16,6 +16,8 @@ Output structure:
 
 import json
 import logging
+import re
+from html import unescape
 from pathlib import Path
 from typing import Dict, List, Any
 
@@ -78,6 +80,33 @@ def load_json(filename: str) -> Any:
     return data
 
 
+def html_to_text(html: str) -> str:
+    """
+    Convert LeetCode HTML description to compact plain text.
+
+    Why we do this:
+    - The frontend can render a short readable preview without HTML parsing.
+    - The AI interviewer can use cleaner context than raw tags.
+
+    Example input:
+      "<p>Given an array <code>nums</code>...</p><p><strong>Example 1:</strong></p>"
+    Example output:
+      "Given an array nums... Example 1:"
+    """
+    if not html:
+        return ""
+
+    # Replace block-ish tags with newlines so sections don't collapse into one line.
+    text = re.sub(r"</?(p|div|li|ul|ol|br|pre|code)[^>]*>", "\n", html)
+    # Remove remaining tags.
+    text = re.sub(r"<[^>]+>", "", text)
+    # Decode HTML entities (e.g., &nbsp; -> space, &lt; -> <).
+    text = unescape(text)
+    # Normalize whitespace: multiple spaces/newlines become a single space.
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
+
 def build_db():
     """Build the final database."""
 
@@ -112,6 +141,11 @@ def build_db():
             "title": p.get("title", ""),
             "slug": slug,
             "leetcode_url": p.get("leetcode_url", f"https://leetcode.com/problems/{slug}/"),
+            # Keep both forms:
+            # - description_html: full fidelity if UI wants rich rendering later.
+            # - description_text: prompt-ready text for search/AI context.
+            "description_html": p.get("description_html", ""),
+            "description_text": html_to_text(p.get("description_html", "")),
             "difficulty": p.get("difficulty"),
             "acceptance_rate": p.get("acceptance_rate"),
             "topic_tags": p.get("topic_tags", []),

@@ -21,6 +21,14 @@ const confidence = computed(() => getConfidence(slug.value))
 const noteText = ref('')
 const showNotes = ref(false)
 const showReflection = ref(false)
+const interviewRoute = computed(() => ({
+  path: '/mock-interview',
+  query: {
+    slug: slug.value,
+    autostart: '1',
+    single: '1',
+  },
+}))
 
 // Load existing note
 import { watchEffect } from 'vue'
@@ -88,6 +96,9 @@ function getDiffClass(diff: string | null): string {
         <a :href="problem.leetcode_url" target="_blank" rel="noopener" class="btn">
           Open on LeetCode ↗
         </a>
+        <router-link :to="interviewRoute" class="btn">
+          Solve in Interview Mode
+        </router-link>
         <button class="btn btn-ghost" @click="showNotes = !showNotes">
           {{ showNotes ? 'Hide Notes' : '✎ Notes' }}
         </button>

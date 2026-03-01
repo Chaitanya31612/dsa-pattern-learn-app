@@ -11,11 +11,34 @@ import type {
 import { usePatterns } from './usePatterns'
 import { useProgress } from './useProgress'
 
+/**
+ * Mock Interview Composable (V2)
+ * ==============================
+ *
+ * This composable owns interview runtime state:
+ * - session creation / persistence
+ * - question selection policy (3 questions, medium-focused)
+ * - timer lifecycle
+ * - chat + hint flow (AI first, offline fallback)
+ * - final scoring report
+ *
+ * Example workflow:
+ * 1) startSession() -> creates question slugs + per-problem state
+ * 2) sendMessage("Need hint") -> calls backend API, falls back offline if needed
+ * 3) submitAndContinue() -> marks current problem and advances
+ * 4) after last problem -> finalizeSession("completed")
+ */
+
 const SESSION_STORAGE_KEY = 'dsa-mock-interview-sessions'
 const RECENT_STORAGE_KEY = 'dsa-mock-interview-recent-slugs'
 const FLAGS_STORAGE_KEY = 'dsa-mock-interview-flags'
 const MAX_RECENT_SLUGS = 40
 
+// Starter code shown when each problem opens.
+// Example output in editor:
+// class Solution {
+//     public int solve(int[] nums) { ... }
+// }
 const DEFAULT_JAVA_TEMPLATE = `class Solution {
     public int solve(int[] nums) {
         // TODO: implement
@@ -31,7 +54,7 @@ const DEFAULT_CONFIG: MockInterviewConfig = {
 }
 
 const DEFAULT_FLAGS: MockInterviewFeatureFlags = {
-  aiEnabled: false,
+  aiEnabled: true,
   ragEnabled: false,
 }
 
@@ -39,7 +62,41 @@ const activeSession = ref<MockInterviewSession | null>(loadSession())
 const featureFlags = ref<MockInterviewFeatureFlags>(loadFlags())
 
 let timerHandle: number | null = null
+type StartSessionOptions = Partial<MockInterviewConfig> & { preferredSlug?: string }
 
+/**
+ * AI debrief payload contracts returned by backend in debrief mode.
+ *
+ * These are intentionally local (not global app types) because they are
+ * transport-layer contracts for one API endpoint, not persisted domain models.
+ */
+type AIDebriefPerProblemPayload = {
+  score?: number
+  reasoning?: string[]
+}
+
+type AIDebriefReportPayload = {
+  total_score?: number
+  per_problem?: Record<string, AIDebriefPerProblemPayload>
+  strengths?: string[]
+  weaknesses?: string[]
+  next_steps?: string[]
+  recommended_problems?: string[]
+}
+
+type DebriefRecommendationCandidate = {
+  slug: string
+  title: string
+  difficulty: string | null
+  pattern_name: string
+}
+
+const isReportGenerating = ref(false)
+
+/**
+ * Restore session from localStorage.
+ * If data shape is invalid (old schema/corrupt), we fail safely with null.
+ */
 function loadSession(): MockInterviewSession | null {
   try {
     const raw = localStorage.getItem(SESSION_STORAGE_KEY)
@@ -116,6 +173,14 @@ function toWords(text: string): number {
 }
 
 function weightedPick<T>(items: T[], getWeight: (item: T) => number): T | null {
+  /**
+   * Roulette-wheel weighted sampling.
+   * Example:
+   * - A weight 100
+   * - B weight 20
+   * - C weight 5
+   * A is picked most often, but B/C still occasionally appear for diversity.
+   */
   const weighted = items
     .map(item => ({ item, weight: getWeight(item) }))
     .filter(entry => entry.weight > 0)
@@ -146,6 +211,16 @@ function isHintRequest(message: string): boolean {
 }
 
 function buildOfflineReply(problem: Problem | undefined, userMessage: string, currentHintCount: number): string {
+  /**
+   * Deterministic fallback interviewer used when:
+   * - AI endpoint is unavailable
+   * - AI mode is explicitly off
+   *
+   * Hint ladder examples:
+   * - level 1: framing question
+   * - level 2: pattern/data-structure nudge
+   * - level 3+: high-level step guidance
+   */
   const message = userMessage.trim().toLowerCase()
 
   if (isHintRequest(message)) {
@@ -183,9 +258,184 @@ function formatSeconds(totalSec: number): string {
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 }
 
+function getApiBaseUrl(): string {
+  const base = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() ?? ''
+  return base.endsWith('/') ? base.slice(0, -1) : base
+}
+
+function getApiUrl(path: string): string {
+  const base = getApiBaseUrl()
+  return base ? `${base}${path}` : path
+}
+
+async function fetchInterviewerReply(payload: {
+  sessionId: string
+  problemSlug: string
+  hintLevel: number
+  mode: 'interview' | 'debrief'
+  messages: Array<{ role: 'user' | 'assistant'; content: string; ts: string }>
+  problem: Problem | undefined
+  debriefContext?: {
+    session_status: 'completed' | 'abandoned'
+    total_questions: number
+    total_time_minutes: number
+    remaining_time_sec: number
+    language: 'java'
+    total_score_heuristic: number
+    attempts: Array<{
+      slug: string
+      title: string
+      difficulty: string | null
+      pattern_name: string
+      description_text: string
+      stored_note: string
+      thoughts: string[]
+      code: string
+      chat: Array<{ role: 'user' | 'assistant'; content: string; ts: string }>
+      hint_count: number
+      submitted: boolean
+      heuristic_score: number
+      heuristic_reasoning: string[]
+    }>
+    candidate_recommendations: DebriefRecommendationCandidate[]
+  }
+}): Promise<{ reply: string; intent?: string; debrief?: AIDebriefReportPayload }> {
+  /**
+   * Frontend -> Backend API contract.
+   *
+   * We include both short metadata and problem statement context when available.
+   * Example:
+   * - title: "Two Sum"
+   * - pattern_name: "Arrays & Hashing"
+   * - description_text: "Given an array of integers nums..."
+   */
+  const body = {
+    session_id: payload.sessionId,
+    problem_slug: payload.problemSlug,
+    hint_level: payload.hintLevel,
+    mode: payload.mode,
+    messages: payload.messages,
+    problem: payload.problem
+      ? {
+          title: payload.problem.title,
+          difficulty: payload.problem.difficulty,
+          pattern_name: payload.problem.pattern_name,
+          pattern_hint: payload.problem.pattern_hint,
+          key_insight: payload.problem.key_insight,
+          description_html: payload.problem.description_html,
+          description_text: payload.problem.description_text,
+          topic_tags: payload.problem.topic_tags,
+        }
+      : null,
+    debrief_context: payload.debriefContext ?? null,
+  }
+
+  const response = await fetch(getApiUrl('/api/mock-interview/respond'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+
+  if (!response.ok) {
+    throw new Error(`Mock interview API failed with status ${response.status}`)
+  }
+
+  const data = await response.json()
+  return {
+    reply: String(data.reply ?? ''),
+    intent: typeof data.intent === 'string' ? data.intent : undefined,
+    debrief: data.debrief && typeof data.debrief === 'object' ? (data.debrief as AIDebriefReportPayload) : undefined,
+  }
+}
+
+function normalizeTextList(values: unknown, fallback: string[], minItems: number, maxItems: number): string[] {
+  /**
+   * Normalize AI-produced list fields safely.
+   *
+   * Example:
+   * - AI returns [" item 1 ", "", 42]
+   * - Output becomes ["item 1"] and then falls back if empty.
+   */
+  if (!Array.isArray(values)) {
+    return fallback
+  }
+
+  const cleaned = values
+    .filter((value): value is string => typeof value === 'string')
+    .map(value => value.trim())
+    .filter(Boolean)
+    .slice(0, maxItems)
+
+  if (cleaned.length >= minItems) return cleaned
+  return fallback
+}
+
+function normalizeAIDebriefResult(
+  aiDebrief: AIDebriefReportPayload | undefined,
+  session: MockInterviewSession,
+  fallback: MockInterviewResult,
+  knownProblems: Record<string, Problem>,
+): MockInterviewResult {
+  /**
+   * Merge AI debrief over deterministic fallback.
+   *
+   * Why merge instead of replace:
+   * - AI output may be partial or malformed for one field.
+   * - We keep the session report stable by preserving fallback data.
+   */
+  if (!aiDebrief) return fallback
+
+  const merged: MockInterviewResult = {
+    ...fallback,
+    perProblem: { ...fallback.perProblem },
+  }
+
+  const aiTotalScore = Number(aiDebrief.total_score)
+  if (Number.isFinite(aiTotalScore)) {
+    merged.totalScore = clamp(Math.round(aiTotalScore), 0, 100)
+  }
+
+  merged.strengths = normalizeTextList(aiDebrief.strengths, fallback.strengths, 1, 6)
+  merged.weaknesses = normalizeTextList(aiDebrief.weaknesses, fallback.weaknesses, 1, 7)
+  merged.nextSteps = normalizeTextList(aiDebrief.next_steps, fallback.nextSteps, 2, 7)
+
+  const recommended = Array.isArray(aiDebrief.recommended_problems)
+    ? aiDebrief.recommended_problems
+        .filter((slug): slug is string => typeof slug === 'string')
+        .map(slug => slug.trim())
+        .filter(slug => Boolean(slug) && Boolean(knownProblems[slug]) && !session.questionSlugs.includes(slug))
+        .slice(0, 5)
+    : []
+  if (recommended.length > 0) {
+    merged.recommendedProblems = recommended
+  }
+
+  const aiPerProblem = aiDebrief.per_problem ?? {}
+  for (const slug of session.questionSlugs) {
+    const fallbackProblem = merged.perProblem[slug]
+    if (!fallbackProblem) continue
+
+    const aiEntry = aiPerProblem[slug]
+    if (!aiEntry) continue
+
+    const aiScore = Number(aiEntry.score)
+    const nextScore = Number.isFinite(aiScore) ? clamp(Math.round(aiScore), 0, 100) : fallbackProblem.score
+    const nextReasoning = normalizeTextList(aiEntry.reasoning, fallbackProblem.reasoning, 1, 7)
+
+    merged.perProblem[slug] = {
+      ...fallbackProblem,
+      score: nextScore,
+      reasoning: nextReasoning,
+    }
+  }
+
+  return merged
+}
+
 export function useMockInterview() {
   const { getAllProblems, problems } = usePatterns()
   const { isSolved, getConfidence, state } = useProgress()
+  const isInterviewerResponding = ref(false)
 
   function getCurrentSlug(session = activeSession.value): string | null {
     if (!session) return null
@@ -210,6 +460,14 @@ export function useMockInterview() {
   }
 
   function buildSelectionWeight(problem: Problem, selected: Problem[], recentSlugs: string[]): number {
+    /**
+     * Scoring model for candidate problems.
+     *
+     * Examples:
+     * - Unsolved medium from unseen pattern -> high chance
+     * - Recently solved with confidence=3 -> much lower priority
+     * - Same pattern already selected in this session -> diversity penalty
+     */
     const confidence = getConfidence(problem.slug)
     const solved = isSolved(problem.slug)
     let weight = 35
@@ -249,23 +507,42 @@ export function useMockInterview() {
     return Math.max(1, weight)
   }
 
-  function selectQuestions(totalQuestions: number): string[] {
+  function selectQuestions(totalQuestions: number, preferredSlug?: string): string[] {
+    /**
+     * Session policy:
+     * - Allowed difficulties: Easy + Medium
+     * - Easy count: 0 or 1
+     * - Remaining: Medium
+     */
+    // Default policy pool (explicitly excludes hard unless user picked one manually).
     const all = getAllProblems().filter(problem => problem.difficulty === 'Easy' || problem.difficulty === 'Medium')
+    const allProblems = getAllProblems()
     const recentSlugs = loadRecentSlugs()
 
     const easyPool = all.filter(problem => problem.difficulty === 'Easy')
     const mediumPool = all.filter(problem => problem.difficulty === 'Medium')
 
     const selected: Problem[] = []
-    const easyTarget = easyPool.length > 0 && Math.random() < 0.45 ? 1 : 0
+    const preferredProblem = preferredSlug ? allProblems.find(problem => problem.slug === preferredSlug) : undefined
+    if (preferredProblem) {
+      selected.push(preferredProblem)
+    }
 
-    if (easyTarget === 1) {
+    // Easy target applies across whole session.
+    // If preferred problem is Easy, we lock easy target to 1.
+    let easyTarget = easyPool.length > 0 && Math.random() < 0.45 ? 1 : 0
+    if (preferredProblem?.difficulty === 'Easy') easyTarget = 1
+
+    if (easyTarget === 1 && selected.length === 0) {
       const easyPick = weightedPick(easyPool, problem => buildSelectionWeight(problem, selected, recentSlugs))
       if (easyPick) selected.push(easyPick)
     }
 
     while (selected.length < totalQuestions) {
-      const needMedium = selected.filter(problem => problem.difficulty === 'Medium').length < totalQuestions - easyTarget
+      const selectedEasy = selected.filter(problem => problem.difficulty === 'Easy').length
+      const remainingSlots = totalQuestions - selected.length
+      const mustPickEasyNow = easyTarget > selectedEasy && remainingSlots <= (easyTarget - selectedEasy)
+      const needMedium = !mustPickEasyNow
       const pool = needMedium
         ? mediumPool.filter(problem => !selected.some(sel => sel.slug === problem.slug))
         : easyPool.filter(problem => !selected.some(sel => sel.slug === problem.slug))
@@ -283,6 +560,8 @@ export function useMockInterview() {
   }
 
   function startTimer() {
+    // Timer is driven by wall-clock deltas, not naive "minus 1 every second".
+    // This handles tab throttling/background pauses more accurately.
     if (timerHandle) {
       window.clearInterval(timerHandle)
       timerHandle = null
@@ -346,21 +625,24 @@ export function useMockInterview() {
     }
   }
 
-  function startSession(partialConfig?: Partial<MockInterviewConfig>) {
+  function startSession(options?: StartSessionOptions) {
     if (!canStartSession.value) {
       return { ok: false as const, error: 'Problem database not loaded yet.' }
     }
 
-    const totalQuestions = 3
+    // Default interview is 3 questions.
+    // Special case: deep-link flow ("Solve in Interview Mode") can request 1 focused question.
+    const requestedTotal = options?.totalQuestions
+    const totalQuestions = options?.preferredSlug && requestedTotal === 1 ? 1 : 3
     const config: MockInterviewConfig = {
       ...DEFAULT_CONFIG,
-      ...partialConfig,
+      ...options,
       totalQuestions,
-      totalTimeMinutes: partialConfig?.totalTimeMinutes ?? DEFAULT_CONFIG.totalTimeMinutes,
+      totalTimeMinutes: options?.totalTimeMinutes ?? DEFAULT_CONFIG.totalTimeMinutes,
       language: 'java',
     }
 
-    const questionSlugs = selectQuestions(config.totalQuestions)
+    const questionSlugs = selectQuestions(config.totalQuestions, options?.preferredSlug)
     if (questionSlugs.length < config.totalQuestions) {
       return { ok: false as const, error: 'Not enough eligible Easy/Medium problems to start a session.' }
     }
@@ -437,7 +719,15 @@ export function useMockInterview() {
     persist()
   }
 
-  function sendMessage(message: string) {
+  async function sendMessage(message: string) {
+    /**
+     * Chat send path:
+     * 1) append user message locally
+     * 2) compute hint count
+     * 3) call AI endpoint when enabled
+     * 4) fallback to deterministic offline reply on failure
+     * 5) append assistant message + persist
+     */
     const trimmed = message.trim()
     if (!trimmed) return
 
@@ -461,7 +751,32 @@ export function useMockInterview() {
       problemState.hintCount += 1
     }
 
-    const assistantReply = buildOfflineReply(currentProblemMeta, trimmed, problemState.hintCount)
+    let assistantReply = ''
+
+    if (featureFlags.value.aiEnabled) {
+      isInterviewerResponding.value = true
+      try {
+        const aiResponse = await fetchInterviewerReply({
+          sessionId: session.id,
+          problemSlug: slug,
+          hintLevel: problemState.hintCount,
+          mode: 'interview',
+          messages: problemState.chat,
+          problem: currentProblemMeta,
+        })
+        assistantReply = aiResponse.reply.trim()
+      } catch {
+        assistantReply = buildOfflineReply(currentProblemMeta, trimmed, problemState.hintCount)
+      } finally {
+        isInterviewerResponding.value = false
+      }
+    } else {
+      assistantReply = buildOfflineReply(currentProblemMeta, trimmed, problemState.hintCount)
+    }
+
+    if (!assistantReply) {
+      assistantReply = buildOfflineReply(currentProblemMeta, trimmed, problemState.hintCount)
+    }
 
     problemState.chat.push({
       role: 'assistant',
@@ -472,8 +787,8 @@ export function useMockInterview() {
     persist()
   }
 
-  function requestHint() {
-    sendMessage('Need a hint, I am stuck.')
+  async function requestHint() {
+    await sendMessage('Need a hint, I am stuck.')
   }
 
   function submitCurrentProblem() {
@@ -510,6 +825,14 @@ export function useMockInterview() {
   }
 
   function computeProblemResult(problem: Problem | undefined, stateForProblem: InterviewProblemState): MockInterviewProblemResult {
+    /**
+     * Heuristic V1/V2 scoring model (deterministic).
+     *
+     * Example signal mapping:
+     * - More structured thoughts + submission => higher understanding/approach
+     * - Mentions of edge cases/test/dry run => higher correctness confidence
+     * - Excessive hints => penalties on autonomy-oriented criteria
+     */
     const joinedThoughts = stateForProblem.thoughts.join(' ')
     const allUserMessages = stateForProblem.chat
       .filter(message => message.role === 'user')
@@ -612,10 +935,17 @@ export function useMockInterview() {
     return scored.slice(0, 5).map(entry => entry.slug)
   }
 
-  function finalizeSession(status: 'completed' | 'abandoned') {
-    const session = activeSession.value
-    if (!session) return
-
+  function buildHeuristicSessionResult(session: MockInterviewSession): {
+    result: MockInterviewResult
+    weakPatternIds: string[]
+  } {
+    /**
+     * Deterministic baseline report.
+     *
+     * Important:
+     * - This is always computed first so report rendering never blocks on network.
+     * - AI debrief (if enabled) is applied later as an overlay for personalization.
+     */
     const resultsByProblem: Record<string, MockInterviewProblemResult> = {}
 
     const criterionTotals = {
@@ -710,25 +1040,134 @@ export function useMockInterview() {
       nextSteps.push(`Prioritize ${weakPatterns[0].name} for your next focused practice block.`)
     }
 
-    const recommendedProblems = selectRecommendedProblems(session, weakPatterns.map(pattern => pattern.id))
+    const weakPatternIds = weakPatterns.map(pattern => pattern.id)
+    const recommendedProblems = selectRecommendedProblems(session, weakPatternIds)
 
-    const result: MockInterviewResult = {
-      totalScore,
-      perProblem: resultsByProblem,
-      strengths,
-      weaknesses,
-      nextSteps,
-      recommendedProblems,
+    return {
+      result: {
+        totalScore,
+        perProblem: resultsByProblem,
+        strengths,
+        weaknesses,
+        nextSteps,
+        recommendedProblems,
+      },
+      weakPatternIds,
     }
+  }
+
+  async function enhanceReportWithAI(
+    sessionId: string,
+    status: 'completed' | 'abandoned',
+    fallbackResult: MockInterviewResult,
+    weakPatternIds: string[],
+  ) {
+    /**
+     * Generate personalized final report with AI based on:
+     * - code typed in editor
+     * - approach notes (thoughts) + stored notes
+     * - user/interviewer transcript
+     *
+     * If anything fails, fallback result remains unchanged.
+     */
+    const session = activeSession.value
+    if (!session || session.id !== sessionId) return
+    if (!featureFlags.value.aiEnabled) return
+
+    isReportGenerating.value = true
+    try {
+      const attempts = session.questionSlugs.map(slug => {
+        const problemState = session.problems[slug]
+        const problem = problems.value[slug]
+        const fallbackProblem = fallbackResult.perProblem[slug]
+        return {
+          slug,
+          title: problem?.title ?? slug,
+          difficulty: problem?.difficulty ?? null,
+          pattern_name: problem?.pattern_name ?? 'Unknown',
+          description_text: problem?.description_text ?? '',
+          stored_note: state.notes[slug] ?? '',
+          thoughts: [...(problemState?.thoughts ?? [])],
+          code: problemState?.code ?? '',
+          chat: [...(problemState?.chat ?? [])].slice(-16),
+          hint_count: problemState?.hintCount ?? 0,
+          submitted: Boolean(problemState?.submittedAt),
+          heuristic_score: fallbackProblem?.score ?? 0,
+          heuristic_reasoning: [...(fallbackProblem?.reasoning ?? [])],
+        }
+      })
+
+      const recommendationCandidates: DebriefRecommendationCandidate[] = selectRecommendedProblems(session, weakPatternIds)
+        .slice(0, 12)
+        .map(slug => {
+          const problem = problems.value[slug]
+          return {
+            slug,
+            title: problem?.title ?? slug,
+            difficulty: problem?.difficulty ?? null,
+            pattern_name: problem?.pattern_name ?? 'Unknown',
+          }
+        })
+
+      const activeProblemSlug = session.questionSlugs[session.currentIndex] ?? session.questionSlugs[0] ?? 'session-summary'
+      const response = await fetchInterviewerReply({
+        sessionId: session.id,
+        problemSlug: activeProblemSlug,
+        hintLevel: attempts.reduce((sum, attempt) => sum + attempt.hint_count, 0),
+        mode: 'debrief',
+        messages: attempts.flatMap(attempt => attempt.chat).slice(-20),
+        problem: problems.value[activeProblemSlug],
+        debriefContext: {
+          session_status: status,
+          total_questions: session.questionSlugs.length,
+          total_time_minutes: session.config.totalTimeMinutes,
+          remaining_time_sec: session.timeRemainingSec,
+          language: 'java',
+          total_score_heuristic: fallbackResult.totalScore,
+          attempts,
+          candidate_recommendations: recommendationCandidates,
+        },
+      })
+
+      const latest = activeSession.value
+      if (!latest || latest.id !== sessionId) return
+      if (!latest.result) return
+
+      const mergedResult = normalizeAIDebriefResult(response.debrief, latest, latest.result, problems.value)
+      latest.result = mergedResult
+      activeSession.value = { ...latest }
+      persist()
+    } catch {
+      // Silent fallback: keep deterministic report when AI debrief fails.
+    } finally {
+      const latest = activeSession.value
+      if (latest && latest.id === sessionId) {
+        isReportGenerating.value = false
+      }
+    }
+  }
+
+  function finalizeSession(status: 'completed' | 'abandoned') {
+    /**
+     * Finalization is now two-phase:
+     * 1) compute deterministic report immediately for instant UX
+     * 2) asynchronously overlay AI-personalized debrief if available
+     */
+    const session = activeSession.value
+    if (!session) return
+
+    const { result: fallbackResult, weakPatternIds } = buildHeuristicSessionResult(session)
 
     session.status = status
     session.paused = false
     session.lastTickAt = new Date().toISOString()
-    session.result = result
+    session.result = fallbackResult
 
     activeSession.value = { ...session }
     persist()
     stopTimer()
+
+    void enhanceReportWithAI(session.id, status, fallbackResult, weakPatternIds)
   }
 
   function submitAndContinue() {
@@ -751,6 +1190,7 @@ export function useMockInterview() {
 
   function restartInterview() {
     stopTimer()
+    isReportGenerating.value = false
     activeSession.value = null
     saveSession(null)
   }
@@ -806,6 +1246,8 @@ export function useMockInterview() {
     currentProblemState,
     canStartSession,
     featureFlags,
+    isInterviewerResponding,
+    isReportGenerating,
     timeRemainingLabel,
     defaultConfig: DEFAULT_CONFIG,
     startSession,

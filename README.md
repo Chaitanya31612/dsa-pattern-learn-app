@@ -4,9 +4,11 @@ Pattern-first DSA learning app with an AI-assisted content pipeline and a static
 
 The core idea: generate high-quality learning data once, then ship a fast client-only experience.
 
+![dsa-pattern-learn-app](https://socialify.git.ci/Chaitanya31612/dsa-pattern-learn-app/image?description=1&font=JetBrains+Mono&forks=1&name=1&owner=1&pattern=Plus&stargazers=1&theme=Auto)
+
 ## Table of Contents
 
-- [0. Demo](#0-Demo)
+- [0. Demo](#0-demo)
 - [1. High-Level Overview](#1-high-level-overview)
 - [2. System Architecture](#2-system-architecture)
 - [3. End-to-End Workflow](#3-end-to-end-workflow)
@@ -18,8 +20,6 @@ The core idea: generate high-quality learning data once, then ship a fast client
 - [9. Open Source Readiness Roadmap](#9-open-source-readiness-roadmap)
 
 ## 0. Demo
-
-<img width="1776" height="1006" alt="image" src="https://github.com/user-attachments/assets/b4bad7e3-1fb4-411f-abf6-24d4b2d7537e" />
 
 
 https://github.com/user-attachments/assets/42d27613-cdf5-4888-9132-246e09eab491

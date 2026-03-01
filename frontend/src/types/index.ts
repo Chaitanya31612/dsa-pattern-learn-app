@@ -68,3 +68,66 @@ export interface Database {
     difficulty_distribution: Record<string, number>
   }
 }
+
+export interface MockInterviewConfig {
+  totalQuestions: number
+  totalTimeMinutes: number
+  language: 'java'
+  allowPause: boolean
+}
+
+export interface MockInterviewChatMessage {
+  role: 'user' | 'assistant'
+  content: string
+  ts: string
+}
+
+export interface InterviewProblemState {
+  slug: string
+  startedAt: string | null
+  submittedAt: string | null
+  code: string
+  thoughts: string[]
+  chat: MockInterviewChatMessage[]
+  hintCount: number
+}
+
+export interface MockInterviewProblemResult {
+  score: number
+  rubric: {
+    problemUnderstanding: number
+    approachQuality: number
+    correctnessConfidence: number
+    complexityReasoning: number
+    communicationQuality: number
+  }
+  reasoning: string[]
+}
+
+export interface MockInterviewResult {
+  totalScore: number
+  perProblem: Record<string, MockInterviewProblemResult>
+  strengths: string[]
+  weaknesses: string[]
+  nextSteps: string[]
+  recommendedProblems: string[]
+}
+
+export interface MockInterviewSession {
+  id: string
+  status: 'active' | 'completed' | 'abandoned'
+  createdAt: string
+  config: MockInterviewConfig
+  questionSlugs: string[]
+  currentIndex: number
+  timeRemainingSec: number
+  lastTickAt: string
+  paused: boolean
+  problems: Record<string, InterviewProblemState>
+  result?: MockInterviewResult
+}
+
+export interface MockInterviewFeatureFlags {
+  aiEnabled: boolean
+  ragEnabled: boolean
+}

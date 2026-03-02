@@ -445,6 +445,7 @@ def parse_json_object(text: str) -> Optional[Dict[str, Any]]:
 
     cleaned = text.strip()
     if cleaned.startswith('```'):
+        # Common model artifact: fenced JSON.
         cleaned = re.sub(r'^```(?:json)?\s*', '', cleaned, flags=re.IGNORECASE).strip()
         cleaned = re.sub(r'\s*```$', '', cleaned).strip()
 
@@ -454,6 +455,7 @@ def parse_json_object(text: str) -> Optional[Dict[str, Any]]:
     except Exception:
         pass
 
+    # Fallback for responses that wrap JSON in extra prose.
     start = cleaned.find('{')
     end = cleaned.rfind('}')
     if start == -1 or end == -1 or end <= start:
@@ -496,7 +498,8 @@ def build_content(payload: MockInterviewRespondRequest, db_problem: Dict[str, An
 
     problem_payload = payload.problem.model_dump() if payload.problem else {}
 
-    # Prefer clean text description if present; fallback to HTML text already stored in db.
+    # Prefer clean text description if present; fallback to backend db text.
+    # We avoid sending HTML to model prompts to reduce noise/tokens.
     description_text = (
         problem_payload.get('description_text')
         or db_problem.get('description_text')
@@ -570,6 +573,7 @@ def mock_interview_respond(payload: MockInterviewRespondRequest):
     - Endpoint still returns HTTP 200 so frontend can continue session flow.
     """
 
+    # 1) Load static problem DB context (cached).
     db = load_db()
     db_problem = ((db.get('problems') or {}).get(payload.problem_slug) or {})
 
@@ -580,14 +584,18 @@ def mock_interview_respond(payload: MockInterviewRespondRequest):
             last_user_message = message.content
             break
 
+    # 2) Derive coarse intent used to steer interviewer style.
     intent = infer_intent(last_user_message, payload.hint_level)
+    # 3) Build provider prompt + bounded content payload.
     prompt = build_prompt(payload.mode, intent, payload.hint_level)
     content = build_content(payload, db_problem)
 
+    # 4) Execute provider call through the cached analyzer client.
     analyzer = get_analyzer()
     response = analyzer.analyze(content=content, prompt=prompt)
 
     if not response.success:
+        # Failure is non-fatal by design: frontend continues session with fallback text.
         fallback = (
             'I could not reach the interviewer model right now. '
             'Continue with your current approach and explain your next invariant.'
@@ -603,10 +611,12 @@ def mock_interview_respond(payload: MockInterviewRespondRequest):
 
     parsed_debrief: Optional[DebriefReportPayload] = None
     if payload.mode == 'debrief':
+        # Debrief is best-effort. Parsing failure should not block response.
         parsed_debrief = parse_debrief_report(response.content)
 
     reply, safety_flags = sanitize_reply(response.content, payload.mode)
     if payload.mode == 'debrief' and not parsed_debrief:
+        # Frontend interprets this flag and keeps deterministic heuristic report.
         safety_flags = [*safety_flags, 'debrief_parse_failed']
 
     return MockInterviewRespondResponse(

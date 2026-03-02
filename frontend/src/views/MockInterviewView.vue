@@ -54,6 +54,8 @@ const setupConfig = ref({
   language: defaultConfig.language,
   allowPause: defaultConfig.allowPause,
 })
+// `setupConfig` is UI-local draft state.
+// The source-of-truth session config lives inside useMockInterview().startSession().
 
 const setupError = ref('')
 const thoughtInput = ref('')
@@ -85,10 +87,14 @@ const selectedProblemTitle = computed(() => {
 })
 
 const shouldAutoStart = computed(() => {
+  // Deep-link flag from ProblemView:
+  // /mock-interview?slug=<slug>&autostart=1[&single=1]
   const value = route.query.autostart
   return value === '1' || value === 'true'
 })
 const shouldSingleQuestionMode = computed(() => {
+  // Used for "Solve in Interview Mode" flow where user wants focused
+  // practice on one chosen problem.
   const value = route.query.single
   return value === '1' || value === 'true'
 })
@@ -154,6 +160,7 @@ function startInterview() {
   thoughtInput.value = ''
   chatInput.value = ''
 
+  // Query cleanup prevents accidental re-trigger on refresh/back navigation.
   if (selectedProblemSlug.value || shouldAutoStart.value) {
     router.replace({ path: route.path, query: {} })
   }
@@ -166,12 +173,15 @@ function submitThought() {
 }
 
 async function sendChat() {
+  // Chat submission is intentionally async because composable may call backend.
+  // UI disable states are driven by `isInterviewerResponding`.
   if (!chatInput.value.trim()) return
   await sendMessage(chatInput.value)
   chatInput.value = ''
 }
 
 function submitProblemAndContinue() {
+  // Local fields are reset after each submit to keep next question workspace clean.
   submitAndContinue()
   thoughtInput.value = ''
   chatInput.value = ''
@@ -235,6 +245,7 @@ function onVisibilityChange() {
 
 onMounted(() => {
   // Current product direction: AI interviewer should be on by default in V2.
+  // This can still be toggled internally via composable feature flags if needed.
   updateFeatureFlags({ aiEnabled: true })
   resumeIfNeeded()
   document.addEventListener('visibilitychange', onVisibilityChange)
@@ -265,6 +276,7 @@ watch(
       restartInterview()
     }
 
+    // Start after reset so we never mix two sessions' question sets.
     startInterview()
   },
   { immediate: true },

@@ -33,6 +33,12 @@ const SESSION_STORAGE_KEY = 'dsa-mock-interview-sessions'
 const RECENT_STORAGE_KEY = 'dsa-mock-interview-recent-slugs'
 const FLAGS_STORAGE_KEY = 'dsa-mock-interview-flags'
 const MAX_RECENT_SLUGS = 40
+/**
+ * Storage ownership note:
+ * - This composable is the only writer for all mock-interview storage keys.
+ * - The view reads/writes through composable APIs only.
+ * This centralization keeps schema migrations and debugging predictable.
+ */
 
 // Starter code shown when each problem opens.
 // Example output in editor:
@@ -122,6 +128,12 @@ function saveSession(session: MockInterviewSession | null) {
 }
 
 function loadFlags(): MockInterviewFeatureFlags {
+  /**
+   * Feature flags are persisted so local dev/prototyping survives refresh.
+   * Current runtime behavior:
+   * - aiEnabled: gates backend calls in sendMessage() and enhanceReportWithAI()
+   * - ragEnabled: reserved switch, currently surfaced in UI for future extension
+   */
   try {
     const raw = localStorage.getItem(FLAGS_STORAGE_KEY)
     if (!raw) return DEFAULT_FLAGS
@@ -140,6 +152,8 @@ function saveFlags(flags: MockInterviewFeatureFlags) {
 }
 
 function loadRecentSlugs(): string[] {
+  // This list is used by buildSelectionWeight() to avoid repeatedly serving
+  // the same interview problems across consecutive sessions.
   try {
     const raw = localStorage.getItem(RECENT_STORAGE_KEY)
     if (!raw) return []
@@ -156,6 +170,8 @@ function saveRecentSlugs(slugs: string[]) {
 }
 
 function appendRecentSlugs(slugs: string[]) {
+  // New session slugs are prepended so recency penalties are strongest for
+  // the latest interviews.
   const current = loadRecentSlugs()
   const deduped = [...slugs, ...current.filter(s => !slugs.includes(s))]
   saveRecentSlugs(deduped)
@@ -166,6 +182,8 @@ function clamp(value: number, min: number, max: number) {
 }
 
 function toWords(text: string): number {
+  // Shared lexical metric used by computeProblemResult() to score clarity
+  // of the candidate's written approach notes.
   return text
     .split(/\s+/)
     .map(t => t.trim())
@@ -309,6 +327,8 @@ async function fetchInterviewerReply(payload: {
    * - pattern_name: "Arrays & Hashing"
    * - description_text: "Given an array of integers nums..."
    */
+  // Backend JSON contract mirrors `backend/app.py` pydantic models.
+  // We keep field names in snake_case to avoid backend-side remapping.
   const body = {
     session_id: payload.sessionId,
     problem_slug: payload.problemSlug,
@@ -438,6 +458,8 @@ export function useMockInterview() {
   const isInterviewerResponding = ref(false)
 
   function getCurrentSlug(session = activeSession.value): string | null {
+    // Helper is used by both computed selectors and command handlers to ensure
+    // "current question" logic is consistently index-driven.
     if (!session) return null
     return session.questionSlugs[session.currentIndex] ?? null
   }
@@ -456,6 +478,8 @@ export function useMockInterview() {
   })
 
   function persist() {
+    // Single write gateway for active session persistence.
+    // Any state mutation that should survive refresh should call this.
     saveSession(activeSession.value)
   }
 
@@ -472,6 +496,8 @@ export function useMockInterview() {
     const solved = isSolved(problem.slug)
     let weight = 35
 
+    // Learning-priority weighting:
+    // unsolved and low-confidence solved problems should appear most often.
     if (!solved) {
       weight += 75
     } else if (confidence === 1) {
@@ -482,9 +508,11 @@ export function useMockInterview() {
       weight += 8
     }
 
+    // Mediums are emphasized because they are closest to common interview bars.
     if (problem.difficulty === 'Medium') weight += 18
     if (problem.in_both) weight += 8
 
+    // Recency decay from solved history prevents immediate repetition of just-practiced problems.
     const solvedAt = state.solved[problem.slug]?.date
     if (solvedAt) {
       const ageDays = (Date.now() - parseIsoTime(solvedAt)) / (1000 * 60 * 60 * 24)
@@ -493,15 +521,18 @@ export function useMockInterview() {
       else if (ageDays < 14) weight -= 8
     }
 
+    // Cross-session memory: avoid repeatedly re-serving recent interview slugs.
     const recencyIndex = recentSlugs.indexOf(problem.slug)
     if (recencyIndex !== -1) {
       weight -= Math.max(30 - recencyIndex * 2, 8)
     }
 
+    // Intra-session diversity: penalize duplicate pattern families.
     if (selected.some(p => p.pattern_id === problem.pattern_id)) {
       weight -= 22
     }
 
+    // Small jitter avoids deterministic ties and keeps sessions varied.
     weight += Math.random() * 10
 
     return Math.max(1, weight)
@@ -578,6 +609,8 @@ export function useMockInterview() {
       session.timeRemainingSec = Math.max(0, session.timeRemainingSec - elapsed)
       session.lastTickAt = new Date(now).toISOString()
 
+      // Time expiry routes through the same finalization pipeline as manual submit,
+      // ensuring report generation/persistence stays consistent.
       if (session.timeRemainingSec <= 0) {
         finalizeSession('completed')
         return
@@ -594,6 +627,7 @@ export function useMockInterview() {
   }
 
   function refreshElapsedTime() {
+    // Called on visibility changes and resume flows to reconcile wall-clock drift.
     const session = activeSession.value
     if (!session || session.status !== 'active' || session.paused) return
 
@@ -619,6 +653,8 @@ export function useMockInterview() {
     const stateForProblem = session.problems[slug]
     if (!stateForProblem) return
 
+    // We intentionally set startedAt lazily when problem is first entered,
+    // not at session creation time.
     if (!stateForProblem.startedAt) {
       stateForProblem.startedAt = new Date().toISOString()
       persist()
@@ -738,6 +774,7 @@ export function useMockInterview() {
     const problemState = session.problems[slug]
     if (!problemState) return
 
+    // Append user message first so even failed API calls keep an accurate transcript.
     problemState.chat.push({
       role: 'user',
       content: trimmed,
@@ -766,6 +803,7 @@ export function useMockInterview() {
         })
         assistantReply = aiResponse.reply.trim()
       } catch {
+        // Hard fallback guarantees chat continuity even on backend/provider failures.
         assistantReply = buildOfflineReply(currentProblemMeta, trimmed, problemState.hintCount)
       } finally {
         isInterviewerResponding.value = false
@@ -848,6 +886,8 @@ export function useMockInterview() {
     const patternToken = problem?.pattern_name.toLowerCase().split(/\s+/).find(Boolean) ?? ''
     const mentionsPattern = patternToken.length > 2 && joinedThoughts.toLowerCase().includes(patternToken)
 
+    // Rubric math is additive then clamped to category max.
+    // Category caps enforce stable score ranges across short/long responses.
     const understanding = clamp(
       Math.round((stateForProblem.submittedAt ? 6 : 2) + thoughtWords / 14 + userMessageCount * 1.4 + (mentionsPattern ? 2 : 0)),
       0,
@@ -894,6 +934,7 @@ export function useMockInterview() {
     if (complexity >= 10) reasoning.push('Complexity reasoning was communicated in interview-friendly form.')
     else reasoning.push('Complexity explanation was thin or missing; state time/space tradeoffs clearly.')
 
+    // High hint counts translate to explicit autonomy coaching in report text.
     if (stateForProblem.hintCount >= 3) {
       reasoning.push('Frequent hints were needed; aim to hold the line longer before requesting nudges.')
     }
@@ -912,6 +953,14 @@ export function useMockInterview() {
   }
 
   function selectRecommendedProblems(session: MockInterviewSession, weakPatternIds: string[]): string[] {
+    /**
+     * Post-interview recommendation ranking.
+     *
+     * Primary goal:
+     * - reinforce weakest pattern families seen in this interview.
+     * Secondary goals:
+     * - prioritize unsolved/low-confidence medium problems.
+     */
     const sessionSet = new Set(session.questionSlugs)
     const all = getAllProblems().filter(problem => !sessionSet.has(problem.slug))
 
@@ -1076,6 +1125,7 @@ export function useMockInterview() {
 
     isReportGenerating.value = true
     try {
+      // Attempt payload mirrors backend DebriefProblemAttemptPayload.
       const attempts = session.questionSlugs.map(slug => {
         const problemState = session.problems[slug]
         const problem = problems.value[slug]
@@ -1097,6 +1147,8 @@ export function useMockInterview() {
         }
       })
 
+      // We send a superset candidate list and let backend/LLM select final
+      // recommendations while staying grounded in known slugs.
       const recommendationCandidates: DebriefRecommendationCandidate[] = selectRecommendedProblems(session, weakPatternIds)
         .slice(0, 12)
         .map(slug => {
@@ -1109,6 +1161,7 @@ export function useMockInterview() {
           }
         })
 
+      // Debrief endpoint still requires `problem_slug`; use best-available slug.
       const activeProblemSlug = session.questionSlugs[session.currentIndex] ?? session.questionSlugs[0] ?? 'session-summary'
       const response = await fetchInterviewerReply({
         sessionId: session.id,
@@ -1167,6 +1220,7 @@ export function useMockInterview() {
     persist()
     stopTimer()
 
+    // Fire-and-forget AI overlay keeps report rendering instant.
     void enhanceReportWithAI(session.id, status, fallbackResult, weakPatternIds)
   }
 
@@ -1196,6 +1250,8 @@ export function useMockInterview() {
   }
 
   function resumeIfNeeded() {
+    // Called from view mount + tab visibility restore.
+    // Guarantees timer and elapsed time are reconciled before user continues.
     if (!activeSession.value) return
 
     refreshElapsedTime()
@@ -1227,6 +1283,8 @@ export function useMockInterview() {
   }
 
   function updateFeatureFlags(next: Partial<MockInterviewFeatureFlags>) {
+    // Feature flags are intentionally runtime mutable for experimentation.
+    // Any new flag should default safely in loadFlags()/DEFAULT_FLAGS.
     featureFlags.value = {
       ...featureFlags.value,
       ...next,

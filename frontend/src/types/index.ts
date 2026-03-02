@@ -76,6 +76,8 @@ export interface Database {
 }
 
 export interface MockInterviewConfig {
+  // Session shape selected in MockInterviewView setup panel and locked into
+  // MockInterviewSession at startSession().
   totalQuestions: number
   totalTimeMinutes: number
   language: 'java'
@@ -89,6 +91,8 @@ export interface MockInterviewChatMessage {
 }
 
 export interface InterviewProblemState {
+  // Runtime state for one problem inside a mock interview session.
+  // Stored under MockInterviewSession.problems[slug].
   slug: string
   startedAt: string | null
   submittedAt: string | null
@@ -99,6 +103,8 @@ export interface InterviewProblemState {
 }
 
 export interface MockInterviewProblemResult {
+  // Deterministic heuristic scoring output per problem.
+  // May be overlaid by AI debrief values while keeping same shape.
   score: number
   rubric: {
     problemUnderstanding: number
@@ -111,6 +117,8 @@ export interface MockInterviewProblemResult {
 }
 
 export interface MockInterviewResult {
+  // Final report shown in MockInterviewView report pane.
+  // Built in two phases: deterministic first, optional AI overlay second.
   totalScore: number
   perProblem: Record<string, MockInterviewProblemResult>
   strengths: string[]
@@ -120,6 +128,8 @@ export interface MockInterviewResult {
 }
 
 export interface MockInterviewSession {
+  // Persisted interview session model used by useMockInterview composable.
+  // Backward-compatible edits are preferred since this lives in localStorage.
   id: string
   status: 'active' | 'completed' | 'abandoned'
   createdAt: string
@@ -134,6 +144,8 @@ export interface MockInterviewSession {
 }
 
 export interface MockInterviewFeatureFlags {
+  // Runtime switches for interview behavior.
+  // aiEnabled currently gates backend chat/debrief calls.
   aiEnabled: boolean
   ragEnabled: boolean
 }

@@ -29,19 +29,19 @@ The endpoint supports two modes:
 
 ```mermaid
 flowchart TD
-    A[Frontend payload] --> B[FastAPI validation via Pydantic models]
-    B --> C[load_db() and merge context]
-    C --> D[infer_intent(last_user_message, hint_level)]
-    D --> E[build_prompt(mode, intent, hint_level)]
-    E --> F[build_content(...)]
-    F --> G[get_analyzer().analyze(...)]
-    G --> H{success?}
-    H -->|no| I[provider_error fallback reply]
-    H -->|yes| J{mode == debrief?}
-    J -->|no| K[sanitize_reply()]
-    J -->|yes| L[parse_debrief_report()]
+    A["Frontend payload"] --> B["FastAPI validation via Pydantic models"]
+    B --> C["load_db() and merge context"]
+    C --> D["infer_intent(last_user_message, hint_level)"]
+    D --> E["build_prompt(mode, intent, hint_level)"]
+    E --> F["build_content(...)"]
+    F --> G["get_analyzer().analyze(...)"]
+    G --> H{"success?"}
+    H -->|no| I["provider_error fallback reply"]
+    H -->|yes| J{"mode == debrief?"}
+    J -->|no| K["sanitize_reply()"]
+    J -->|yes| L["parse_debrief_report()"]
     L --> K
-    K --> M[MockInterviewRespondResponse]
+    K --> M["MockInterviewRespondResponse"]
 ```
 
 ## Request Contract

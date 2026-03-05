@@ -11,3 +11,7 @@ ollama
 
 # Config
 python-dotenv
+
+# Runtime API (V2 mock interview)
+fastapi
+uvicorn[standard]

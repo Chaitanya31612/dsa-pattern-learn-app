@@ -34,6 +34,9 @@ const { meta } = usePatterns()
           <router-link to="/review" class="nav-link" active-class="active">
             <span class="nav-icon">↻</span> Review
           </router-link>
+          <router-link to="/mock-interview" class="nav-link" active-class="active">
+            <span class="nav-icon">⧗</span> Interview
+          </router-link>
           <router-link to="/quiz" class="nav-link" active-class="active">
             <span class="nav-icon">?</span> Quiz
           </router-link>

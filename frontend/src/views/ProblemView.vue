@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
@@ -21,9 +21,16 @@ const confidence = computed(() => getConfidence(slug.value))
 const noteText = ref('')
 const showNotes = ref(false)
 const showReflection = ref(false)
+const interviewRoute = computed(() => ({
+  path: '/mock-interview',
+  query: {
+    slug: slug.value,
+    autostart: '1',
+    single: '1',
+  },
+}))
 
 // Load existing note
-import { watchEffect } from 'vue'
 watchEffect(() => {
   if (slug.value) {
     noteText.value = getNote(slug.value)
@@ -51,6 +58,37 @@ function getDiffClass(diff: string | null): string {
   if (!diff) return ''
   return `badge-${diff.toLowerCase()}`
 }
+
+function normalizeComplexityText(value: string | null | undefined): string {
+  if (!value) return ''
+  return value.replace(/\s+/g, ' ').trim()
+}
+
+function splitComplexityVariants(value: string | null | undefined): string[] {
+  const normalized = normalizeComplexityText(value)
+  if (!normalized) return []
+
+  let segments = normalized
+    .split(/\s*;\s*/g)
+    .flatMap(part => part.split(/\s*,\s*or\s+/gi))
+    .map(part => part.trim())
+    .filter(Boolean)
+
+  if (segments.length === 1) {
+    const oCount = (normalized.match(/O\(/g) ?? []).length
+    if (oCount > 1 && /\s+or\s+/i.test(normalized)) {
+      segments = normalized
+        .split(/\s+or\s+/gi)
+        .map(part => part.trim())
+        .filter(Boolean)
+    }
+  }
+
+  return Array.from(new Set(segments))
+}
+
+const timeComplexityVariants = computed(() => splitComplexityVariants(problem.value?.time_complexity))
+const spaceComplexityVariants = computed(() => splitComplexityVariants(problem.value?.space_complexity))
 </script>
 
 <template>
@@ -88,6 +126,9 @@ function getDiffClass(diff: string | null): string {
         <a :href="problem.leetcode_url" target="_blank" rel="noopener" class="btn">
           Open on LeetCode ↗
         </a>
+        <router-link :to="interviewRoute" class="btn">
+          Solve in Interview Mode
+        </router-link>
         <button class="btn btn-ghost" @click="showNotes = !showNotes">
           {{ showNotes ? 'Hide Notes' : '✎ Notes' }}
         </button>
@@ -191,14 +232,21 @@ function getDiffClass(diff: string | null): string {
       <div class="card card-flat meta-card" v-if="problem.time_complexity || problem.space_complexity">
         <h3 class="section-heading">⏱ Complexity</h3>
         <div class="complexity-grid">
-          <div v-if="problem.time_complexity">
-            <span class="comp-label">Time</span>
-            <span class="comp-value mono">{{ problem.time_complexity }}</span>
-          </div>
-          <div v-if="problem.space_complexity">
-            <span class="comp-label">Space</span>
-            <span class="comp-value mono">{{ problem.space_complexity }}</span>
-          </div>
+          <section class="complexity-block" v-if="timeComplexityVariants.length">
+            <span class="comp-label">Time Complexity</span>
+            <p class="comp-desc">How runtime grows with input size.</p>
+            <ul class="comp-list">
+              <li v-for="item in timeComplexityVariants" :key="`time-${item}`" class="comp-value mono">{{ item }}</li>
+            </ul>
+          </section>
+
+          <section class="complexity-block" v-if="spaceComplexityVariants.length">
+            <span class="comp-label">Space Complexity</span>
+            <p class="comp-desc">How extra memory scales for the approach.</p>
+            <ul class="comp-list">
+              <li v-for="item in spaceComplexityVariants" :key="`space-${item}`" class="comp-value mono">{{ item }}</li>
+            </ul>
+          </section>
         </div>
       </div>
 
@@ -396,8 +444,16 @@ function getDiffClass(diff: string | null): string {
 }
 
 .complexity-grid {
-  display: flex;
-  gap: var(--space-xl);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-lg);
+}
+
+.complexity-block {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
 }
 
 .comp-label {
@@ -406,13 +462,28 @@ function getDiffClass(diff: string | null): string {
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
+}
+
+.comp-desc {
+  margin-bottom: var(--space-sm);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.comp-list {
+  list-style: none;
+  display: grid;
+  gap: 8px;
 }
 
 .comp-value {
-  font-size: var(--text-lg);
-  font-weight: 700;
+  font-size: var(--text-base);
+  font-weight: 600;
   color: var(--accent-cyan);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .tags-wrap {
@@ -462,6 +533,10 @@ function getDiffClass(diff: string | null): string {
   }
 
   .meta-row {
+    grid-template-columns: 1fr;
+  }
+
+  .complexity-grid {
     grid-template-columns: 1fr;
   }
 

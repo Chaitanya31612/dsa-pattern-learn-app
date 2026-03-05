@@ -6,6 +6,7 @@ import AllProblemsView from '../views/AllProblemsView.vue'
 import ReviewView from '../views/ReviewView.vue'
 import PatternQuizView from '../views/PatternQuizView.vue'
 import SettingsView from '../views/SettingsView.vue'
+import MockInterviewView from '../views/MockInterviewView.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -43,6 +44,12 @@ const routes: RouteRecordRaw[] = [
     name: 'quiz',
     component: PatternQuizView,
     meta: { title: 'Pattern Quiz' },
+  },
+  {
+    path: '/mock-interview',
+    name: 'mock-interview',
+    component: MockInterviewView,
+    meta: { title: 'Mock Interview' },
   },
   {
     path: '/settings',

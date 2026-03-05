@@ -190,6 +190,22 @@ function toWords(text: string): number {
     .filter(Boolean).length
 }
 
+const CODE_BOILERPLATE_LINE_PATTERNS = [
+  /^class\s+Solution\b/,
+  /^public\s+\w+\s+solve\(int\[\]\s+nums\)\s*\{?$/,
+  /^\/\/\s*TODO/i,
+  /^return\s+0;?$/,
+  /^[{}]+$/,
+]
+
+function countMeaningfulCodeLines(code: string): number {
+  return code
+    .split('\n')
+    .map(line => line.trim())
+    .filter(Boolean)
+    .filter(line => !CODE_BOILERPLATE_LINE_PATTERNS.some(pattern => pattern.test(line))).length
+}
+
 function weightedPick<T>(items: T[], getWeight: (item: T) => number): T | null {
   /**
    * Roulette-wheel weighted sampling.
@@ -871,73 +887,135 @@ export function useMockInterview() {
      * - Mentions of edge cases/test/dry run => higher correctness confidence
      * - Excessive hints => penalties on autonomy-oriented criteria
      */
+    const userMessages = stateForProblem.chat.filter(message => message.role === 'user')
     const joinedThoughts = stateForProblem.thoughts.join(' ')
-    const allUserMessages = stateForProblem.chat
-      .filter(message => message.role === 'user')
-      .map(message => message.content)
-      .join(' ')
+    const allUserMessages = userMessages.map(message => message.content).join(' ')
 
     const thoughtWords = toWords(joinedThoughts)
-    const codeLines = stateForProblem.code.split('\n').map(line => line.trim()).filter(Boolean).length
-    const userMessageCount = stateForProblem.chat.filter(message => message.role === 'user').length
+    const meaningfulThoughtCount = stateForProblem.thoughts.filter(thought => toWords(thought) >= 4).length
+    const meaningfulUserMessageCount = userMessages.filter(message => {
+      const content = message.content.trim()
+      if (content.length < 12) return false
+      if (isHintRequest(content) && toWords(content) <= 5) return false
+      return true
+    }).length
+
+    const meaningfulCodeLines = countMeaningfulCodeLines(stateForProblem.code)
+    const submitted = Boolean(stateForProblem.submittedAt)
+
+    const hasMeaningfulCode = meaningfulCodeLines > 0
+    const hasMeaningfulNotes = meaningfulThoughtCount > 0
+    const hasMeaningfulChat = meaningfulUserMessageCount > 0
+
+    if (!hasMeaningfulCode && !hasMeaningfulNotes && !hasMeaningfulChat && !submitted) {
+      return {
+        score: 0,
+        rubric: {
+          problemUnderstanding: 0,
+          approachQuality: 0,
+          correctnessConfidence: 0,
+          complexityReasoning: 0,
+          communicationQuality: 0,
+        },
+        reasoning: [
+          'No meaningful implementation, notes, or discussion evidence was provided.',
+          'Score is near zero for empty attempts by design.',
+          'Write at least a rough approach and initial code draft before ending.',
+          'Discuss assumptions, edge cases, and Big-O to improve future interview scores.',
+        ],
+      }
+    }
 
     const mentionsComplexity = /o\(|complexity|time|space/i.test(`${joinedThoughts} ${allUserMessages}`)
     const mentionsValidation = /edge|test|dry run|validate|check/i.test(`${joinedThoughts} ${allUserMessages} ${stateForProblem.code}`)
     const patternToken = problem?.pattern_name.toLowerCase().split(/\s+/).find(Boolean) ?? ''
-    const mentionsPattern = patternToken.length > 2 && joinedThoughts.toLowerCase().includes(patternToken)
+    const mentionsPattern =
+      patternToken.length > 2 &&
+      `${joinedThoughts.toLowerCase()} ${allUserMessages.toLowerCase()}`.includes(patternToken)
 
-    // Rubric math is additive then clamped to category max.
-    // Category caps enforce stable score ranges across short/long responses.
     const understanding = clamp(
-      Math.round((stateForProblem.submittedAt ? 6 : 2) + thoughtWords / 14 + userMessageCount * 1.4 + (mentionsPattern ? 2 : 0)),
+      Math.round(
+        (submitted ? 1 : 0) +
+          meaningfulThoughtCount * 3 +
+          thoughtWords / 18 +
+          meaningfulUserMessageCount * 2 +
+          (mentionsPattern ? 1 : 0) -
+          stateForProblem.hintCount * 1.2,
+      ),
       0,
       20,
     )
 
     const approach = clamp(
-      Math.round((stateForProblem.submittedAt ? 8 : 3) + codeLines * 1.1 + (mentionsPattern ? 3 : 0) - stateForProblem.hintCount * 1.8),
+      Math.round(
+        (submitted ? 2 : 0) +
+          meaningfulCodeLines * 2.8 +
+          meaningfulThoughtCount * 1.2 +
+          (mentionsPattern ? 1 : 0) -
+          stateForProblem.hintCount * 2.4,
+      ),
       0,
       25,
     )
 
     const correctness = clamp(
-      Math.round((stateForProblem.submittedAt ? 10 : 2) + codeLines * 0.9 + (mentionsValidation ? 8 : 0) - stateForProblem.hintCount),
+      Math.round(
+        (submitted ? 2 : 0) +
+          meaningfulCodeLines * 2.2 +
+          (mentionsValidation ? 5 : 0) -
+          stateForProblem.hintCount * 1.8,
+      ),
       0,
       25,
     )
 
     const complexity = clamp(
-      Math.round((mentionsComplexity ? 9 : 3) + (stateForProblem.submittedAt ? 3 : 0) + Math.min(userMessageCount, 3)),
+      Math.round(
+        (mentionsComplexity ? 6 : 0) +
+          Math.min(meaningfulUserMessageCount, 3) +
+          (submitted && hasMeaningfulCode ? 2 : 0) -
+          stateForProblem.hintCount * 0.8,
+      ),
       0,
       15,
     )
 
     const communication = clamp(
-      Math.round(4 + stateForProblem.thoughts.length * 2 + userMessageCount * 1.5 - stateForProblem.hintCount * 0.8),
+      Math.round(
+        meaningfulThoughtCount * 2.2 +
+          meaningfulUserMessageCount * 2.4 -
+          stateForProblem.hintCount * 1.2,
+      ),
       0,
       15,
     )
 
-    const total = understanding + approach + correctness + complexity + communication
+    const rawTotal = understanding + approach + correctness + complexity + communication
+    const evidenceSignals = [hasMeaningfulCode, hasMeaningfulNotes, hasMeaningfulChat, submitted].filter(Boolean).length
 
+    let maxScoreCap = 100
+    if (evidenceSignals <= 1) maxScoreCap = 18
+    else if (evidenceSignals === 2) maxScoreCap = 38
+    if (!hasMeaningfulCode && !submitted) maxScoreCap = Math.min(maxScoreCap, 12)
+    if (submitted && !hasMeaningfulCode) maxScoreCap = Math.min(maxScoreCap, 22)
+
+    const total = clamp(Math.min(rawTotal, maxScoreCap), 0, 100)
     const reasoning: string[] = []
 
-    if (understanding >= 14) reasoning.push('Problem understanding was clear and structured.')
-    else reasoning.push('Problem framing needs more explicit assumptions and constraints.')
+    if (hasMeaningfulCode) reasoning.push('Implementation evidence was present in your code draft.')
+    else reasoning.push('No meaningful code implementation was provided.')
 
-    if (approach >= 17) reasoning.push('Approach quality was solid with workable implementation detail.')
-    else reasoning.push('Approach can be tightened before coding to reduce rework.')
+    if (hasMeaningfulNotes) reasoning.push('You documented approach notes, which improved clarity.')
+    else reasoning.push('Add approach notes before coding to improve structure and score.')
 
-    if (correctness >= 16) reasoning.push('Solution confidence improved through validation signals.')
-    else reasoning.push('Correctness confidence is limited; add explicit dry-run or edge-case checks.')
+    if (hasMeaningfulChat) reasoning.push('Interview communication included substantive technical discussion.')
+    else reasoning.push('Use chat to explain assumptions and tradeoffs, not only hint requests.')
 
-    if (complexity >= 10) reasoning.push('Complexity reasoning was communicated in interview-friendly form.')
-    else reasoning.push('Complexity explanation was thin or missing; state time/space tradeoffs clearly.')
+    if (mentionsValidation) reasoning.push('Validation signals were present (tests/edge-case checks).')
+    else reasoning.push('Run and explain at least one dry-run or edge-case check.')
 
-    // High hint counts translate to explicit autonomy coaching in report text.
-    if (stateForProblem.hintCount >= 3) {
-      reasoning.push('Frequent hints were needed; aim to hold the line longer before requesting nudges.')
-    }
+    if (!submitted) reasoning.push('Solution was not submitted; completion heavily affects final score.')
+    if (stateForProblem.hintCount >= 3) reasoning.push('Frequent hints lowered autonomy-oriented rubric categories.')
 
     return {
       score: total,
@@ -1042,7 +1120,7 @@ export function useMockInterview() {
 
     const allSubmitted = session.questionSlugs.every(slug => Boolean(session.problems[slug]?.submittedAt))
     const spread = scores.length > 1 ? Math.max(...scores) - Math.min(...scores) : 0
-    const consistencyBonus = allSubmitted ? (spread <= 15 ? 5 : spread <= 25 ? 3 : 0) : 0
+    const consistencyBonus = allSubmitted && avgScore >= 55 ? (spread <= 15 ? 5 : spread <= 25 ? 3 : 0) : 0
 
     const totalScore = clamp(Math.round(avgScore + consistencyBonus), 0, 100)
 
@@ -1061,7 +1139,7 @@ export function useMockInterview() {
     if (avgCommunication >= 10) strengths.push('Your thought process was clear and collaborative.')
 
     if (strengths.length === 0) {
-      strengths.push('You stayed engaged across all prompts and produced working drafts.')
+      strengths.push('A session baseline was established; next step is adding stronger code and reasoning evidence.')
     }
 
     const weaknesses: string[] = []
@@ -1070,6 +1148,7 @@ export function useMockInterview() {
     if (avgCorrectness < 14) weaknesses.push('Add dry runs and adversarial test checks before submit.')
     if (avgComplexity < 9) weaknesses.push('Explicitly articulate Big-O for time and space.')
     if (avgCommunication < 9) weaknesses.push('Narrate decisions in concise interviewer-friendly checkpoints.')
+    if (totalScore <= 10) weaknesses.push('Very limited implementation evidence was captured in this session.')
 
     const weakPatterns = Object.values(patternLoss)
       .sort((a, b) => b.total / b.count - a.total / a.count)

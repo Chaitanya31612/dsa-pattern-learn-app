@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
 import type { Problem } from '../types'
@@ -13,6 +13,31 @@ const currentProblem = ref<Problem | null>(null)
 const userGuess = ref('')
 const score = ref({ correct: 0, total: 0 })
 const history = ref<Array<{ problem: Problem; guess: string; correct: boolean }>>([])
+const showFullDescription = ref(false)
+const showHint = ref(false)
+const QUIZ_DESCRIPTION_PREVIEW_CHARS = 360
+
+function extractDescription(problem: Problem | null): string {
+  if (!problem) return ''
+
+  if (problem.description_text?.trim()) {
+    return problem.description_text.replace(/\s+/g, ' ').trim()
+  }
+
+  const html = problem.description_html ?? ''
+  return html
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+const fullDescription = computed(() => extractDescription(currentProblem.value))
+const hasExpandableDescription = computed(() => fullDescription.value.length > QUIZ_DESCRIPTION_PREVIEW_CHARS)
+const descriptionPreview = computed(() => {
+  if (!fullDescription.value) return ''
+  if (showFullDescription.value || !hasExpandableDescription.value) return fullDescription.value
+  return `${fullDescription.value.slice(0, QUIZ_DESCRIPTION_PREVIEW_CHARS).trimEnd()}...`
+})
 
 function pickRandom() {
   let pool = getAllProblems()
@@ -26,6 +51,8 @@ function pickRandom() {
   currentProblem.value = selected
   showAnswer.value = false
   userGuess.value = ''
+  showFullDescription.value = false
+  showHint.value = false
 }
 
 function reveal() {
@@ -65,6 +92,7 @@ function nextProblem() {
 function start() {
   score.value = { correct: 0, total: 0 }
   history.value = []
+  showHint.value = false
   pickRandom()
 }
 
@@ -73,8 +101,15 @@ function getDiffClass(diff: string | null): string {
   return `badge-${diff.toLowerCase()}`
 }
 
+function toggleDescription() {
+  showFullDescription.value = !showFullDescription.value
+}
+
+function toggleHint() {
+  showHint.value = !showHint.value
+}
+
 // Auto-pick first problem when data loads
-import { watchEffect } from 'vue'
 watchEffect(() => {
   if (!loading.value && !currentProblem.value) {
     pickRandom()
@@ -123,16 +158,24 @@ watchEffect(() => {
 
       <h2 class="qz-problem-title">{{ currentProblem.title }}</h2>
 
+      <section v-if="descriptionPreview" class="qz-statement">
+        <h3 class="qz-statement-heading">Problem Statement</h3>
+        <p class="qz-statement-text">{{ descriptionPreview }}</p>
+        <button v-if="hasExpandableDescription" class="btn btn-ghost statement-toggle" @click="toggleDescription">
+          {{ showFullDescription ? 'Show less' : 'Show more' }}
+        </button>
+      </section>
+
       <!-- Pattern hint (hidden) -->
       <div class="qz-hint-area" v-if="currentProblem.pattern_hint && !showAnswer">
-        <button class="hint-toggle btn btn-ghost" @click="($event.target as HTMLElement)?.parentElement?.classList.toggle('show-hint')">
-          💡 Show hint
+        <button class="hint-toggle btn btn-ghost" @click="toggleHint">
+          {{ showHint ? '💡 Hide hint' : '💡 Show hint' }}
         </button>
-        <p class="hint-text">{{ currentProblem.pattern_hint }}</p>
+        <p class="hint-text" v-if="showHint">{{ currentProblem.pattern_hint }}</p>
       </div>
 
       <!-- Tags clue -->
-      <div class="qz-tags" v-if="currentProblem.topic_tags?.length">
+      <div class="qz-tags" v-if="showHint && !showAnswer && currentProblem.topic_tags?.length">
         <span class="tag" v-for="tag in currentProblem.topic_tags" :key="tag">{{ tag }}</span>
       </div>
 
@@ -298,6 +341,35 @@ watchEffect(() => {
   margin-bottom: var(--space-md);
 }
 
+.qz-statement {
+  margin-bottom: var(--space-lg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  padding: var(--space-md);
+}
+
+.qz-statement-heading {
+  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-xs);
+}
+
+.qz-statement-text {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.statement-toggle {
+  margin-top: var(--space-sm);
+}
+
 .qz-tags {
   display: flex;
   flex-wrap: wrap;
@@ -310,7 +382,6 @@ watchEffect(() => {
 }
 
 .hint-text {
-  display: none;
   margin-top: var(--space-sm);
   padding: var(--space-sm) var(--space-md);
   background: rgba(251, 191, 36, 0.06);
@@ -318,14 +389,6 @@ watchEffect(() => {
   border-radius: var(--radius-sm);
   color: var(--accent-yellow);
   font-size: var(--text-sm);
-}
-
-.qz-hint-area.show-hint .hint-text {
-  display: block;
-}
-
-.qz-hint-area.show-hint .hint-toggle {
-  display: none;
 }
 
 /* ── Guess ──────────────────────────── */

@@ -44,6 +44,37 @@ function getDiffClass(diff: string | null): string {
   if (!diff) return ''
   return `badge-${diff.toLowerCase()}`
 }
+
+function normalizeComplexityText(value: string | null | undefined): string {
+  if (!value) return ''
+  return value.replace(/\s+/g, ' ').trim()
+}
+
+function splitComplexityVariants(value: string | null | undefined): string[] {
+  const normalized = normalizeComplexityText(value)
+  if (!normalized) return []
+
+  let segments = normalized
+    .split(/\s*;\s*/g)
+    .flatMap(part => part.split(/\s*,\s*or\s+/gi))
+    .map(part => part.trim())
+    .filter(Boolean)
+
+  if (segments.length === 1) {
+    const oCount = (normalized.match(/O\(/g) ?? []).length
+    if (oCount > 1 && /\s+or\s+/i.test(normalized)) {
+      segments = normalized
+        .split(/\s+or\s+/gi)
+        .map(part => part.trim())
+        .filter(Boolean)
+    }
+  }
+
+  return Array.from(new Set(segments))
+}
+
+const timeComplexityVariants = computed(() => splitComplexityVariants(pattern.value?.time_complexity))
+const spaceComplexityVariants = computed(() => splitComplexityVariants(pattern.value?.space_complexity))
 </script>
 
 <template>
@@ -58,8 +89,6 @@ function getDiffClass(diff: string | null): string {
         <h1 class="pv-title">{{ pattern.name }}</h1>
         <div class="pv-meta">
           <span class="badge">{{ pattern.problem_count }} problems</span>
-          <span class="badge">{{ pattern.time_complexity }}</span>
-          <span class="badge">{{ pattern.space_complexity }}</span>
         </div>
       </div>
 
@@ -72,6 +101,32 @@ function getDiffClass(diff: string | null): string {
         </span>
       </div>
     </header>
+
+    <section
+      class="card card-flat complexity-overview animate-in"
+      v-if="timeComplexityVariants.length || spaceComplexityVariants.length"
+    >
+      <h3 class="section-heading">
+        <span class="heading-icon">⏱</span> Complexity At a Glance
+      </h3>
+      <div class="complexity-grid">
+        <article class="complexity-card" v-if="timeComplexityVariants.length">
+          <span class="complexity-label">Time Complexity</span>
+          <p class="complexity-help">Expected runtime characteristics for common approaches in this pattern.</p>
+          <ul class="complexity-list">
+            <li v-for="item in timeComplexityVariants" :key="`pattern-time-${item}`" class="complexity-value mono">{{ item }}</li>
+          </ul>
+        </article>
+
+        <article class="complexity-card" v-if="spaceComplexityVariants.length">
+          <span class="complexity-label">Space Complexity</span>
+          <p class="complexity-help">Typical auxiliary memory usage while applying the pattern.</p>
+          <ul class="complexity-list">
+            <li v-for="item in spaceComplexityVariants" :key="`pattern-space-${item}`" class="complexity-value mono">{{ item }}</li>
+          </ul>
+        </article>
+      </div>
+    </section>
 
     <!-- ═══ Tabs ═══ -->
     <div class="tab-bar animate-in stagger-1" style="margin-bottom: var(--space-xl)">
@@ -266,6 +321,10 @@ function getDiffClass(diff: string | null): string {
   gap: var(--space-xs);
 }
 
+.complexity-overview {
+  margin-bottom: var(--space-xl);
+}
+
 .pv-progress {
   display: flex;
   align-items: center;
@@ -282,6 +341,48 @@ function getDiffClass(diff: string | null): string {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-md);
+}
+
+.complexity-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+
+.complexity-card {
+  padding: var(--space-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+}
+
+.complexity-label {
+  display: block;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.complexity-help {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  margin-bottom: var(--space-sm);
+}
+
+.complexity-list {
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.complexity-value {
+  color: var(--accent-cyan);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .section-heading {
@@ -495,6 +596,10 @@ function getDiffClass(diff: string | null): string {
 
 @media (max-width: 768px) {
   .pv-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .complexity-grid {
     grid-template-columns: 1fr;
   }
 

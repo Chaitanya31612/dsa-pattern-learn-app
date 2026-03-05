@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { usePatterns } from '../composables/usePatterns'
 import { useMockInterview } from '../composables/useMockInterview'
@@ -62,6 +62,124 @@ const thoughtInput = ref('')
 const chatInput = ref('')
 const showSyntaxHighlight = ref(false)
 const lastHandledAutoStartKey = ref('')
+
+type InterviewLayoutPrefs = {
+  editorRatio: number
+  expanded: boolean
+}
+
+const INTERVIEW_LAYOUT_STORAGE_KEY = 'dsa-mock-interview-layout'
+const DEFAULT_EDITOR_RATIO = 0.6
+const MIN_EDITOR_RATIO = 0.44
+const MAX_EDITOR_RATIO = 0.78
+const SPLIT_BREAKPOINT = 1200
+
+const viewportWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1400)
+const workspaceRightRef = ref<HTMLElement | null>(null)
+const chatThreadRef = ref<HTMLElement | null>(null)
+const editorRatio = ref(DEFAULT_EDITOR_RATIO)
+const isEditorExpanded = ref(false)
+const isDraggingDivider = ref(false)
+
+let dragStartX = 0
+let dragStartRatio = DEFAULT_EDITOR_RATIO
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value))
+}
+
+function loadInterviewLayout(): InterviewLayoutPrefs {
+  try {
+    const raw = localStorage.getItem(INTERVIEW_LAYOUT_STORAGE_KEY)
+    if (!raw) return { editorRatio: DEFAULT_EDITOR_RATIO, expanded: false }
+    const parsed = JSON.parse(raw)
+    const ratio = Number(parsed?.editorRatio)
+    return {
+      editorRatio: Number.isFinite(ratio) ? clamp(ratio, MIN_EDITOR_RATIO, MAX_EDITOR_RATIO) : DEFAULT_EDITOR_RATIO,
+      expanded: Boolean(parsed?.expanded),
+    }
+  } catch {
+    return { editorRatio: DEFAULT_EDITOR_RATIO, expanded: false }
+  }
+}
+
+function saveInterviewLayout() {
+  localStorage.setItem(
+    INTERVIEW_LAYOUT_STORAGE_KEY,
+    JSON.stringify({
+      editorRatio: editorRatio.value,
+      expanded: isEditorExpanded.value,
+    }),
+  )
+}
+
+const isSplitLayoutAvailable = computed(() => viewportWidth.value > SPLIT_BREAKPOINT)
+
+const workspaceRightStyle = computed(() => {
+  if (!isSplitLayoutAvailable.value) return {}
+  if (isEditorExpanded.value) {
+    return { gridTemplateColumns: 'minmax(520px, 1fr) 0px minmax(0px, 0fr)' }
+  }
+
+  const ratio = clamp(editorRatio.value, MIN_EDITOR_RATIO, MAX_EDITOR_RATIO)
+  const chatRatio = 1 - ratio
+  return {
+    gridTemplateColumns: `minmax(420px, ${ratio.toFixed(3)}fr) 10px minmax(320px, ${chatRatio.toFixed(3)}fr)`,
+  }
+})
+
+function updateViewportWidth() {
+  viewportWidth.value = window.innerWidth
+}
+
+function toggleEditorExpand() {
+  if (!isSplitLayoutAvailable.value) return
+  isEditorExpanded.value = !isEditorExpanded.value
+}
+
+function resetEditorLayout() {
+  editorRatio.value = DEFAULT_EDITOR_RATIO
+  isEditorExpanded.value = false
+}
+
+function stopDividerDrag() {
+  if (!isDraggingDivider.value) return
+  isDraggingDivider.value = false
+  document.removeEventListener('pointermove', onDividerPointerMove)
+  document.removeEventListener('pointerup', stopDividerDrag)
+  document.body.style.userSelect = ''
+  document.body.style.cursor = ''
+}
+
+function onDividerPointerMove(event: PointerEvent) {
+  if (!isDraggingDivider.value || !workspaceRightRef.value) return
+
+  const paneWidth = workspaceRightRef.value.clientWidth
+  if (!paneWidth) return
+
+  const deltaX = event.clientX - dragStartX
+  const ratioDelta = deltaX / paneWidth
+  editorRatio.value = clamp(dragStartRatio + ratioDelta, MIN_EDITOR_RATIO, MAX_EDITOR_RATIO)
+}
+
+function onDividerPointerDown(event: PointerEvent) {
+  if (!isSplitLayoutAvailable.value || isEditorExpanded.value) return
+  event.preventDefault()
+
+  isDraggingDivider.value = true
+  dragStartX = event.clientX
+  dragStartRatio = editorRatio.value
+
+  document.body.style.userSelect = 'none'
+  document.body.style.cursor = 'col-resize'
+  document.addEventListener('pointermove', onDividerPointerMove)
+  document.addEventListener('pointerup', stopDividerDrag)
+}
+
+function scrollChatToBottom() {
+  if (!chatThreadRef.value) return
+  chatThreadRef.value.scrollTop = chatThreadRef.value.scrollHeight
+}
 
 // Human-friendly labels for the header status chip.
 const sessionStatusLabel = computed(() => {
@@ -138,6 +256,41 @@ const clarificationLog = computed(() => {
 
 const chatMessages = computed(() => currentProblemState.value?.chat ?? [])
 const canSubmit = computed(() => Boolean(activeSession.value && currentProblemState.value))
+
+watch(
+  () => chatMessages.value.length,
+  async () => {
+    await nextTick()
+    scrollChatToBottom()
+  },
+)
+
+watch(
+  () => isInterviewerResponding.value,
+  async (responding, wasResponding) => {
+    if (wasResponding && !responding) {
+      await nextTick()
+      scrollChatToBottom()
+    }
+  },
+)
+
+watch(
+  () => [editorRatio.value, isEditorExpanded.value] as const,
+  () => {
+    saveInterviewLayout()
+  },
+)
+
+watch(
+  () => isSplitLayoutAvailable.value,
+  available => {
+    if (!available) {
+      stopDividerDrag()
+      isEditorExpanded.value = false
+    }
+  },
+)
 
 function startInterview() {
   // Start always uses Java in current V2.
@@ -246,12 +399,21 @@ function onVisibilityChange() {
 onMounted(() => {
   // Current product direction: AI interviewer should be on by default in V2.
   // This can still be toggled internally via composable feature flags if needed.
+  const layoutPrefs = loadInterviewLayout()
+  editorRatio.value = layoutPrefs.editorRatio
+  isEditorExpanded.value = layoutPrefs.expanded
+  updateViewportWidth()
+
   updateFeatureFlags({ aiEnabled: true })
   resumeIfNeeded()
+  scrollChatToBottom()
+  window.addEventListener('resize', updateViewportWidth)
   document.addEventListener('visibilitychange', onVisibilityChange)
 })
 
 onUnmounted(() => {
+  stopDividerDrag()
+  window.removeEventListener('resize', updateViewportWidth)
   document.removeEventListener('visibilitychange', onVisibilityChange)
 })
 
@@ -440,67 +602,83 @@ watch(
           </div>
         </article>
 
-        <!-- Middle panel: code editor -->
-        <article class="panel card editor-panel">
-          <header class="panel-head">
-            <h2 class="panel-title">Java Workspace</h2>
-            <div class="editor-actions">
-              <button class="btn" @click="toggleSyntaxHighlight">
-                {{ showSyntaxHighlight ? 'Code Editor' : 'Syntax Highlight' }}
+        <div class="workspace-right" ref="workspaceRightRef" :style="workspaceRightStyle">
+          <!-- Middle panel: code editor -->
+          <article class="panel card editor-panel">
+            <header class="panel-head">
+              <h2 class="panel-title">Java Workspace</h2>
+              <div class="editor-actions">
+                <button class="btn" @click="toggleSyntaxHighlight">
+                  {{ showSyntaxHighlight ? 'Code Editor' : 'Syntax Highlight' }}
+                </button>
+                <button class="btn" @click="toggleEditorExpand" :disabled="!isSplitLayoutAvailable">
+                  {{ isEditorExpanded ? 'Restore Layout' : 'Expand Editor' }}
+                </button>
+                <button class="btn btn-ghost" @click="resetEditorLayout" :disabled="!isSplitLayoutAvailable">
+                  Reset Layout
+                </button>
+              </div>
+            </header>
+
+            <div v-if="showSyntaxHighlight" class="code-highlight-wrap">
+              <CodeHighlight :code="currentProblemState?.code ?? ''" language="java" />
+            </div>
+            <textarea
+              v-else
+              :value="currentProblemState?.code ?? ''"
+              class="code-editor"
+              spellcheck="false"
+              @input="updateCode(($event.target as HTMLTextAreaElement).value)"
+              @keydown="handleEditorKeydown"
+            ></textarea>
+
+            <div class="editor-footer">
+              <span class="mono">Hints used: {{ currentProblemState?.hintCount ?? 0 }}</span>
+              <span class="mono">Submitted: {{ currentProblemState?.submittedAt ? 'Yes' : 'No' }}</span>
+            </div>
+          </article>
+
+          <div
+            v-if="isSplitLayoutAvailable && !isEditorExpanded"
+            class="splitter"
+            :class="{ dragging: isDraggingDivider }"
+            @pointerdown="onDividerPointerDown"
+            title="Drag to resize editor and chat"
+          ></div>
+
+          <!-- Right panel: interviewer chat -->
+          <article v-if="!isEditorExpanded || !isSplitLayoutAvailable" class="panel card chat-panel">
+            <header class="panel-head">
+              <h2 class="panel-title">Interviewer Chat</h2>
+              <span class="tag">{{ featureFlags.aiEnabled ? 'AI interviewer · Groq smart' : 'Offline interviewer' }}</span>
+            </header>
+
+            <div class="chat-thread" ref="chatThreadRef">
+              <div
+                v-for="message in chatMessages"
+                :key="`${message.ts}-${message.role}`"
+                class="chat-msg"
+                :class="`chat-${message.role}`"
+              >
+                <span class="chat-role mono">{{ message.role === 'assistant' ? 'Interviewer' : 'You' }}</span>
+                <p>{{ message.content }}</p>
+              </div>
+            </div>
+
+            <div class="chat-input-row">
+              <textarea
+                v-model="chatInput"
+                class="chat-input"
+                rows="3"
+                placeholder="Ask for clarifications or explain your approach..."
+                :disabled="isInterviewerResponding"
+              ></textarea>
+              <button class="btn" :disabled="isInterviewerResponding" @click="sendChat">
+                {{ isInterviewerResponding ? 'Thinking...' : 'Send' }}
               </button>
             </div>
-          </header>
-
-          <div v-if="showSyntaxHighlight" class="code-highlight-wrap">
-            <CodeHighlight :code="currentProblemState?.code ?? ''" language="java" />
-          </div>
-          <textarea
-            v-else
-            :value="currentProblemState?.code ?? ''"
-            class="code-editor"
-            spellcheck="false"
-            @input="updateCode(($event.target as HTMLTextAreaElement).value)"
-            @keydown="handleEditorKeydown"
-          ></textarea>
-
-          <div class="editor-footer">
-            <span class="mono">Hints used: {{ currentProblemState?.hintCount ?? 0 }}</span>
-            <span class="mono">Submitted: {{ currentProblemState?.submittedAt ? 'Yes' : 'No' }}</span>
-          </div>
-        </article>
-
-        <!-- Right panel: interviewer chat -->
-        <article class="panel card chat-panel">
-          <header class="panel-head">
-            <h2 class="panel-title">Interviewer Chat</h2>
-            <span class="tag">{{ featureFlags.aiEnabled ? 'AI interviewer · Groq smart' : 'Offline interviewer' }}</span>
-          </header>
-
-          <div class="chat-thread">
-            <div
-              v-for="message in chatMessages"
-              :key="`${message.ts}-${message.role}`"
-              class="chat-msg"
-              :class="`chat-${message.role}`"
-            >
-              <span class="chat-role mono">{{ message.role === 'assistant' ? 'Interviewer' : 'You' }}</span>
-              <p>{{ message.content }}</p>
-            </div>
-          </div>
-
-          <div class="chat-input-row">
-            <textarea
-              v-model="chatInput"
-              class="chat-input"
-              rows="3"
-              placeholder="Ask for clarifications or explain your approach..."
-              :disabled="isInterviewerResponding"
-            ></textarea>
-            <button class="btn" :disabled="isInterviewerResponding" @click="sendChat">
-              {{ isInterviewerResponding ? 'Thinking...' : 'Send' }}
-            </button>
-          </div>
-        </article>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -754,8 +932,16 @@ watch(
 
 .workspace-grid {
   display: grid;
-  grid-template-columns: 1.1fr 1fr 0.95fr;
+  grid-template-columns: minmax(320px, 1.1fr) minmax(0, 2fr);
   gap: var(--space-md);
+}
+
+.workspace-right {
+  display: grid;
+  grid-template-columns: minmax(420px, 0.6fr) 10px minmax(320px, 0.4fr);
+  gap: var(--space-sm);
+  align-items: stretch;
+  min-width: 0;
 }
 
 .panel {
@@ -763,6 +949,7 @@ watch(
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
+  min-width: 0;
 }
 
 .panel-head {
@@ -770,6 +957,12 @@ watch(
   align-items: center;
   justify-content: space-between;
   gap: var(--space-sm);
+}
+
+.editor-actions {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
 }
 
 .problem-title {
@@ -870,7 +1063,7 @@ watch(
 .code-editor {
   flex: 1;
   width: 100%;
-  min-height: 560px;
+  min-height: 620px;
   resize: none;
   background: var(--bg-code);
   border: 1px solid var(--border-default);
@@ -883,7 +1076,7 @@ watch(
 }
 
 .code-highlight-wrap {
-  min-height: 560px;
+  min-height: 620px;
   border: 1px solid var(--border-default);
   border-radius: var(--radius-sm);
   overflow: auto;
@@ -891,10 +1084,29 @@ watch(
 }
 
 .code-highlight-wrap :deep(.code-block) {
-  min-height: 560px;
+  min-height: 620px;
   border: none;
   border-radius: 0;
   box-shadow: none;
+}
+
+.splitter {
+  width: 10px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.1), rgba(56, 189, 248, 0.3), rgba(56, 189, 248, 0.1));
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  cursor: col-resize;
+  touch-action: none;
+  transition: opacity var(--transition-fast), border-color var(--transition-fast);
+}
+
+.splitter:hover {
+  border-color: var(--accent-cyan);
+}
+
+.splitter.dragging {
+  border-color: var(--accent-cyan);
+  box-shadow: var(--glow-cyan);
 }
 
 .editor-footer {
@@ -1005,6 +1217,15 @@ watch(
   .workspace-grid,
   .report-grid {
     grid-template-columns: 1fr;
+  }
+
+  .workspace-right {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .splitter {
+    display: none;
   }
 
   .panel {

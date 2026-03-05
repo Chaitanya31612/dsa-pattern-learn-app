@@ -24,6 +24,11 @@ The core idea: generate high-quality learning data once, then ship a fast client
 
 https://github.com/user-attachments/assets/42d27613-cdf5-4888-9132-246e09eab491
 
+<img width="1865" height="1011" alt="image" src="https://github.com/user-attachments/assets/447688d8-55cb-4a82-b015-c0fb3f15c885" />
+<img width="1865" height="999" alt="image" src="https://github.com/user-attachments/assets/da4b728b-67d5-4477-b282-ec21373b2dc4" />
+
+<img width="1865" height="999" alt="image" src="https://github.com/user-attachments/assets/7199f130-0d03-4560-8ce6-0641757ecb90" />
+
 
 ## 1. High-Level Overview
 

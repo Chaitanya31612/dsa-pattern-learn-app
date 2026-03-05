@@ -28,6 +28,18 @@ https://github.com/user-attachments/assets/42d27613-cdf5-4888-9132-246e09eab491
 <img width="1865" height="999" alt="image" src="https://github.com/user-attachments/assets/da4b728b-67d5-4477-b282-ec21373b2dc4" />
 
 <img width="1865" height="999" alt="image" src="https://github.com/user-attachments/assets/7199f130-0d03-4560-8ce6-0641757ecb90" />
+<img width="1609" height="997" alt="image" src="https://github.com/user-attachments/assets/94ec8d8c-a088-4511-a5ec-82e64cb74db5" />
+<img width="1609" height="1003" alt="image" src="https://github.com/user-attachments/assets/dbe738e8-9222-4922-9a5e-ea479d6a1f6e" />
+<img width="1609" height="1003" alt="image" src="https://github.com/user-attachments/assets/62cd08b5-944c-4dcf-a5d9-344ab3aad24d" />
+<img width="1609" height="1003" alt="image" src="https://github.com/user-attachments/assets/562d34c2-b3bb-4cc9-9add-4b58e54cfa5c" />
+<img width="1609" height="1003" alt="image" src="https://github.com/user-attachments/assets/4ea70def-d064-41a0-9ddb-6ab396e9f125" />
+<img width="1609" height="1003" alt="image" src="https://github.com/user-attachments/assets/75f34647-18c0-479e-bccc-073504eb7de3" />
+
+
+
+
+
+
 
 
 ## 1. High-Level Overview
@@ -113,7 +125,7 @@ DSAPatternLearnApp/
 
 Backend docs are intentionally separated to keep this root README readable.
 
-- Detailed backend documentation: [backend/README.md](backend/README.md)
+- Detailed backend documentation: [backend/README.md](backend/README.md) and Mock Interview flow: [backend/MOCKINTERVIEWFLOW.md](backend/MOCKINTERVIEWFLOW.md)
 - Includes:
   - pipeline step order and commands
   - input/output contract per script
@@ -124,7 +136,7 @@ Backend docs are intentionally separated to keep this root README readable.
 
 Frontend already has a comprehensive technical README:
 
-- Detailed frontend documentation: [frontend/README.md](frontend/README.md)
+- Detailed frontend documentation: [frontend/README.md](frontend/README.md) and Mock Interview flow: [frontend/MOCKINTERVIEWFLOW.md](frontend/MOCKINTERVIEWFLOW.md)
 - Includes:
   - route map and screen workflows
   - composable architecture

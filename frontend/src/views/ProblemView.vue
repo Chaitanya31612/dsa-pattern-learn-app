@@ -10,7 +10,7 @@ import AIChatPanel from '../components/AIChatPanel.vue'
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
-const { problems, loading } = usePatterns()
+const { problems, loading, getProblemsForPattern } = usePatterns()
 const { isSolved, markSolved, unmarkSolved, getConfidence, getNote, addNote, getReflection } = useProgress()
 const { navigateSmartRandom } = useSmartRandom()
 
@@ -90,6 +90,12 @@ function splitComplexityVariants(value: string | null | undefined): string[] {
 
 const timeComplexityVariants = computed(() => splitComplexityVariants(problem.value?.time_complexity))
 const spaceComplexityVariants = computed(() => splitComplexityVariants(problem.value?.space_complexity))
+const relatedProblems = computed(() => {
+  if (!problem.value) return []
+  return getProblemsForPattern(problem.value.pattern_id)
+    .filter((item) => item.slug !== slug.value)
+    .slice(0, 5)
+})
 
 const problemChatChips = computed(() => {
   const patternName = problem.value?.pattern_name
@@ -108,6 +114,14 @@ const problemChatChips = computed(() => {
   <div class="container problem-view" v-if="!loading && problem">
     <!-- ═══ Header ═══ -->
     <header class="prob-header animate-in">
+      <nav class="breadcrumbs mono">
+        <router-link to="/">Dashboard</router-link>
+        <span>/</span>
+        <router-link :to="`/pattern/${problem.pattern_id}`">{{ problem.pattern_name }}</router-link>
+        <span>/</span>
+        <span class="crumb-current">{{ problem.title }}</span>
+      </nav>
+
       <router-link :to="`/pattern/${problem.pattern_id}`" class="back-link">
         <span>←</span> {{ problem.pattern_name }}
       </router-link>
@@ -139,7 +153,7 @@ const problemChatChips = computed(() => {
         <a :href="problem.leetcode_url" target="_blank" rel="noopener" class="btn">
           Open on LeetCode ↗
         </a>
-        <router-link :to="interviewRoute" class="btn">
+        <router-link :to="interviewRoute" class="btn" target="_blank" rel="noopener">
           Solve in Interview Mode
         </router-link>
         <button class="btn btn-ghost" @click="showNotes = !showNotes">
@@ -211,28 +225,28 @@ const problemChatChips = computed(() => {
 
     <!-- ═══ Insights Grid ═══ -->
     <div class="insights-grid animate-in stagger-1">
-      <div class="card card-flat insight-card" v-if="problem.pattern_hint">
+      <div class="card card-flat insight-card insight-signal" v-if="problem.pattern_hint">
         <div class="insight-label">
           <span class="insight-icon">🔍</span> Pattern Signal
         </div>
         <p class="insight-text">{{ problem.pattern_hint }}</p>
       </div>
 
-      <div class="card card-flat insight-card" v-if="problem.key_insight">
+      <div class="card card-flat insight-card insight-key" v-if="problem.key_insight">
         <div class="insight-label">
           <span class="insight-icon">💡</span> Key Insight
         </div>
         <p class="insight-text highlight">{{ problem.key_insight }}</p>
       </div>
 
-      <div class="card card-flat insight-card" v-if="problem.template_deviation">
+      <div class="card card-flat insight-card insight-deviation" v-if="problem.template_deviation">
         <div class="insight-label">
           <span class="insight-icon">🔧</span> Template Deviation
         </div>
         <p class="insight-text">{{ problem.template_deviation }}</p>
       </div>
 
-      <div class="card card-flat insight-card" v-if="problem.common_mistake">
+      <div class="card card-flat insight-card insight-warning" v-if="problem.common_mistake">
         <div class="insight-label">
           <span class="insight-icon">⚠️</span> Common Mistake
         </div>
@@ -263,10 +277,29 @@ const problemChatChips = computed(() => {
         </div>
       </div>
 
-      <div class="card card-flat meta-card" v-if="problem.topic_tags?.length">
-        <h3 class="section-heading">🏷 Topic Tags</h3>
-        <div class="tags-wrap">
-          <span v-for="tag in problem.topic_tags" :key="tag" class="tag">{{ tag }}</span>
+      <div class="meta-side">
+        <div class="card card-flat meta-card" v-if="problem.topic_tags?.length">
+          <h3 class="section-heading">🏷 Topic Tags</h3>
+          <div class="tags-wrap">
+            <span v-for="tag in problem.topic_tags" :key="tag" class="tag">{{ tag }}</span>
+          </div>
+        </div>
+
+        <div class="card card-flat meta-card related-card" v-if="relatedProblems.length">
+          <h3 class="section-heading">🔗 Related Problems</h3>
+          <div class="related-list">
+            <router-link
+              v-for="item in relatedProblems"
+              :key="item.slug"
+              :to="`/problem/${item.slug}`"
+              class="related-item"
+            >
+              <span class="related-title">{{ item.title }}</span>
+              <span class="badge" :class="getDiffClass(item.difficulty)">
+                {{ item.difficulty || 'Unknown' }}
+              </span>
+            </router-link>
+          </div>
         </div>
       </div>
     </div>
@@ -292,6 +325,31 @@ const problemChatChips = computed(() => {
 <style scoped>
 .prob-header {
   margin-bottom: var(--space-xl);
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-xs);
+  margin-bottom: var(--space-sm);
+  color: var(--text-muted);
+}
+
+.breadcrumbs a {
+  color: var(--text-secondary);
+}
+
+.breadcrumbs a:hover {
+  color: var(--accent-cyan);
+}
+
+.crumb-current {
+  color: var(--accent-cyan);
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .back-link {
@@ -425,6 +483,22 @@ const problemChatChips = computed(() => {
   padding: var(--space-lg);
 }
 
+.insight-signal {
+  background: linear-gradient(160deg, rgba(56, 189, 248, 0.08), rgba(56, 189, 248, 0.02));
+}
+
+.insight-key {
+  background: linear-gradient(160deg, rgba(34, 211, 167, 0.08), rgba(34, 211, 167, 0.02));
+}
+
+.insight-deviation {
+  background: linear-gradient(160deg, rgba(167, 139, 250, 0.08), rgba(167, 139, 250, 0.02));
+}
+
+.insight-warning {
+  background: linear-gradient(160deg, rgba(251, 146, 60, 0.08), rgba(251, 146, 60, 0.02));
+}
+
 .insight-label {
   display: flex;
   align-items: center;
@@ -461,6 +535,11 @@ const problemChatChips = computed(() => {
 .meta-row {
   display: grid;
   grid-template-columns: auto 1fr;
+  gap: var(--space-md);
+}
+
+.meta-side {
+  display: grid;
   gap: var(--space-md);
 }
 
@@ -511,6 +590,32 @@ const problemChatChips = computed(() => {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-xs);
+}
+
+.related-list {
+  display: grid;
+  gap: 6px;
+}
+
+.related-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  padding: 8px 10px;
+  color: inherit;
+}
+
+.related-item:hover {
+  border-color: var(--accent-cyan);
+}
+
+.related-title {
+  color: var(--text-primary);
+  font-size: var(--text-sm);
 }
 
 /* ── Reflection Grid ────────────────── */
@@ -564,6 +669,10 @@ const problemChatChips = computed(() => {
   .prob-title-row {
     flex-direction: column;
     gap: var(--space-sm);
+  }
+
+  .breadcrumbs {
+    flex-wrap: wrap;
   }
 }
 </style>

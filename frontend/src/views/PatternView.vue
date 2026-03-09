@@ -17,11 +17,15 @@ const problems = computed(() => getProblemsForPattern(patternId.value))
 
 const activeTab = ref<'overview' | 'template' | 'problems'>('overview')
 const codeLang = ref<'python' | 'javascript' | 'java'>('java')
+const hoveredProblemSlug = ref<string | null>(null)
 
 const completion = computed(() => {
   if (!pattern.value) return 0
   return patternCompletion(pattern.value.problem_slugs)
 })
+
+const ringCircumference = 2 * Math.PI * 18
+const ringOffset = computed(() => ringCircumference - ((completion.value / 100) * ringCircumference))
 
 const templateCode = computed(() => {
   if (!pattern.value) return ''
@@ -77,6 +81,27 @@ function splitComplexityVariants(value: string | null | undefined): string[] {
 const timeComplexityVariants = computed(() => splitComplexityVariants(pattern.value?.time_complexity))
 const spaceComplexityVariants = computed(() => splitComplexityVariants(pattern.value?.space_complexity))
 
+const difficultyBreakdown = computed(() => {
+  const counts = {
+    Easy: 0,
+    Medium: 0,
+    Hard: 0,
+  }
+
+  for (const problem of problems.value) {
+    if (problem.difficulty === 'Easy') counts.Easy += 1
+    if (problem.difficulty === 'Medium') counts.Medium += 1
+    if (problem.difficulty === 'Hard') counts.Hard += 1
+  }
+
+  const total = problems.value.length || 1
+  return [
+    { label: 'Easy', count: counts.Easy, pct: Math.round((counts.Easy / total) * 100), color: 'var(--diff-easy)' },
+    { label: 'Medium', count: counts.Medium, pct: Math.round((counts.Medium / total) * 100), color: 'var(--diff-medium)' },
+    { label: 'Hard', count: counts.Hard, pct: Math.round((counts.Hard / total) * 100), color: 'var(--diff-hard)' },
+  ]
+})
+
 const patternChatChips = computed(() => {
   const relatedPattern = pattern.value?.related_patterns?.[0]
   return [
@@ -104,12 +129,27 @@ const patternChatChips = computed(() => {
       </div>
 
       <div class="pv-progress">
-        <div class="progress-bar" style="height: 6px">
-          <div class="progress-fill" :style="{ width: completion + '%' }"></div>
+        <div class="pv-ring">
+          <svg viewBox="0 0 44 44" aria-label="Pattern completion progress">
+            <circle class="pv-ring-bg" cx="22" cy="22" r="18" />
+            <circle
+              class="pv-ring-fill"
+              cx="22"
+              cy="22"
+              r="18"
+              :stroke-dasharray="ringCircumference"
+              :stroke-dashoffset="ringOffset"
+            />
+          </svg>
+          <span class="pv-ring-label mono">{{ completion }}%</span>
         </div>
-        <span class="mono" style="font-size: var(--text-xs); color: var(--text-muted)">
-          {{ completion }}% complete
-        </span>
+
+        <div class="pv-progress-bar-wrap">
+          <div class="progress-bar" style="height: 6px">
+            <div class="progress-fill" :style="{ width: completion + '%' }"></div>
+          </div>
+          <span class="mono pv-progress-label">{{ completion }}% complete</span>
+        </div>
       </div>
     </header>
 
@@ -135,6 +175,24 @@ const patternChatChips = computed(() => {
           <ul class="complexity-list">
             <li v-for="item in spaceComplexityVariants" :key="`pattern-space-${item}`" class="complexity-value mono">{{ item }}</li>
           </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="card card-flat difficulty-overview animate-in" v-if="problems.length">
+      <h3 class="section-heading">
+        <span class="heading-icon">📊</span> Difficulty Distribution
+      </h3>
+      <div class="diff-mini-grid">
+        <article v-for="item in difficultyBreakdown" :key="item.label" class="diff-mini-card">
+          <div class="diff-mini-head">
+            <span class="mono">{{ item.label }}</span>
+            <span class="mono">{{ item.count }}</span>
+          </div>
+          <div class="diff-mini-bar">
+            <span class="diff-mini-fill" :style="{ width: `${item.pct}%`, background: item.color }"></span>
+          </div>
+          <span class="diff-mini-pct mono">{{ item.pct }}%</span>
         </article>
       </div>
     </section>
@@ -248,38 +306,52 @@ const patternChatChips = computed(() => {
         <div
           v-for="problem in problems"
           :key="problem.slug"
-          class="problem-row"
-          :class="{ solved: isSolved(problem.slug) }"
+          class="problem-item"
+          @mouseenter="hoveredProblemSlug = problem.slug"
+          @mouseleave="hoveredProblemSlug = null"
         >
-          <button
-            class="solve-check"
-            :class="{ checked: isSolved(problem.slug) }"
-            @click.prevent="toggleSolved(problem.slug)"
-            :title="isSolved(problem.slug) ? 'Unmark' : 'Mark solved'"
-          >
-            {{ isSolved(problem.slug) ? '✓' : '' }}
-          </button>
+          <div class="problem-row" :class="{ solved: isSolved(problem.slug) }">
+            <button
+              class="solve-check"
+              :class="{ checked: isSolved(problem.slug) }"
+              @click.prevent="toggleSolved(problem.slug)"
+              :title="isSolved(problem.slug) ? 'Unmark' : 'Mark solved'"
+            >
+              {{ isSolved(problem.slug) ? '✓' : '' }}
+            </button>
 
-          <router-link :to="`/problem/${problem.slug}`" class="problem-info">
-            <span class="problem-num mono">#{{ problem.number }}</span>
-            <span class="problem-title">{{ problem.title }}</span>
-          </router-link>
+            <router-link :to="`/problem/${problem.slug}`" class="problem-info">
+              <span class="problem-num mono">#{{ problem.number }}</span>
+              <span class="problem-title">{{ problem.title }}</span>
+            </router-link>
 
-          <span class="badge" :class="getDiffClass(problem.difficulty)">
-            {{ problem.difficulty || '?' }}
-          </span>
+            <span class="badge" :class="getDiffClass(problem.difficulty)">
+              {{ problem.difficulty || '?' }}
+            </span>
 
-          <span class="problem-ac mono" v-if="problem.acceptance_rate">
-            {{ problem.acceptance_rate }}%
-          </span>
+            <span class="problem-ac mono" v-if="problem.acceptance_rate">
+              {{ problem.acceptance_rate }}%
+            </span>
 
-          <a
-            :href="problem.leetcode_url"
-            target="_blank"
-            rel="noopener"
-            class="lc-link"
-            title="Open on LeetCode"
-          >↗</a>
+            <a
+              :href="problem.leetcode_url"
+              target="_blank"
+              rel="noopener"
+              class="lc-link"
+              title="Open on LeetCode"
+            >↗</a>
+          </div>
+
+          <Transition name="preview-fade">
+            <div v-if="hoveredProblemSlug === problem.slug" class="problem-preview">
+              <p class="problem-preview-line" v-if="problem.pattern_hint">
+                <span class="problem-preview-label">Signal:</span> {{ problem.pattern_hint }}
+              </p>
+              <p class="problem-preview-line" v-if="problem.key_insight">
+                <span class="problem-preview-label">Insight:</span> {{ problem.key_insight }}
+              </p>
+            </div>
+          </Transition>
         </div>
       </div>
     </div>
@@ -350,9 +422,54 @@ const patternChatChips = computed(() => {
   gap: var(--space-md);
 }
 
-.pv-progress .progress-bar {
+.pv-ring {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  flex-shrink: 0;
+}
+
+.pv-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.pv-ring-bg {
+  fill: none;
+  stroke: var(--bg-input);
+  stroke-width: 4;
+}
+
+.pv-ring-fill {
+  fill: none;
+  stroke: var(--accent-cyan);
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--transition-slow);
+}
+
+.pv-ring-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-cyan);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.pv-progress-bar-wrap {
   flex: 1;
   max-width: 300px;
+}
+
+.pv-progress-label {
+  display: block;
+  margin-top: 6px;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
 }
 
 /* ── Grid ──────────────────────────── */
@@ -373,6 +490,52 @@ const patternChatChips = computed(() => {
   border: 1px solid var(--border-subtle);
   background: var(--bg-elevated);
   border-radius: var(--radius-sm);
+}
+
+.difficulty-overview {
+  margin-bottom: var(--space-xl);
+}
+
+.diff-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+
+.diff-mini-card {
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm);
+}
+
+.diff-mini-head {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  margin-bottom: 6px;
+}
+
+.diff-mini-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--bg-input);
+  overflow: hidden;
+}
+
+.diff-mini-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  transition: width var(--transition-slow);
+}
+
+.diff-mini-pct {
+  display: block;
+  margin-top: 6px;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
 }
 
 .complexity-label {
@@ -512,7 +675,12 @@ const patternChatChips = computed(() => {
 .problem-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 6px;
+}
+
+.problem-item {
+  border-radius: var(--radius-sm);
+  overflow: hidden;
 }
 
 .problem-row {
@@ -606,6 +774,39 @@ const patternChatChips = computed(() => {
   color: var(--accent-cyan);
 }
 
+.problem-preview {
+  border: 1px solid var(--border-subtle);
+  border-top: none;
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.06), rgba(56, 189, 248, 0.02));
+  padding: var(--space-sm) var(--space-md);
+}
+
+.problem-preview-line {
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  line-height: 1.6;
+}
+
+.problem-preview-line + .problem-preview-line {
+  margin-top: 4px;
+}
+
+.problem-preview-label {
+  color: var(--accent-cyan);
+  font-family: var(--font-mono);
+}
+
+.preview-fade-enter-active,
+.preview-fade-leave-active {
+  transition: all var(--transition-fast);
+}
+
+.preview-fade-enter-from,
+.preview-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
 .loading-state {
   display: flex;
   align-items: center;
@@ -619,6 +820,10 @@ const patternChatChips = computed(() => {
   }
 
   .complexity-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .diff-mini-grid {
     grid-template-columns: 1fr;
   }
 

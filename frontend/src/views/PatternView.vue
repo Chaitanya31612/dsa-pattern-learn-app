@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
 import CodeHighlight from '../components/CodeHighlight.vue'
+import AIChatPanel from '../components/AIChatPanel.vue'
 
 const route = useRoute()
 const patternId = computed(() => route.params.id as string)
@@ -75,6 +76,16 @@ function splitComplexityVariants(value: string | null | undefined): string[] {
 
 const timeComplexityVariants = computed(() => splitComplexityVariants(pattern.value?.time_complexity))
 const spaceComplexityVariants = computed(() => splitComplexityVariants(pattern.value?.space_complexity))
+
+const patternChatChips = computed(() => {
+  const relatedPattern = pattern.value?.related_patterns?.[0]
+  return [
+    'Explain this pattern simply',
+    'When should I NOT use this?',
+    'Show me a visual example',
+    relatedPattern ? `Compare with ${relatedPattern}` : 'Compare with a related pattern',
+  ]
+})
 </script>
 
 <template>
@@ -272,6 +283,14 @@ const spaceComplexityVariants = computed(() => splitComplexityVariants(pattern.v
         </div>
       </div>
     </div>
+
+    <AIChatPanel
+      :key="`pattern-ai-${patternId}`"
+      context-type="pattern"
+      :context-id="patternId"
+      :context-label="pattern.name"
+      :quick-chips="patternChatChips"
+    />
   </div>
 
   <div class="container loading-state" v-else-if="loading">

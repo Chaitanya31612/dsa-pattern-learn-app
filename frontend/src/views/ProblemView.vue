@@ -5,6 +5,7 @@ import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
 import { useSmartRandom } from '../composables/useSmartRandom'
 import ReflectionModal from '../components/ReflectionModal.vue'
+import AIChatPanel from '../components/AIChatPanel.vue'
 
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
@@ -89,6 +90,18 @@ function splitComplexityVariants(value: string | null | undefined): string[] {
 
 const timeComplexityVariants = computed(() => splitComplexityVariants(problem.value?.time_complexity))
 const spaceComplexityVariants = computed(() => splitComplexityVariants(problem.value?.space_complexity))
+
+const problemChatChips = computed(() => {
+  const patternName = problem.value?.pattern_name
+  return [
+    'Walk me through the approach',
+    'Show me the optimal solution',
+    'What are the edge cases?',
+    patternName
+      ? `How does this connect to ${patternName}?`
+      : 'How does this connect to the pattern?',
+  ]
+})
 </script>
 
 <template>
@@ -257,6 +270,14 @@ const spaceComplexityVariants = computed(() => splitComplexityVariants(problem.v
         </div>
       </div>
     </div>
+
+    <AIChatPanel
+      :key="`problem-ai-${slug}`"
+      context-type="problem"
+      :context-id="slug"
+      :context-label="problem.title"
+      :quick-chips="problemChatChips"
+    />
   </div>
 
   <div class="container loading-state" v-else-if="loading">

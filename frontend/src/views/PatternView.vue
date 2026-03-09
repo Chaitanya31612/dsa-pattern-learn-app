@@ -102,6 +102,28 @@ const difficultyBreakdown = computed(() => {
   ]
 })
 
+const topCompanies = computed(() => {
+  return pattern.value?.top_companies?.filter(item => item.count > 0) ?? []
+})
+
+const subPatternSections = computed(() => {
+  if (!pattern.value?.sub_patterns?.length) return []
+
+  const bySlug = new Map(problems.value.map(problem => [problem.slug, problem]))
+
+  return pattern.value.sub_patterns
+    .filter(subPattern => {
+      const count = subPattern.problem_count ?? subPattern.problem_slugs?.length ?? 0
+      return count > 0
+    })
+    .map(subPattern => ({
+      ...subPattern,
+      problems: (subPattern.problem_slugs ?? [])
+        .map(slug => bySlug.get(slug))
+        .filter((problem): problem is (typeof problems.value)[number] => Boolean(problem)),
+    }))
+})
+
 const patternChatChips = computed(() => {
   const relatedPattern = pattern.value?.related_patterns?.[0]
   return [
@@ -194,6 +216,58 @@ const patternChatChips = computed(() => {
           </div>
           <span class="diff-mini-pct mono">{{ item.pct }}%</span>
         </article>
+      </div>
+    </section>
+
+    <section class="card card-flat company-overview animate-in" v-if="topCompanies.length">
+      <h3 class="section-heading">
+        <span class="heading-icon">🏢</span> Top Companies
+      </h3>
+      <div class="company-mini-grid">
+        <article class="company-mini-card" v-for="item in topCompanies" :key="item.company">
+          <strong class="company-mini-name">{{ item.company }}</strong>
+          <span class="company-mini-count mono">{{ item.count }} problems</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="card card-flat subpattern-overview animate-in" v-if="subPatternSections.length">
+      <h3 class="section-heading">
+        <span class="heading-icon">🧩</span> Sub-Patterns
+      </h3>
+      <div class="subpattern-grid">
+        <details
+          v-for="subPattern in subPatternSections"
+          :key="subPattern.sub_pattern_id"
+          class="subpattern-card"
+        >
+          <summary class="subpattern-summary">
+            <div class="subpattern-summary-main">
+              <strong class="subpattern-name">{{ subPattern.name }}</strong>
+              <p class="subpattern-description">{{ subPattern.description }}</p>
+            </div>
+            <span class="badge">{{ subPattern.problem_count }} problems</span>
+          </summary>
+
+          <div class="subpattern-body">
+            <div class="trigger-list" v-if="subPattern.trigger_phrases.length">
+              <span v-for="phrase in subPattern.trigger_phrases" :key="`${subPattern.sub_pattern_id}-${phrase}`" class="trigger-chip">
+                {{ phrase }}
+              </span>
+            </div>
+
+            <div class="subpattern-problem-links" v-if="subPattern.problems.length">
+              <router-link
+                v-for="problem in subPattern.problems.slice(0, 6)"
+                :key="problem.slug"
+                :to="`/problem/${problem.slug}`"
+                class="subpattern-problem-link"
+              >
+                {{ problem.title }}
+              </router-link>
+            </div>
+          </div>
+        </details>
       </div>
     </section>
 
@@ -494,6 +568,104 @@ const patternChatChips = computed(() => {
 
 .difficulty-overview {
   margin-bottom: var(--space-xl);
+}
+
+.company-overview {
+  margin-bottom: var(--space-xl);
+}
+
+.company-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+
+.company-mini-card {
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm);
+  display: grid;
+  gap: 4px;
+}
+
+.company-mini-name {
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+}
+
+.company-mini-count {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.subpattern-overview {
+  margin-bottom: var(--space-xl);
+}
+
+.subpattern-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+
+.subpattern-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  overflow: hidden;
+}
+
+.subpattern-summary {
+  list-style: none;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+}
+
+.subpattern-summary::-webkit-details-marker {
+  display: none;
+}
+
+.subpattern-summary-main {
+  min-width: 0;
+}
+
+.subpattern-name {
+  display: block;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.subpattern-description {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+}
+
+.subpattern-body {
+  border-top: 1px solid var(--border-subtle);
+  padding: var(--space-sm) var(--space-md) var(--space-md);
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.subpattern-problem-links {
+  display: grid;
+  gap: 6px;
+}
+
+.subpattern-problem-link {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+}
+
+.subpattern-problem-link:hover {
+  color: var(--accent-cyan);
 }
 
 .diff-mini-grid {
@@ -824,6 +996,14 @@ const patternChatChips = computed(() => {
   }
 
   .diff-mini-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .company-mini-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .subpattern-grid {
     grid-template-columns: 1fr;
   }
 

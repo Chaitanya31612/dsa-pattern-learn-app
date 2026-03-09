@@ -60,6 +60,14 @@ function getDiffClass(diff: string | null): string {
   return `badge-${diff.toLowerCase()}`
 }
 
+function frequencyLabel(tier: string | null | undefined): string {
+  const value = String(tier ?? 'low').toLowerCase()
+  if (value === 'very_high') return 'Very High Frequency'
+  if (value === 'high') return 'High Frequency'
+  if (value === 'medium') return 'Medium Frequency'
+  return 'Low Frequency'
+}
+
 function normalizeComplexityText(value: string | null | undefined): string {
   if (!value) return ''
   return value.replace(/\s+/g, ' ').trim()
@@ -95,6 +103,18 @@ const relatedProblems = computed(() => {
   return getProblemsForPattern(problem.value.pattern_id)
     .filter((item) => item.slug !== slug.value)
     .slice(0, 5)
+})
+
+const followUpProblems = computed(() => {
+  if (!problem.value?.follow_ups?.length) return []
+  const items = []
+  for (const followSlug of problem.value.follow_ups) {
+    const item = problems.value[followSlug]
+    if (item && item.slug !== slug.value) {
+      items.push(item)
+    }
+  }
+  return items
 })
 
 const problemChatChips = computed(() => {
@@ -142,6 +162,12 @@ const problemChatChips = computed(() => {
             <span class="badge badge-source" v-if="problem.in_both">NeetCode + Striver</span>
             <span class="badge badge-source" v-else-if="problem.in_neetcode">NeetCode</span>
             <span class="badge badge-source" v-else-if="problem.in_striver">Striver</span>
+            <span class="badge badge-source" v-if="problem.frequency_tier">
+              {{ frequencyLabel(problem.frequency_tier) }}
+            </span>
+            <span class="badge badge-source" v-for="company in (problem.companies ?? []).slice(0, 5)" :key="`company-${company}`">
+              🏢 {{ company }}
+            </span>
           </div>
         </div>
       </div>
@@ -278,6 +304,33 @@ const problemChatChips = computed(() => {
       </div>
 
       <div class="meta-side">
+        <div class="card card-flat meta-card" v-if="problem.companies?.length || problem.follow_ups?.length">
+          <h3 class="section-heading">🏢 Interview Signals</h3>
+
+          <div class="company-wrap" v-if="problem.companies?.length">
+            <span v-for="company in problem.companies" :key="`company-chip-${company}`" class="tag">
+              {{ company }}
+            </span>
+          </div>
+
+          <div class="followups-wrap" v-if="followUpProblems.length">
+            <span class="terminal-prompt followups-label">suggested_follow_ups</span>
+            <div class="related-list">
+              <router-link
+                v-for="item in followUpProblems"
+                :key="`follow-${item.slug}`"
+                :to="`/problem/${item.slug}`"
+                class="related-item"
+              >
+                <span class="related-title">{{ item.title }}</span>
+                <span class="badge" :class="getDiffClass(item.difficulty)">
+                  {{ item.difficulty || 'Unknown' }}
+                </span>
+              </router-link>
+            </div>
+          </div>
+        </div>
+
         <div class="card card-flat meta-card" v-if="problem.topic_tags?.length">
           <h3 class="section-heading">🏷 Topic Tags</h3>
           <div class="tags-wrap">
@@ -590,6 +643,22 @@ const problemChatChips = computed(() => {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-xs);
+}
+
+.company-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.followups-wrap {
+  margin-top: var(--space-md);
+}
+
+.followups-label {
+  display: inline-block;
+  margin-bottom: var(--space-sm);
+  font-size: var(--text-xs);
 }
 
 .related-list {

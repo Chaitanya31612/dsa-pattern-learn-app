@@ -765,6 +765,26 @@ def _build_pattern_context(pattern_id: str) -> str:
     if related:
         sections.append(f"Related Patterns: {', '.join(related)}")
 
+    sub_patterns = pattern.get('sub_patterns', [])
+    if isinstance(sub_patterns, list) and sub_patterns:
+        names = [str(item.get('name', '')).strip() for item in sub_patterns if isinstance(item, dict)]
+        names = [name for name in names if name]
+        if names:
+            sections.append(f"Sub-Patterns: {', '.join(names)}")
+
+    top_companies = pattern.get('top_companies', [])
+    if isinstance(top_companies, list) and top_companies:
+        formatted = []
+        for item in top_companies:
+            if not isinstance(item, dict):
+                continue
+            company = str(item.get('company', '')).strip()
+            count = item.get('count')
+            if company:
+                formatted.append(f"{company} ({count})")
+        if formatted:
+            sections.append(f"Top Companies: {', '.join(formatted)}")
+
     if pattern_problems:
         sections.append(f"Problems in this pattern ({len(pattern_problems)}): {', '.join(pattern_problems[:30])}")
 
@@ -792,6 +812,8 @@ def _build_problem_context(problem_slug: str) -> str:
         f"Pattern: {problem.get('pattern_name', 'N/A')}",
         f"LeetCode URL: {problem.get('leetcode_url', 'N/A')}",
     ]
+    if problem.get('sub_pattern_name'):
+        sections.append(f"Sub-Pattern: {problem.get('sub_pattern_name')}")
 
     desc = problem.get('description_text', '')
     if desc:
@@ -809,6 +831,14 @@ def _build_problem_context(problem_slug: str) -> str:
         sections.append(f"Time Complexity: {problem['time_complexity']}")
     if problem.get('space_complexity'):
         sections.append(f"Space Complexity: {problem['space_complexity']}")
+    companies = problem.get('companies', [])
+    if companies:
+        sections.append(f"Companies: {', '.join(companies)}")
+    if problem.get('frequency_tier'):
+        sections.append(f"Frequency Tier: {problem.get('frequency_tier')}")
+    follow_ups = problem.get('follow_ups', [])
+    if follow_ups:
+        sections.append(f"Follow-up Slugs: {', '.join(follow_ups)}")
 
     tags = problem.get('topic_tags', [])
     if tags:

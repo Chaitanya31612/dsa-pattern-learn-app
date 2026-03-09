@@ -1,5 +1,14 @@
 /* TypeScript interfaces for the DSA Pattern Learning Platform */
 
+export interface SubPattern {
+  sub_pattern_id: string
+  name: string
+  description: string
+  trigger_phrases: string[]
+  problem_count: number
+  problem_slugs: string[]
+}
+
 export interface Pattern {
   pattern_id: string
   name: string
@@ -14,6 +23,11 @@ export interface Pattern {
   time_complexity: string
   space_complexity: string
   related_patterns: string[]
+  sub_patterns?: SubPattern[]
+  top_companies?: Array<{
+    company: string
+    count: number
+  }>
   sample_walkthrough: {
     problem: string
     problem_number: number
@@ -39,6 +53,15 @@ export interface Problem {
   topic_tags: string[]
   pattern_id: string
   pattern_name: string
+  sub_pattern_id?: string
+  sub_pattern_name?: string
+  companies?: string[]
+  frequency_tier?: 'low' | 'medium' | 'high' | 'very_high' | string
+  last_seen?: string
+  follow_ups?: string[]
+  source_signals?: string[]
+  interview_lists_count?: number
+  company_count?: number
   in_neetcode: boolean
   in_striver: boolean
   in_both: boolean
@@ -72,6 +95,7 @@ export interface Database {
     total_problems: number
     total_patterns: number
     difficulty_distribution: Record<string, number>
+    company_frequency_enabled?: boolean
   }
 }
 

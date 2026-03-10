@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue'
+import { computed, ref, watch, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
 import { useSmartRandom } from '../composables/useSmartRandom'
 import ReflectionModal from '../components/ReflectionModal.vue'
+import AIChatPanel from '../components/AIChatPanel.vue'
+import CodeHighlight from '../components/CodeHighlight.vue'
 
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
-const { problems, loading } = usePatterns()
+const { problems, loading, getProblemsForPattern } = usePatterns()
 const { isSolved, markSolved, unmarkSolved, getConfidence, getNote, addNote, getReflection } = useProgress()
 const { navigateSmartRandom } = useSmartRandom()
 
@@ -21,6 +23,8 @@ const confidence = computed(() => getConfidence(slug.value))
 const noteText = ref('')
 const showNotes = ref(false)
 const showReflection = ref(false)
+const showSolutionBreakdown = ref(false)
+const revealedStepCount = ref(0)
 const interviewRoute = computed(() => ({
   path: '/mock-interview',
   query: {
@@ -59,6 +63,14 @@ function getDiffClass(diff: string | null): string {
   return `badge-${diff.toLowerCase()}`
 }
 
+function frequencyLabel(tier: string | null | undefined): string {
+  const value = String(tier ?? 'low').toLowerCase()
+  if (value === 'very_high') return 'Very High Frequency'
+  if (value === 'high') return 'High Frequency'
+  if (value === 'medium') return 'Medium Frequency'
+  return 'Low Frequency'
+}
+
 function normalizeComplexityText(value: string | null | undefined): string {
   if (!value) return ''
   return value.replace(/\s+/g, ' ').trim()
@@ -89,12 +101,80 @@ function splitComplexityVariants(value: string | null | undefined): string[] {
 
 const timeComplexityVariants = computed(() => splitComplexityVariants(problem.value?.time_complexity))
 const spaceComplexityVariants = computed(() => splitComplexityVariants(problem.value?.space_complexity))
+const relatedProblems = computed(() => {
+  if (!problem.value) return []
+  return getProblemsForPattern(problem.value.pattern_id)
+    .filter((item) => item.slug !== slug.value)
+    .slice(0, 5)
+})
+
+const followUpProblems = computed(() => {
+  if (!problem.value?.follow_ups?.length) return []
+  const items = []
+  for (const followSlug of problem.value.follow_ups) {
+    const item = problems.value[followSlug]
+    if (item && item.slug !== slug.value) {
+      items.push(item)
+    }
+  }
+  return items
+})
+
+const problemChatChips = computed(() => {
+  const patternName = problem.value?.pattern_name
+  return [
+    'Walk me through the approach',
+    'Show me the optimal solution',
+    'What are the edge cases?',
+    patternName
+      ? `How does this connect to ${patternName}?`
+      : 'How does this connect to the pattern?',
+  ]
+})
+
+const solutionBreakdown = computed(() => problem.value?.solution_breakdown)
+const revealedSteps = computed(() => {
+  const steps = solutionBreakdown.value?.steps ?? []
+  return steps.slice(0, revealedStepCount.value)
+})
+const allBreakdownStepsRevealed = computed(() => {
+  const total = solutionBreakdown.value?.steps?.length ?? 0
+  return total > 0 && revealedStepCount.value >= total
+})
+
+watch(slug, () => {
+  showSolutionBreakdown.value = false
+  revealedStepCount.value = 0
+})
+
+function revealSolutionBreakdown() {
+  if (!solutionBreakdown.value) return
+  showSolutionBreakdown.value = true
+  if (revealedStepCount.value === 0) {
+    revealedStepCount.value = 1
+  }
+}
+
+function revealNextStep() {
+  const total = solutionBreakdown.value?.steps?.length ?? 0
+  if (revealedStepCount.value < total) {
+    revealedStepCount.value += 1
+  }
+}
 </script>
 
 <template>
   <div class="container problem-view" v-if="!loading && problem">
     <!-- ═══ Header ═══ -->
     <header class="prob-header animate-in">
+      <nav class="breadcrumbs mono">
+        <router-link to="/">Dashboard</router-link>
+        <span>/</span>
+        <router-link :to="`/pattern/${problem.pattern_id}`">{{ problem.pattern_name }}</router-link>
+        <span>/</span>
+        <span class="crumb-current">{{ problem.title }}</span>
+      </nav>
+
       <router-link :to="`/pattern/${problem.pattern_id}`" class="back-link">
         <span>←</span> {{ problem.pattern_name }}
       </router-link>
@@ -115,6 +195,12 @@ const spaceComplexityVariants = computed(() => splitComplexityVariants(problem.v
             <span class="badge badge-source" v-if="problem.in_both">NeetCode + Striver</span>
             <span class="badge badge-source" v-else-if="problem.in_neetcode">NeetCode</span>
             <span class="badge badge-source" v-else-if="problem.in_striver">Striver</span>
+            <span class="badge badge-source" v-if="problem.frequency_tier">
+              {{ frequencyLabel(problem.frequency_tier) }}
+            </span>
+            <span class="badge badge-source" v-for="company in (problem.companies ?? []).slice(0, 5)" :key="`company-${company}`">
+              🏢 {{ company }}
+            </span>
           </div>
         </div>
       </div>
@@ -126,7 +212,7 @@ const spaceComplexityVariants = computed(() => splitComplexityVariants(problem.v
         <a :href="problem.leetcode_url" target="_blank" rel="noopener" class="btn">
           Open on LeetCode ↗
         </a>
-        <router-link :to="interviewRoute" class="btn">
+        <router-link :to="interviewRoute" class="btn" target="_blank" rel="noopener">
           Solve in Interview Mode
         </router-link>
         <button class="btn btn-ghost" @click="showNotes = !showNotes">
@@ -196,30 +282,108 @@ const spaceComplexityVariants = computed(() => splitComplexityVariants(problem.v
       </div>
     </section>
 
+    <section
+      class="solution-breakdown-section animate-in"
+      style="margin-bottom: var(--space-xl)"
+      v-if="solutionBreakdown"
+    >
+      <div class="card card-flat">
+        <div class="solution-breakdown-head">
+          <div>
+            <h3 class="section-heading" style="margin-bottom: var(--space-xs)">📖 Solution Breakdown</h3>
+            <p class="solution-breakdown-sub">
+              Progressive reveal: intuition → approach steps → pseudo-code → edge cases.
+            </p>
+          </div>
+
+          <button class="btn btn-primary" v-if="!showSolutionBreakdown" @click="revealSolutionBreakdown">
+            Reveal Solution
+          </button>
+        </div>
+
+        <div v-if="showSolutionBreakdown" class="solution-breakdown-body">
+          <article class="solution-callout">
+            <span class="solution-callout-label">Intuition</span>
+            <p class="solution-callout-text">{{ solutionBreakdown.intuition }}</p>
+          </article>
+
+          <article class="solution-callout">
+            <span class="solution-callout-label">Pattern Connection</span>
+            <p class="solution-callout-text">{{ solutionBreakdown.pattern_connection }}</p>
+          </article>
+
+          <ol class="solution-step-list" v-if="revealedSteps.length">
+            <li
+              class="solution-step-item"
+              v-for="(step, index) in revealedSteps"
+              :key="`breakdown-step-${index}-${step.title}`"
+            >
+              <span class="solution-step-index mono">Step {{ index + 1 }}</span>
+              <h4 class="solution-step-title">{{ step.title }}</h4>
+              <p class="solution-step-detail">{{ step.detail }}</p>
+            </li>
+          </ol>
+
+          <button
+            class="btn"
+            v-if="!allBreakdownStepsRevealed"
+            @click="revealNextStep"
+          >
+            Reveal Next Step
+          </button>
+
+          <div v-if="allBreakdownStepsRevealed" class="solution-extra">
+            <div class="solution-code-wrap" v-if="solutionBreakdown.java_pseudocode">
+              <span class="terminal-prompt">java_pseudo_code</span>
+              <CodeHighlight :code="solutionBreakdown.java_pseudocode" language="java" />
+            </div>
+
+            <div class="solution-checklists">
+              <article class="solution-list-card" v-if="solutionBreakdown.edge_cases?.length">
+                <h4 class="section-heading" style="margin-bottom: var(--space-sm)">Edge Cases Checklist</h4>
+                <ul class="solution-mini-list">
+                  <li v-for="edge in solutionBreakdown.edge_cases" :key="`edge-${edge}`">{{ edge }}</li>
+                </ul>
+              </article>
+
+              <article class="solution-list-card" v-if="solutionBreakdown.alternatives?.length">
+                <h4 class="section-heading" style="margin-bottom: var(--space-sm)">Alternative Approaches</h4>
+                <ul class="solution-mini-list">
+                  <li v-for="alt in solutionBreakdown.alternatives" :key="`alt-${alt.approach}`">
+                    <strong>{{ alt.approach }}:</strong> {{ alt.tradeoff }}
+                  </li>
+                </ul>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ═══ Insights Grid ═══ -->
     <div class="insights-grid animate-in stagger-1">
-      <div class="card card-flat insight-card" v-if="problem.pattern_hint">
+      <div class="card card-flat insight-card insight-signal" v-if="problem.pattern_hint">
         <div class="insight-label">
           <span class="insight-icon">🔍</span> Pattern Signal
         </div>
         <p class="insight-text">{{ problem.pattern_hint }}</p>
       </div>
 
-      <div class="card card-flat insight-card" v-if="problem.key_insight">
+      <div class="card card-flat insight-card insight-key" v-if="problem.key_insight">
         <div class="insight-label">
           <span class="insight-icon">💡</span> Key Insight
         </div>
         <p class="insight-text highlight">{{ problem.key_insight }}</p>
       </div>
 
-      <div class="card card-flat insight-card" v-if="problem.template_deviation">
+      <div class="card card-flat insight-card insight-deviation" v-if="problem.template_deviation">
         <div class="insight-label">
           <span class="insight-icon">🔧</span> Template Deviation
         </div>
         <p class="insight-text">{{ problem.template_deviation }}</p>
       </div>
 
-      <div class="card card-flat insight-card" v-if="problem.common_mistake">
+      <div class="card card-flat insight-card insight-warning" v-if="problem.common_mistake">
         <div class="insight-label">
           <span class="insight-icon">⚠️</span> Common Mistake
         </div>
@@ -250,13 +414,67 @@ const spaceComplexityVariants = computed(() => splitComplexityVariants(problem.v
         </div>
       </div>
 
-      <div class="card card-flat meta-card" v-if="problem.topic_tags?.length">
-        <h3 class="section-heading">🏷 Topic Tags</h3>
-        <div class="tags-wrap">
-          <span v-for="tag in problem.topic_tags" :key="tag" class="tag">{{ tag }}</span>
+      <div class="meta-side">
+        <div class="card card-flat meta-card" v-if="problem.companies?.length || problem.follow_ups?.length">
+          <h3 class="section-heading">🏢 Interview Signals</h3>
+
+          <div class="company-wrap" v-if="problem.companies?.length">
+            <span v-for="company in problem.companies" :key="`company-chip-${company}`" class="tag">
+              {{ company }}
+            </span>
+          </div>
+
+          <div class="followups-wrap" v-if="followUpProblems.length">
+            <span class="terminal-prompt followups-label">suggested_follow_ups</span>
+            <div class="related-list">
+              <router-link
+                v-for="item in followUpProblems"
+                :key="`follow-${item.slug}`"
+                :to="`/problem/${item.slug}`"
+                class="related-item"
+              >
+                <span class="related-title">{{ item.title }}</span>
+                <span class="badge" :class="getDiffClass(item.difficulty)">
+                  {{ item.difficulty || 'Unknown' }}
+                </span>
+              </router-link>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-flat meta-card" v-if="problem.topic_tags?.length">
+          <h3 class="section-heading">🏷 Topic Tags</h3>
+          <div class="tags-wrap">
+            <span v-for="tag in problem.topic_tags" :key="tag" class="tag">{{ tag }}</span>
+          </div>
+        </div>
+
+        <div class="card card-flat meta-card related-card" v-if="relatedProblems.length">
+          <h3 class="section-heading">🔗 Related Problems</h3>
+          <div class="related-list">
+            <router-link
+              v-for="item in relatedProblems"
+              :key="item.slug"
+              :to="`/problem/${item.slug}`"
+              class="related-item"
+            >
+              <span class="related-title">{{ item.title }}</span>
+              <span class="badge" :class="getDiffClass(item.difficulty)">
+                {{ item.difficulty || 'Unknown' }}
+              </span>
+            </router-link>
+          </div>
         </div>
       </div>
     </div>
+
+    <AIChatPanel
+      :key="`problem-ai-${slug}`"
+      context-type="problem"
+      :context-id="slug"
+      :context-label="problem.title"
+      :quick-chips="problemChatChips"
+    />
   </div>
 
   <div class="container loading-state" v-else-if="loading">
@@ -271,6 +489,31 @@ const spaceComplexityVariants = computed(() => splitComplexityVariants(problem.v
 <style scoped>
 .prob-header {
   margin-bottom: var(--space-xl);
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-xs);
+  margin-bottom: var(--space-sm);
+  color: var(--text-muted);
+}
+
+.breadcrumbs a {
+  color: var(--text-secondary);
+}
+
+.breadcrumbs a:hover {
+  color: var(--accent-cyan);
+}
+
+.crumb-current {
+  color: var(--accent-cyan);
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .back-link {
@@ -392,6 +635,113 @@ const spaceComplexityVariants = computed(() => splitComplexityVariants(problem.v
   color: var(--text-muted);
 }
 
+/* ── Solution Breakdown ─────────────── */
+.solution-breakdown-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.solution-breakdown-sub {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.solution-breakdown-body {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.solution-callout {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.solution-callout-label {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+.solution-callout-text {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.solution-step-list {
+  list-style: none;
+  display: grid;
+  gap: var(--space-sm);
+  padding: 0;
+  margin: 0;
+}
+
+.solution-step-item {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.solution-step-index {
+  font-size: var(--text-xs);
+  color: var(--accent-cyan);
+}
+
+.solution-step-title {
+  margin: 4px 0 6px;
+  font-size: var(--text-base);
+}
+
+.solution-step-detail {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.solution-extra {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.solution-code-wrap {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.solution-checklists {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+
+.solution-list-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.solution-mini-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
 /* ── Insights Grid ──────────────────── */
 .insights-grid {
   display: grid;
@@ -402,6 +752,22 @@ const spaceComplexityVariants = computed(() => splitComplexityVariants(problem.v
 
 .insight-card {
   padding: var(--space-lg);
+}
+
+.insight-signal {
+  background: linear-gradient(160deg, rgba(56, 189, 248, 0.08), rgba(56, 189, 248, 0.02));
+}
+
+.insight-key {
+  background: linear-gradient(160deg, rgba(34, 211, 167, 0.08), rgba(34, 211, 167, 0.02));
+}
+
+.insight-deviation {
+  background: linear-gradient(160deg, rgba(167, 139, 250, 0.08), rgba(167, 139, 250, 0.02));
+}
+
+.insight-warning {
+  background: linear-gradient(160deg, rgba(251, 146, 60, 0.08), rgba(251, 146, 60, 0.02));
 }
 
 .insight-label {
@@ -440,6 +806,11 @@ const spaceComplexityVariants = computed(() => splitComplexityVariants(problem.v
 .meta-row {
   display: grid;
   grid-template-columns: auto 1fr;
+  gap: var(--space-md);
+}
+
+.meta-side {
+  display: grid;
   gap: var(--space-md);
 }
 
@@ -490,6 +861,48 @@ const spaceComplexityVariants = computed(() => splitComplexityVariants(problem.v
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-xs);
+}
+
+.company-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.followups-wrap {
+  margin-top: var(--space-md);
+}
+
+.followups-label {
+  display: inline-block;
+  margin-bottom: var(--space-sm);
+  font-size: var(--text-xs);
+}
+
+.related-list {
+  display: grid;
+  gap: 6px;
+}
+
+.related-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  padding: 8px 10px;
+  color: inherit;
+}
+
+.related-item:hover {
+  border-color: var(--accent-cyan);
+}
+
+.related-title {
+  color: var(--text-primary);
+  font-size: var(--text-sm);
 }
 
 /* ── Reflection Grid ────────────────── */
@@ -543,6 +956,19 @@ const spaceComplexityVariants = computed(() => splitComplexityVariants(problem.v
   .prob-title-row {
     flex-direction: column;
     gap: var(--space-sm);
+  }
+
+  .solution-breakdown-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .solution-checklists {
+    grid-template-columns: 1fr;
+  }
+
+  .breadcrumbs {
+    flex-wrap: wrap;
   }
 }
 </style>

@@ -627,3 +627,340 @@ def mock_interview_respond(payload: MockInterviewRespondRequest):
         model=response.model,
         debrief=parsed_debrief,
     )
+
+
+# ---------------------------------------------------------------------------
+# Learning-mode AI Chat (Pattern & Problem)
+# ---------------------------------------------------------------------------
+
+
+class LearningChatMessage(BaseModel):
+    """Single message in a learning chat thread."""
+
+    role: Literal['user', 'assistant']
+    content: str = Field(min_length=1, max_length=6000)
+
+
+class PatternChatRequest(BaseModel):
+    """Payload for /api/ai/pattern-chat."""
+
+    pattern_id: str = Field(min_length=1, max_length=100)
+    messages: list[LearningChatMessage] = Field(default_factory=list)
+
+
+class ProblemChatRequest(BaseModel):
+    """Payload for /api/ai/problem-chat."""
+
+    problem_slug: str = Field(min_length=1, max_length=200)
+    messages: list[LearningChatMessage] = Field(default_factory=list)
+
+
+class LearningChatResponse(BaseModel):
+    """Response from learning chat endpoints."""
+
+    reply: str
+    provider: str
+    model: str
+
+
+def _patterns_by_id(db: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    """
+    Normalize `db["patterns"]` to a dictionary keyed by pattern_id.
+
+    Supports both historical shapes used in this project:
+    - dict: {pattern_id: pattern_obj}
+    - list: [{pattern_id: "...", ...}, ...]
+    """
+
+    raw = db.get('patterns', {})
+    normalized: Dict[str, Dict[str, Any]] = {}
+
+    if isinstance(raw, dict):
+        for key, value in raw.items():
+            if isinstance(value, dict):
+                normalized[str(key)] = value
+        return normalized
+
+    if isinstance(raw, list):
+        for item in raw:
+            if not isinstance(item, dict):
+                continue
+            pattern_id = str(item.get('pattern_id', '')).strip()
+            if pattern_id:
+                normalized[pattern_id] = item
+
+    return normalized
+
+
+def _problems_by_slug(db: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    """
+    Normalize `db["problems"]` to a dictionary keyed by problem slug.
+
+    Supports:
+    - dict: {slug: problem_obj}
+    - list: [{slug: "...", ...}, ...]
+    """
+
+    raw = db.get('problems', {})
+    normalized: Dict[str, Dict[str, Any]] = {}
+
+    if isinstance(raw, dict):
+        for key, value in raw.items():
+            if not isinstance(value, dict):
+                continue
+            slug = str(value.get('slug') or key).strip()
+            if slug:
+                normalized[slug] = value
+        return normalized
+
+    if isinstance(raw, list):
+        for item in raw:
+            if not isinstance(item, dict):
+                continue
+            slug = str(item.get('slug', '')).strip()
+            if slug:
+                normalized[slug] = item
+
+    return normalized
+
+
+def _build_pattern_context(pattern_id: str) -> str:
+    """
+    Build rich context string from db.json for a given pattern.
+
+    Includes: name, explanation, mental model, template code (Java),
+    trigger phrases, when-to-use, common mistakes, walkthrough,
+    related patterns, and all problem titles in this pattern.
+    """
+
+    db = load_db()
+    patterns = _patterns_by_id(db)
+    pattern = patterns.get(pattern_id, {})
+
+    if not pattern:
+        return f'Pattern ID: {pattern_id} (no additional context available)'
+
+    problems = _problems_by_slug(db)
+    pattern_problems = [
+        p.get('title', slug)
+        for slug, p in problems.items()
+        if p.get('pattern_id') == pattern_id
+    ]
+
+    sections = [
+        f"Pattern: {pattern.get('name', pattern_id)}",
+        f"Explanation: {pattern.get('explanation', 'N/A')}",
+        f"Mental Model: {pattern.get('mental_model', 'N/A')}",
+        f"Template Code (Java):\n{pattern.get('template_code_java', 'N/A')}",
+        f"Trigger Phrases: {', '.join(pattern.get('trigger_phrases', []))}",
+        f"When to Use: {'; '.join(pattern.get('when_to_use', []))}",
+        f"Common Mistakes: {'; '.join(pattern.get('common_mistakes', []))}",
+    ]
+
+    walkthrough = pattern.get('sample_walkthrough', {})
+    if walkthrough.get('approach'):
+        sections.append(f"Sample Walkthrough ({walkthrough.get('problem', 'N/A')}): {walkthrough['approach']}")
+
+    related = pattern.get('related_patterns', [])
+    if related:
+        sections.append(f"Related Patterns: {', '.join(related)}")
+
+    sub_patterns = pattern.get('sub_patterns', [])
+    if isinstance(sub_patterns, list) and sub_patterns:
+        names = [str(item.get('name', '')).strip() for item in sub_patterns if isinstance(item, dict)]
+        names = [name for name in names if name]
+        if names:
+            sections.append(f"Sub-Patterns: {', '.join(names)}")
+
+    top_companies = pattern.get('top_companies', [])
+    if isinstance(top_companies, list) and top_companies:
+        formatted = []
+        for item in top_companies:
+            if not isinstance(item, dict):
+                continue
+            company = str(item.get('company', '')).strip()
+            count = item.get('count')
+            if company:
+                formatted.append(f"{company} ({count})")
+        if formatted:
+            sections.append(f"Top Companies: {', '.join(formatted)}")
+
+    if pattern_problems:
+        sections.append(f"Problems in this pattern ({len(pattern_problems)}): {', '.join(pattern_problems[:30])}")
+
+    return '\n\n'.join(sections)
+
+
+def _build_problem_context(problem_slug: str) -> str:
+    """
+    Build rich context string from db.json for a given problem.
+
+    Includes: title, description, difficulty, pattern info, insights,
+    complexity, topic tags, and parent pattern template code.
+    """
+
+    db = load_db()
+    problems = _problems_by_slug(db)
+    problem = problems.get(problem_slug, {})
+
+    if not problem:
+        return f'Problem: {problem_slug} (no additional context available)'
+
+    sections = [
+        f"Problem: {problem.get('title', problem_slug)}",
+        f"Difficulty: {problem.get('difficulty', 'N/A')}",
+        f"Pattern: {problem.get('pattern_name', 'N/A')}",
+        f"LeetCode URL: {problem.get('leetcode_url', 'N/A')}",
+    ]
+    if problem.get('sub_pattern_name'):
+        sections.append(f"Sub-Pattern: {problem.get('sub_pattern_name')}")
+
+    desc = problem.get('description_text', '')
+    if desc:
+        sections.append(f"Description:\n{make_description_excerpt(desc, max_chars=3000)}")
+
+    if problem.get('pattern_hint'):
+        sections.append(f"Pattern Hint: {problem['pattern_hint']}")
+    if problem.get('key_insight'):
+        sections.append(f"Key Insight: {problem['key_insight']}")
+    if problem.get('template_deviation'):
+        sections.append(f"Template Deviation: {problem['template_deviation']}")
+    if problem.get('common_mistake'):
+        sections.append(f"Common Mistake: {problem['common_mistake']}")
+    if problem.get('time_complexity'):
+        sections.append(f"Time Complexity: {problem['time_complexity']}")
+    if problem.get('space_complexity'):
+        sections.append(f"Space Complexity: {problem['space_complexity']}")
+    companies = problem.get('companies', [])
+    if companies:
+        sections.append(f"Companies: {', '.join(companies)}")
+    if problem.get('frequency_tier'):
+        sections.append(f"Frequency Tier: {problem.get('frequency_tier')}")
+    follow_ups = problem.get('follow_ups', [])
+    if follow_ups:
+        sections.append(f"Follow-up Slugs: {', '.join(follow_ups)}")
+
+    tags = problem.get('topic_tags', [])
+    if tags:
+        sections.append(f"Topic Tags: {', '.join(tags)}")
+
+    # Include parent pattern template code for reference
+    pattern_id = problem.get('pattern_id', '')
+    if pattern_id:
+        patterns = _patterns_by_id(db)
+        parent = patterns.get(pattern_id, {})
+        java_template = parent.get('template_code_java', '')
+        if java_template:
+            sections.append(f"Pattern Template (Java):\n{java_template}")
+
+    return '\n\n'.join(sections)
+
+
+def _build_learning_prompt(context_type: str, context_summary: str) -> str:
+    """
+    Build system prompt for learning-mode chat.
+
+    Unlike interview mode, this is fully explanatory:
+    - CAN show full solution code with explanations
+    - CAN give step-by-step walkthroughs
+    - Encourages detailed, educational responses
+    """
+
+    return (
+        f'You are an expert DSA tutor helping a student learn.\n'
+        f'You have deep knowledge of the following {context_type}:\n\n'
+        f'{context_summary}\n\n'
+        f'Rules:\n'
+        f'- You CAN and SHOULD show full solution code when asked.\n'
+        f'- Use Java for code examples unless the student asks for another language.\n'
+        f'- Give thorough, educational explanations with examples.\n'
+        f'- Break down complex concepts step by step.\n'
+        f'- Use analogies and visual explanations when helpful.\n'
+        f'- If showing code, add line-by-line comments explaining the logic.\n'
+        f'- Relate solutions back to the underlying pattern and template.\n'
+        f'- Mention time and space complexity for any approach discussed.\n'
+        f'- Be encouraging and supportive.\n'
+    )
+
+
+def _format_chat_for_model(messages: list[LearningChatMessage], system_prompt: str) -> str:
+    """
+    Format multi-turn chat into a single content string for the analyzer.
+
+    The current AIAnalyzerInterface takes (content, prompt) where prompt is system.
+    We serialize the full conversation into content so the model sees history.
+    """
+
+    parts = []
+    for msg in messages[-12:]:  # Keep last 12 messages to bound context
+        label = 'Student' if msg.role == 'user' else 'Tutor'
+        parts.append(f'{label}: {msg.content}')
+
+    return '\n\n'.join(parts)
+
+
+@app.post('/api/ai/pattern-chat', response_model=LearningChatResponse)
+def pattern_chat(payload: PatternChatRequest):
+    """
+    Context-aware AI chat for a specific pattern.
+
+    Auto-loads pattern context from db.json including explanation, mental model,
+    template code, trigger phrases, problems list, and related patterns.
+
+    This is LEARNING MODE — responses are NOT sanitized. Full code and
+    detailed explanations are encouraged.
+    """
+
+    context = _build_pattern_context(payload.pattern_id)
+    system_prompt = _build_learning_prompt('pattern', context)
+    content = _format_chat_for_model(payload.messages, system_prompt)
+
+    analyzer = get_analyzer()
+    response = analyzer.analyze(content=content, prompt=system_prompt)
+
+    if not response.success:
+        return LearningChatResponse(
+            reply='I could not reach the AI tutor right now. Please try again in a moment.',
+            provider=analyzer.provider.value,
+            model=analyzer.model_name,
+        )
+
+    return LearningChatResponse(
+        reply=response.content.strip(),
+        provider=response.provider.value,
+        model=response.model,
+    )
+
+
+@app.post('/api/ai/problem-chat', response_model=LearningChatResponse)
+def problem_chat(payload: ProblemChatRequest):
+    """
+    Context-aware AI chat for a specific problem.
+
+    Auto-loads problem context from db.json including description, difficulty,
+    pattern, insights (hint, key insight, common mistake), complexity,
+    and parent pattern template code.
+
+    This is LEARNING MODE — responses are NOT sanitized. Full solutions
+    with line-by-line explanations are encouraged.
+    """
+
+    context = _build_problem_context(payload.problem_slug)
+    system_prompt = _build_learning_prompt('problem', context)
+    content = _format_chat_for_model(payload.messages, system_prompt)
+
+    analyzer = get_analyzer()
+    response = analyzer.analyze(content=content, prompt=system_prompt)
+
+    if not response.success:
+        return LearningChatResponse(
+            reply='I could not reach the AI tutor right now. Please try again in a moment.',
+            provider=analyzer.provider.value,
+            model=analyzer.model_name,
+        )
+
+    return LearningChatResponse(
+        reply=response.content.strip(),
+        provider=response.provider.value,
+        model=response.model,
+    )

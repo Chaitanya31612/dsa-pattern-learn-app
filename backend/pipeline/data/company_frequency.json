@@ -1,0 +1,4239 @@
+{
+  "generated_at": "2026-03-09T12:43:48.363399+00:00",
+  "meta": {
+    "total_problems": 200,
+    "offline": false,
+    "fetched_interview_lists": [
+      "grind75",
+      "sean_prashad",
+      "interview_prep_pro"
+    ],
+    "fetched_company_sources": [
+      "krishnadey_company_csv_repo",
+      "liquidslr_company_csv_repo"
+    ],
+    "ai_enriched": true,
+    "ai_provider": "gemini",
+    "ai_model": "gemini-2.5-flash-lite"
+  },
+  "problems": {
+    "3sum": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 9
+    },
+    "4sum": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 7
+    },
+    "add-two-numbers": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 10
+    },
+    "balanced-binary-tree": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 7
+    },
+    "baseball-game": {
+      "companies": [
+        "Amazon",
+        "Google"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 2
+    },
+    "best-time-to-buy-and-sell-stock": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "JPMorgan",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [
+        "best-time-to-buy-and-sell-stock-ii",
+        "best-time-to-buy-and-sell-stock-with-cooldown"
+      ],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 12
+    },
+    "best-time-to-buy-and-sell-stock-with-cooldown": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 4
+    },
+    "binary-search": {
+      "companies": [
+        "Amazon",
+        "Microsoft"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [
+        "first-bad-version",
+        "search-in-rotated-sorted-array"
+      ],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 2
+    },
+    "binary-search-tree-iterator": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 10
+    },
+    "binary-tree-inorder-traversal": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 8
+    },
+    "binary-tree-level-order-traversal": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 11
+    },
+    "binary-tree-maximum-path-sum": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 8
+    },
+    "binary-tree-postorder-traversal": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Google",
+        "Meta",
+        "Uber"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 5
+    },
+    "binary-tree-preorder-traversal": {
+      "companies": [
+        "Amazon",
+        "Bloomberg",
+        "Google",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 4
+    },
+    "binary-tree-right-side-view": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 10
+    },
+    "binary-tree-zigzag-level-order-traversal": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 8
+    },
+    "brick-wall": {
+      "companies": [
+        "Adobe",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Oracle"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 5
+    },
+    "can-place-flowers": {
+      "companies": [
+        "Amazon",
+        "LinkedIn",
+        "Meta"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 3
+    },
+    "car-fleet": {
+      "companies": [
+        "Google"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 1
+    },
+    "climbing-stairs": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 10
+    },
+    "clone-graph": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 7
+    },
+    "coin-change": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "JPMorgan",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 12
+    },
+    "coin-change-ii": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [
+        "coin-change",
+        "combination-sum",
+        "combination-sum-iv",
+        "partition-equal-subset-sum",
+        "target-sum"
+      ],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 5,
+      "ai_enriched": true
+    },
+    "combination-sum": {
+      "companies": [
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "JPMorgan",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 10
+    },
+    "combination-sum-ii": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 9
+    },
+    "concatenation-of-array": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [
+        "concatenation-of-two-array-i",
+        "find-all-duplicates-in-an-array",
+        "find-all-numbers-disappeared-in-an-array",
+        "maximum-subarray",
+        "merge-sorted-array",
+        "two-sum"
+      ],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 5,
+      "ai_enriched": true
+    },
+    "construct-binary-tree-from-inorder-and-postorder-traversal": {
+      "companies": [
+        "Amazon",
+        "Bloomberg",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 4
+    },
+    "construct-binary-tree-from-preorder-and-inorder-traversal": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 8
+    },
+    "container-with-most-water": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 9
+    },
+    "contains-duplicate": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 8
+    },
+    "contains-duplicate-ii": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Microsoft"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 7
+    },
+    "convert-sorted-array-to-binary-search-tree": {
+      "companies": [
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 8
+    },
+    "copy-list-with-random-pointer": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 9
+    },
+    "count-good-nodes-in-binary-tree": {
+      "companies": [
+        "Microsoft"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 1
+    },
+    "counting-bits": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 6
+    },
+    "course-schedule": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 9
+    },
+    "daily-temperatures": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 9
+    },
+    "decode-ways": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 9
+    },
+    "design-add-and-search-words-data-structure": {
+      "companies": [],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 0
+    },
+    "design-hashmap": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 10
+    },
+    "design-hashset": {
+      "companies": [
+        "Amazon",
+        "Google"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 2
+    },
+    "diameter-of-binary-tree": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 9
+    },
+    "edit-distance": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 9
+    },
+    "encode-and-decode-strings": {
+      "companies": [
+        "Bloomberg",
+        "Google",
+        "Microsoft"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 3
+    },
+    "encode-and-decode-tinyurl": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 8
+    },
+    "evaluate-reverse-polish-notation": {
+      "companies": [
+        "Amazon",
+        "Atlassian",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 8
+    },
+    "find-all-anagrams-in-a-string": {
+      "companies": [
+        "Amazon",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 7
+    },
+    "find-all-numbers-disappeared-in-an-array": {
+      "companies": [
+        "Adobe",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 5
+    },
+    "find-median-from-data-stream": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Netflix",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 11
+    },
+    "find-minimum-in-rotated-sorted-array": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 8
+    },
+    "find-pivot-index": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 6
+    },
+    "find-the-duplicate-number": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 8
+    },
+    "find-the-index-of-the-first-occurrence-in-a-string": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [
+        "implement-strstr",
+        "is-subsequence",
+        "ransom-note",
+        "repeated-substring-pattern",
+        "valid-palindrome-ii",
+        "word-pattern"
+      ],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 5,
+      "ai_enriched": true
+    },
+    "frequency-of-the-most-frequent-element": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [
+        "longest-substring-with-at-most-k-distinct-characters",
+        "minimum-window-substring",
+        "sliding-window-maximum"
+      ],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 6,
+      "ai_enriched": true
+    },
+    "gas-station": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 4
+    },
+    "generate-parentheses": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 9
+    },
+    "group-anagrams": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 9
+    },
+    "guess-number-higher-or-lower": {
+      "companies": [
+        "Apple",
+        "Google"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 2
+    },
+    "hand-of-straights": {
+      "companies": [
+        "Bloomberg",
+        "Google"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 2
+    },
+    "happy-number": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "JPMorgan",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 10
+    },
+    "house-robber": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 9
+    },
+    "house-robber-ii": {
+      "companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 3
+    },
+    "implement-stack-using-queues": {
+      "companies": [
+        "Amazon",
+        "Bloomberg",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 3
+    },
+    "implement-trie-prefix-tree": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 8
+    },
+    "insert-delete-getrandom-o1": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 10
+    },
+    "insert-interval": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 9
+    },
+    "interleaving-string": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 6
+    },
+    "intersection-of-two-linked-lists": {
+      "companies": [
+        "Airbnb",
+        "Amazon",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 8
+    },
+    "invert-binary-tree": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 6
+    },
+    "is-graph-bipartite": {
+      "companies": [
+        "Amazon",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 5
+    },
+    "is-subsequence": {
+      "companies": [
+        "Amazon",
+        "Bloomberg",
+        "Google",
+        "Meta"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 4
+    },
+    "isomorphic-strings": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 8
+    },
+    "jump-game": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 9
+    },
+    "jump-game-ii": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 8
+    },
+    "k-closest-points-to-origin": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 8
+    },
+    "koko-eating-bananas": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Google",
+        "Meta"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 5
+    },
+    "kth-largest-element-in-a-stream": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 7
+    },
+    "kth-largest-element-in-an-array": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "JPMorgan",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 13
+    },
+    "kth-smallest-element-in-a-bst": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 8
+    },
+    "largest-number": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 6
+    },
+    "largest-rectangle-in-histogram": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 6
+    },
+    "last-stone-weight": {
+      "companies": [
+        "Amazon"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 1
+    },
+    "length-of-last-word": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [
+        "group-anagrams",
+        "longest-substring-without-repeating-characters",
+        "reverse-words-in-a-string",
+        "string-to-integer-atoi",
+        "valid-palindrome"
+      ],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 6,
+      "ai_enriched": true
+    },
+    "letter-combinations-of-a-phone-number": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "JPMorgan",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 10
+    },
+    "lfu-cache": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 8
+    },
+    "linked-list-cycle": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 9
+    },
+    "longest-common-prefix": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 8
+    },
+    "longest-common-subsequence": {
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 4
+    },
+    "longest-consecutive-sequence": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 9
+    },
+    "longest-increasing-subsequence": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 9
+    },
+    "longest-palindromic-substring": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "JPMorgan",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 11
+    },
+    "longest-repeating-character-replacement": {
+      "companies": [
+        "Bloomberg",
+        "Google"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 2
+    },
+    "longest-substring-without-repeating-characters": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 10
+    },
+    "lowest-common-ancestor-of-a-binary-search-tree": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 9
+    },
+    "lru-cache": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "JPMorgan",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 11
+    },
+    "majority-element": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Google",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 6
+    },
+    "max-area-of-island": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 9
+    },
+    "maximum-depth-of-binary-tree": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 9
+    },
+    "maximum-number-of-balloons": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [
+        "find-all-anagrams-in-a-string",
+        "group-anagrams",
+        "isomorphic-strings",
+        "longest-substring-without-repeating-characters",
+        "ransom-note",
+        "valid-anagram"
+      ],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 6,
+      "ai_enriched": true
+    },
+    "maximum-product-of-the-length-of-two-palindromic-subsequences": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [
+        "longest-palindromic-subsequence",
+        "longest-palindromic-substring",
+        "palindrome-partitioning-ii",
+        "palindrome-permutation",
+        "split-string-into-the-max-number-of-palindromic-substrings"
+      ],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 5,
+      "ai_enriched": true
+    },
+    "maximum-product-subarray": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 9
+    },
+    "maximum-subarray": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "JPMorgan",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 12
+    },
+    "maximum-width-of-binary-tree": {
+      "companies": [
+        "Amazon",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 6
+    },
+    "median-of-two-sorted-arrays": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "JPMorgan",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 11
+    },
+    "merge-intervals": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Netflix",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [
+        "insert-interval",
+        "non-overlapping-intervals"
+      ],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 12
+    },
+    "merge-k-sorted-lists": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 12
+    },
+    "merge-sorted-array": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Netflix",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 11
+    },
+    "merge-triplets-to-form-target-triplet": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [
+        "assign-cookies",
+        "find-k-pairs-with-smallest-sums",
+        "maximum-units-on-a-truck",
+        "merge-intervals",
+        "non-overlapping-intervals"
+      ],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 5,
+      "ai_enriched": true
+    },
+    "merge-two-sorted-lists": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 12
+    },
+    "middle-of-the-linked-list": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 5
+    },
+    "min-cost-climbing-stairs": {
+      "companies": [
+        "Amazon",
+        "Bloomberg"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 2
+    },
+    "min-cost-to-connect-all-points": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [
+        "cheapest-flights-within-k-stops",
+        "kruskal-s-algorithm",
+        "network-delay-time",
+        "prim-s-algorithm",
+        "shortest-path-in-binary-matrix",
+        "swim-in-rising-water"
+      ],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 6,
+      "ai_enriched": true
+    },
+    "min-stack": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Netflix",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 11
+    },
+    "minimum-difference-between-highest-and-lowest-of-k-scores": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [
+        "find-all-anagrams-in-a-string",
+        "longest-substring-with-at-most-k-distinct-characters",
+        "sliding-window-maximum"
+      ],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 6,
+      "ai_enriched": true
+    },
+    "minimum-number-of-swaps-to-make-the-string-balanced": {
+      "companies": [],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 0
+    },
+    "minimum-path-sum": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 8
+    },
+    "minimum-window-substring": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 11
+    },
+    "missing-number": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 8
+    },
+    "move-zeroes": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 9
+    },
+    "multiply-strings": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 7
+    },
+    "n-queens": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 8
+    },
+    "next-greater-element-i": {
+      "companies": [
+        "Amazon",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 6
+    },
+    "non-decreasing-array": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Google"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 3
+    },
+    "non-overlapping-intervals": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 6
+    },
+    "number-of-1-bits": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 6
+    },
+    "number-of-islands": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "JPMorgan",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [
+        "max-area-of-island",
+        "number-of-provinces"
+      ],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 12
+    },
+    "online-stock-span": {
+      "companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 3
+    },
+    "pacific-atlantic-water-flow": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 7
+    },
+    "palindrome-linked-list": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 7
+    },
+    "palindrome-number": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "JPMorgan",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 9
+    },
+    "palindrome-partitioning": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Bloomberg",
+        "Google",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 6
+    },
+    "palindromic-substrings": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 9
+    },
+    "partition-labels": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Meta"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 3
+    },
+    "pascals-triangle": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 8
+    },
+    "permutation-in-string": {
+      "companies": [
+        "Amazon",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 6
+    },
+    "permutations": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 11
+    },
+    "plus-one": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 7
+    },
+    "populating-next-right-pointers-in-each-node": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 7
+    },
+    "powx-n": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 10
+    },
+    "product-of-array-except-self": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 10
+    },
+    "range-sum-query-immutable": {
+      "companies": [
+        "Amazon",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 5
+    },
+    "reconstruct-itinerary": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 7
+    },
+    "redundant-connection": {
+      "companies": [
+        "Amazon",
+        "Google"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 2
+    },
+    "regular-expression-matching": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 10
+    },
+    "remove-duplicates-from-sorted-array": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 9
+    },
+    "remove-element": {
+      "companies": [
+        "Amazon",
+        "Bloomberg",
+        "Google",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 4
+    },
+    "remove-nth-node-from-end-of-list": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 8
+    },
+    "reorder-list": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 6
+    },
+    "replace-elements-with-greatest-element-on-right-side": {
+      "companies": [
+        "Amazon"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 1
+    },
+    "reverse-bits": {
+      "companies": [
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Google"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 4
+    },
+    "reverse-integer": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "JPMorgan",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 10
+    },
+    "reverse-linked-list": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 9
+    },
+    "reverse-nodes-in-k-group": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 6
+    },
+    "reverse-string": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 9
+    },
+    "roman-to-integer": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 10
+    },
+    "rotate-image": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 8
+    },
+    "rotate-list": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Bloomberg",
+        "LinkedIn",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 6
+    },
+    "rotting-oranges": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Microsoft"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 3
+    },
+    "same-tree": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 7
+    },
+    "search-a-2d-matrix": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 8
+    },
+    "search-in-rotated-sorted-array": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "JPMorgan",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 11
+    },
+    "search-insert-position": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 6
+    },
+    "serialize-and-deserialize-binary-tree": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 9
+    },
+    "set-matrix-zeroes": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 6
+    },
+    "sign-of-the-product-of-an-array": {
+      "companies": [],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 0
+    },
+    "single-element-in-a-sorted-array": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 7
+    },
+    "single-number": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 10
+    },
+    "sliding-window-maximum": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 9
+    },
+    "sort-an-array": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 3
+    },
+    "sort-colors": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 9
+    },
+    "spiral-matrix": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 10
+    },
+    "subarray-sum-equals-k": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 10
+    },
+    "subsets": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 9
+    },
+    "subsets-ii": {
+      "companies": [
+        "Amazon",
+        "Bloomberg",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 4
+    },
+    "subtree-of-another-tree": {
+      "companies": [
+        "Amazon",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 5
+    },
+    "sum-of-two-integers": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 4
+    },
+    "surrounded-regions": {
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta",
+        "Uber"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 4
+    },
+    "swim-in-rising-water": {
+      "companies": [
+        "Google",
+        "Meta"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 2
+    },
+    "symmetric-tree": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 11
+    },
+    "target-sum": {
+      "companies": [
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "low",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 3
+    },
+    "task-scheduler": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 8
+    },
+    "time-based-key-value-store": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Netflix",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 10
+    },
+    "top-k-frequent-elements": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [
+        "kth-largest-element-in-an-array",
+        "find-median-from-data-stream"
+      ],
+      "source_signals": [
+        "bridge_overlap",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 3,
+      "company_count": 9
+    },
+    "trapping-rain-water": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 10
+    },
+    "two-sum": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "JPMorgan",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [
+        "3sum",
+        "4sum",
+        "two-sum-ii-input-array-is-sorted"
+      ],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 12
+    },
+    "two-sum-ii-input-array-is-sorted": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 6
+    },
+    "ugly-number": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [
+        "ugly-number-ii",
+        "ugly-number-iii"
+      ],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 5,
+      "ai_enriched": true
+    },
+    "unique-email-addresses": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 4
+    },
+    "unique-paths": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 9
+    },
+    "valid-anagram": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 8
+    },
+    "valid-palindrome": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 10
+    },
+    "valid-palindrome-ii": {
+      "companies": [
+        "Atlassian",
+        "Google",
+        "Meta",
+        "Microsoft"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 4
+    },
+    "valid-parentheses": {
+      "companies": [
+        "Adobe",
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "JPMorgan",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [
+        "generate-parentheses",
+        "longest-valid-parentheses"
+      ],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 13
+    },
+    "valid-parenthesis-string": {
+      "companies": [
+        "Amazon",
+        "Bloomberg",
+        "Google",
+        "Meta"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 4
+    },
+    "valid-sudoku": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 9
+    },
+    "validate-binary-search-tree": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Atlassian",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "bridge_overlap",
+        "grind75",
+        "neetcode",
+        "striver"
+      ],
+      "interview_lists_count": 4,
+      "company_count": 11
+    },
+    "word-ladder": {
+      "companies": [
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 9
+    },
+    "word-pattern": {
+      "companies": [
+        "Amazon",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Uber"
+      ],
+      "frequency_tier": "medium",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "neetcode"
+      ],
+      "interview_lists_count": 1,
+      "company_count": 5
+    },
+    "word-search": {
+      "companies": [
+        "Adobe",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "JPMorgan",
+        "LinkedIn",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "very_high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 11
+    },
+    "word-search-ii": {
+      "companies": [
+        "Airbnb",
+        "Amazon",
+        "Apple",
+        "Bloomberg",
+        "Google",
+        "Meta",
+        "Microsoft",
+        "Oracle",
+        "Uber"
+      ],
+      "frequency_tier": "high",
+      "last_seen": "2026",
+      "follow_ups": [],
+      "source_signals": [
+        "grind75",
+        "neetcode"
+      ],
+      "interview_lists_count": 2,
+      "company_count": 9
+    }
+  }
+}

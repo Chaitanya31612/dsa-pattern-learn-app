@@ -13,8 +13,32 @@ const showBridge = ref(false)
 const search = ref('')
 const filterDiff = ref<string>('all')
 const filterPattern = ref<string>('all')
+const filterCompany = ref<string>('all')
 const filterStatus = ref<string>('all')
-const sortBy = ref<'score' | 'number' | 'difficulty' | 'acceptance'>('score')
+const sortBy = ref<'score' | 'number' | 'difficulty' | 'acceptance' | 'frequency'>('score')
+
+const companyOptions = computed(() => {
+  const bucket = new Set<string>()
+  for (const problem of getAllProblems()) {
+    for (const company of problem.companies ?? []) {
+      if (company) bucket.add(company)
+    }
+  }
+  return Array.from(bucket).sort((a, b) => a.localeCompare(b))
+})
+
+function frequencyScore(problem: ReturnType<typeof getAllProblems>[number]): number {
+  const rank: Record<string, number> = {
+    very_high: 4,
+    high: 3,
+    medium: 2,
+    low: 1,
+  }
+  const tierScore = rank[String(problem.frequency_tier ?? 'low')] ?? 0
+  const companies = problem.companies?.length ?? 0
+  const signals = problem.interview_lists_count ?? 0
+  return tierScore * 100 + companies * 10 + signals
+}
 
 const filteredProblems = computed(() => {
   let list = getAllProblems()
@@ -39,6 +63,11 @@ const filteredProblems = computed(() => {
     list = list.filter(p => p.pattern_id === filterPattern.value)
   }
 
+  // Company filter
+  if (filterCompany.value !== 'all') {
+    list = list.filter(p => (p.companies ?? []).includes(filterCompany.value))
+  }
+
   // Bridge filter
   if (showBridge.value) {
     list = list.filter(p => p.in_both)
@@ -59,6 +88,7 @@ const filteredProblems = computed(() => {
       return (ord[a.difficulty ?? ''] ?? 3) - (ord[b.difficulty ?? ''] ?? 3)
     }
     if (sortBy.value === 'acceptance') return (b.acceptance_rate ?? 0) - (a.acceptance_rate ?? 0)
+    if (sortBy.value === 'frequency') return frequencyScore(b) - frequencyScore(a)
     return b.score - a.score
   })
 
@@ -76,6 +106,14 @@ function getDiffClass(diff: string | null): string {
 
 function toggleBridge() {
   showBridge.value = !showBridge.value
+}
+
+function frequencyLabel(problem: ReturnType<typeof getAllProblems>[number]): string {
+  const value = String(problem.frequency_tier ?? 'low')
+  if (value === 'very_high') return 'Very High'
+  if (value === 'high') return 'High'
+  if (value === 'medium') return 'Medium'
+  return 'Low'
 }
 </script>
 
@@ -113,6 +151,13 @@ function toggleBridge() {
           </option>
         </select>
 
+        <select v-model="filterCompany" class="filter-select">
+          <option value="all">All Companies</option>
+          <option v-for="company in companyOptions" :key="company" :value="company">
+            {{ company }}
+          </option>
+        </select>
+
         <select v-model="filterStatus" class="filter-select">
           <option value="all">All Status</option>
           <option value="solved">Solved</option>
@@ -124,6 +169,7 @@ function toggleBridge() {
           <button class="tab-btn" :class="{ active: sortBy === 'number' }" @click="sortBy = 'number'">#</button>
           <button class="tab-btn" :class="{ active: sortBy === 'difficulty' }" @click="sortBy = 'difficulty'">Diff</button>
           <button class="tab-btn" :class="{ active: sortBy === 'acceptance' }" @click="sortBy = 'acceptance'">AC%</button>
+          <button class="tab-btn" :class="{ active: sortBy === 'frequency' }" @click="sortBy = 'frequency'">Freq</button>
         </div>
 
         <div style="flex: 1"></div>
@@ -149,6 +195,7 @@ function toggleBridge() {
         <span class="col-num">#</span>
         <span class="col-title">Title</span>
         <span class="col-pattern">Pattern</span>
+        <span class="col-company">Company</span>
         <span class="col-diff">Diff</span>
         <span class="col-ac">AC%</span>
         <span class="col-link"></span>
@@ -180,6 +227,16 @@ function toggleBridge() {
         >
           {{ problem.pattern_name }}
         </router-link>
+
+        <span class="col-company company-cell">
+          <span class="badge badge-source tier-badge">
+            {{ frequencyLabel(problem) }}
+          </span>
+          <span class="company-mini" v-if="problem.companies?.length">
+            {{ problem.companies.slice(0, 2).join(', ') }}
+          </span>
+          <span class="company-mini" v-else>—</span>
+        </span>
 
         <span class="col-diff">
           <span class="badge" :class="getDiffClass(problem.difficulty)" style="font-size: 0.65rem">
@@ -289,7 +346,7 @@ function toggleBridge() {
 /* ── Table ─────────────────────────────── */
 .table-header {
   display: grid;
-  grid-template-columns: 30px 50px 1fr 150px 70px 60px 30px;
+  grid-template-columns: 30px 50px 1fr 150px 220px 70px 60px 30px;
   gap: var(--space-sm);
   padding: var(--space-sm) var(--space-md);
   font-family: var(--font-mono);
@@ -303,7 +360,7 @@ function toggleBridge() {
 
 .table-row {
   display: grid;
-  grid-template-columns: 30px 50px 1fr 150px 70px 60px 30px;
+  grid-template-columns: 30px 50px 1fr 150px 220px 70px 60px 30px;
   gap: var(--space-sm);
   padding: var(--space-sm) var(--space-md);
   align-items: center;
@@ -380,6 +437,26 @@ function toggleBridge() {
   color: var(--text-muted);
 }
 
+.company-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.tier-badge {
+  width: fit-content;
+  font-size: 0.62rem;
+}
+
+.company-mini {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .lc-link {
   color: var(--text-muted);
   font-size: var(--text-sm);
@@ -409,10 +486,10 @@ function toggleBridge() {
   }
 
   .table-row {
-    grid-template-columns: 30px 40px 1fr auto 30px;
+    grid-template-columns: 30px 40px 1fr auto auto 30px;
   }
 
-  .col-pattern, .col-ac {
+  .col-pattern, .col-ac, .col-company {
     display: none;
   }
 }

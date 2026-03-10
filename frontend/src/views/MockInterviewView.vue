@@ -62,6 +62,8 @@ const thoughtInput = ref('')
 const chatInput = ref('')
 const showSyntaxHighlight = ref(false)
 const lastHandledAutoStartKey = ref('')
+const pinnedProblemSlug = ref('')
+const startCountdown = ref<number | null>(null)
 
 type InterviewLayoutPrefs = {
   editorRatio: number
@@ -83,6 +85,7 @@ const isDraggingDivider = ref(false)
 
 let dragStartX = 0
 let dragStartRatio = DEFAULT_EDITOR_RATIO
+let startCountdownHandle: number | null = null
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value))
@@ -204,6 +207,32 @@ const selectedProblemTitle = computed(() => {
   return problems.value[slug]?.title ?? slug
 })
 
+const pinnedProblemTitle = computed(() => {
+  const slug = pinnedProblemSlug.value
+  if (!slug) return ''
+  return problems.value[slug]?.title ?? slug
+})
+
+const timerProgress = computed(() => {
+  if (!activeSession.value) return 0
+  const totalSeconds = activeSession.value.config.totalTimeMinutes * 60
+  if (!totalSeconds) return 0
+  return Math.round(clamp((activeSession.value.timeRemainingSec / totalSeconds) * 100, 0, 100))
+})
+
+const sessionProgressDots = computed(() => {
+  if (!activeSession.value) return []
+
+  return activeSession.value.questionSlugs.map((slug, index) => {
+    const stateForProblem = activeSession.value?.problems[slug]
+    return {
+      slug,
+      current: index === activeSession.value?.currentIndex,
+      submitted: Boolean(stateForProblem?.submittedAt),
+    }
+  })
+})
+
 const shouldAutoStart = computed(() => {
   // Deep-link flag from ProblemView:
   // /mock-interview?slug=<slug>&autostart=1[&single=1]
@@ -310,6 +339,7 @@ function startInterview() {
     return
   }
 
+  pinnedProblemSlug.value = selectedProblemSlug.value || ''
   thoughtInput.value = ''
   chatInput.value = ''
 
@@ -317,6 +347,35 @@ function startInterview() {
   if (selectedProblemSlug.value || shouldAutoStart.value) {
     router.replace({ path: route.path, query: {} })
   }
+}
+
+function clearStartCountdown() {
+  if (startCountdownHandle !== null) {
+    window.clearInterval(startCountdownHandle)
+    startCountdownHandle = null
+  }
+}
+
+function beginInterviewStart() {
+  if (!canStartSession.value || startCountdown.value !== null) return
+
+  startCountdown.value = 3
+  clearStartCountdown()
+  startCountdownHandle = window.setInterval(() => {
+    if (startCountdown.value === null) {
+      clearStartCountdown()
+      return
+    }
+
+    if (startCountdown.value <= 1) {
+      clearStartCountdown()
+      startCountdown.value = null
+      startInterview()
+      return
+    }
+
+    startCountdown.value -= 1
+  }, 700)
 }
 
 function submitThought() {
@@ -389,6 +448,14 @@ function getDifficultyClass(diff: string | null | undefined): string {
   return `badge-${diff.toLowerCase()}`
 }
 
+function formatChatTimestamp(ts: string | undefined): string {
+  if (!ts) return ''
+  return new Date(ts).toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
 function onVisibilityChange() {
   // Re-sync timer after tab/background transitions.
   if (!document.hidden) {
@@ -412,6 +479,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  clearStartCountdown()
   stopDividerDrag()
   window.removeEventListener('resize', updateViewportWidth)
   document.removeEventListener('visibilitychange', onVisibilityChange)
@@ -465,18 +533,30 @@ watch(
     <section v-if="!activeSession" class="setup-pane card card-flat animate-in stagger-1">
       <h2 class="section-heading">Session Setup</h2>
       <div class="setup-grid">
-        <label class="field">
+        <div class="field">
           <span class="field-label">Questions</span>
-          <input v-model.number="setupConfig.totalQuestions" class="field-input" type="number" min="3" max="3" />
-        </label>
+          <div class="chip-row">
+            <span class="setup-chip active">3 Questions</span>
+            <span class="setup-chip" v-if="selectedProblemSlug && shouldSingleQuestionMode">Focused 1Q</span>
+          </div>
+        </div>
         <label class="field">
           <span class="field-label">Total Time (minutes)</span>
-          <input v-model.number="setupConfig.totalTimeMinutes" class="field-input" type="number" min="15" max="120" step="5" />
+          <input v-model.number="setupConfig.totalTimeMinutes" class="time-slider" type="range" min="15" max="120" step="5" />
+          <div class="time-scale mono">
+            <span>15</span>
+            <strong>{{ setupConfig.totalTimeMinutes }} min</strong>
+            <span>120</span>
+          </div>
         </label>
-        <label class="field">
+        <div class="field">
           <span class="field-label">Language</span>
-          <input class="field-input" :value="setupConfig.language.toUpperCase()" type="text" disabled />
-        </label>
+          <div class="chip-row">
+            <span class="setup-chip active">☕ Java</span>
+            <span class="setup-chip muted">🐍 Python</span>
+            <span class="setup-chip muted">🟨 JavaScript</span>
+          </div>
+        </div>
         <label class="field field-toggle">
           <span class="field-label">Pause Allowed</span>
           <input v-model="setupConfig.allowPause" type="checkbox" />
@@ -504,10 +584,16 @@ watch(
       <p v-if="setupError" class="setup-error">{{ setupError }}</p>
 
       <div class="setup-actions">
-        <button class="btn btn-primary" :disabled="!canStartSession" @click="startInterview">
-          Start Interview
+        <button class="btn btn-primary" :disabled="!canStartSession || startCountdown !== null" @click="beginInterviewStart">
+          {{ startCountdown !== null ? `Starting in ${startCountdown}...` : 'Start Interview' }}
         </button>
       </div>
+
+      <Transition name="countdown-pop">
+        <div v-if="startCountdown !== null" class="countdown-overlay">
+          <div class="countdown-number mono">{{ startCountdown }}</div>
+        </div>
+      </Transition>
     </section>
 
     <!-- Active interview workspace -->
@@ -517,10 +603,23 @@ watch(
         <div class="meta-block">
           <span class="meta-label">Question</span>
           <span class="meta-value mono">{{ currentQuestionLabel }}</span>
+          <div class="progress-dots" v-if="sessionProgressDots.length">
+            <span
+              v-for="dot in sessionProgressDots"
+              :key="dot.slug"
+              class="progress-dot"
+              :class="{ current: dot.current, completed: dot.submitted }"
+            ></span>
+          </div>
         </div>
-        <div class="meta-block">
+        <div class="meta-block timer-block">
           <span class="meta-label">Timer</span>
-          <span class="meta-value mono timer">{{ timeRemainingLabel }}</span>
+          <div class="timer-wrap">
+            <span class="radial-timer workspace-timer-ring" :style="{ '--progress': timerProgress }">
+              <span class="timer-ring-label mono">{{ timerProgress }}%</span>
+            </span>
+            <span class="meta-value mono timer">{{ timeRemainingLabel }}</span>
+          </div>
         </div>
         <div class="meta-block">
           <span class="meta-label">Difficulty</span>
@@ -535,6 +634,16 @@ watch(
           <button class="btn" @click="togglePause" :disabled="!activeSession.config.allowPause">
             {{ activeSession.paused ? 'Resume' : 'Pause' }}
           </button>
+          <router-link
+            v-if="pinnedProblemSlug"
+            class="btn"
+            :to="`/problem/${pinnedProblemSlug}`"
+            target="_blank"
+            rel="noopener"
+            :title="`Open ${pinnedProblemTitle}`"
+          >
+            Current Problem
+          </router-link>
           <button class="btn btn-primary" :disabled="!canSubmit" @click="submitProblemAndContinue">
             {{ activeSession.currentIndex === activeSession.questionSlugs.length - 1 ? 'Submit Interview' : 'Submit + Next' }}
           </button>
@@ -660,8 +769,24 @@ watch(
                 class="chat-msg"
                 :class="`chat-${message.role}`"
               >
-                <span class="chat-role mono">{{ message.role === 'assistant' ? 'Interviewer' : 'You' }}</span>
-                <p>{{ message.content }}</p>
+                <div class="chat-msg-head">
+                  <span class="chat-avatar">{{ message.role === 'assistant' ? '🤖' : '👤' }}</span>
+                  <span class="chat-role mono">{{ message.role === 'assistant' ? 'Interviewer' : 'You' }}</span>
+                  <span class="chat-ts mono">{{ formatChatTimestamp(message.ts) }}</span>
+                </div>
+                <p class="chat-content">{{ message.content }}</p>
+              </div>
+
+              <div v-if="isInterviewerResponding" class="chat-msg chat-assistant">
+                <div class="chat-msg-head">
+                  <span class="chat-avatar">🤖</span>
+                  <span class="chat-role mono">Interviewer</span>
+                </div>
+                <div class="chat-typing">
+                  <span class="typing-dot"></span>
+                  <span class="typing-dot"></span>
+                  <span class="typing-dot"></span>
+                </div>
               </div>
             </div>
 
@@ -761,6 +886,12 @@ watch(
   margin-bottom: var(--space-xl);
 }
 
+.container.mock-view {
+  max-width: min(1740px, calc(100vw - 24px));
+  padding-left: clamp(12px, 2vw, 28px);
+  padding-right: clamp(12px, 2vw, 28px);
+}
+
 .title-row {
   display: flex;
   align-items: center;
@@ -813,6 +944,8 @@ watch(
 
 .setup-pane {
   max-width: 880px;
+  position: relative;
+  overflow: hidden;
 }
 
 .setup-grid {
@@ -842,6 +975,48 @@ watch(
   border-radius: var(--radius-sm);
   padding: 8px 10px;
   font-family: var(--font-mono);
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.setup-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-default);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
+}
+
+.setup-chip.active {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.09);
+}
+
+.setup-chip.muted {
+  opacity: 0.55;
+}
+
+.time-slider {
+  width: 100%;
+  accent-color: var(--accent-cyan);
+  margin: 6px 0;
+}
+
+.time-scale {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
 }
 
 .field-toggle {
@@ -885,9 +1060,36 @@ watch(
   margin-top: var(--space-lg);
 }
 
+.countdown-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 12, 20, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: inherit;
+  backdrop-filter: blur(4px);
+}
+
+.countdown-number {
+  font-size: 3.2rem;
+  color: var(--accent-cyan);
+  text-shadow: 0 0 18px rgba(56, 189, 248, 0.6);
+}
+
+.countdown-pop-enter-active,
+.countdown-pop-leave-active {
+  transition: opacity var(--transition-fast);
+}
+
+.countdown-pop-enter-from,
+.countdown-pop-leave-to {
+  opacity: 0;
+}
+
 .workspace {
   display: grid;
-  gap: var(--space-md);
+  gap: var(--space-lg);
 }
 
 .workspace-top {
@@ -904,7 +1106,8 @@ watch(
 .meta-block {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
+  min-width: 120px;
 }
 
 .meta-label {
@@ -919,36 +1122,79 @@ watch(
   font-weight: 700;
 }
 
+.progress-dots {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.progress-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-default);
+}
+
+.progress-dot.current {
+  background: var(--accent-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+.progress-dot.completed {
+  background: var(--accent-green);
+}
+
 .timer {
   color: var(--accent-orange);
 }
 
+.timer-block {
+  min-width: 170px;
+}
+
+.timer-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.workspace-timer-ring {
+  --timer-size: 42px;
+}
+
+.timer-ring-label {
+  font-size: 9px;
+  color: var(--accent-cyan);
+}
+
 .workspace-actions {
-  margin-left: auto;
   display: flex;
   gap: var(--space-sm);
   flex-wrap: wrap;
+  align-items: center;
+  margin-left: auto;
 }
 
 .workspace-grid {
   display: grid;
-  grid-template-columns: minmax(320px, 1.1fr) minmax(0, 2fr);
+  grid-template-columns: minmax(360px, 0.95fr) minmax(0, 2.45fr);
   gap: var(--space-md);
+  align-items: start;
 }
 
 .workspace-right {
   display: grid;
-  grid-template-columns: minmax(420px, 0.6fr) 10px minmax(320px, 0.4fr);
-  gap: var(--space-sm);
+  grid-template-columns: minmax(560px, 1.5fr) 10px minmax(360px, 1fr);
+  gap: var(--space-md);
   align-items: stretch;
   min-width: 0;
 }
 
 .panel {
-  min-height: 520px;
+  min-height: 560px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-lg);
   min-width: 0;
 }
 
@@ -957,6 +1203,8 @@ watch(
   align-items: center;
   justify-content: space-between;
   gap: var(--space-sm);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .editor-actions {
@@ -1028,7 +1276,8 @@ watch(
 
 .thought-box,
 .clarification-box {
-  padding-top: var(--space-sm);
+  padding-top: var(--space-md);
+  margin-top: var(--space-xs);
   border-top: 1px solid var(--border-subtle);
 }
 
@@ -1097,11 +1346,30 @@ watch(
   border: 1px solid rgba(56, 189, 248, 0.2);
   cursor: col-resize;
   touch-action: none;
-  transition: opacity var(--transition-fast), border-color var(--transition-fast);
+  transition: opacity var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+  position: relative;
 }
 
 .splitter:hover {
   border-color: var(--accent-cyan);
+  transform: scaleX(1.3);
+}
+
+.splitter::after {
+  content: '⋮⋮';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(56, 189, 248, 0.55);
+  font-size: 10px;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.splitter:hover::after {
+  opacity: 1;
 }
 
 .splitter.dragging {
@@ -1119,28 +1387,50 @@ watch(
 .chat-thread {
   flex: 1;
   min-height: 0;
-  height: 420px;
-  max-height: 420px;
+  height: 460px;
+  max-height: 520px;
   overflow: auto;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: var(--space-sm);
+  padding: var(--space-md);
   display: grid;
-  gap: var(--space-sm);
+  gap: var(--space-md);
   background: var(--bg-input);
 }
 
 .chat-msg {
   border-radius: var(--radius-sm);
-  padding: var(--space-sm);
+  padding: var(--space-md);
   font-size: var(--text-sm);
+}
+
+.chat-msg-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.chat-avatar {
+  font-size: 14px;
+  line-height: 1;
 }
 
 .chat-role {
   font-size: var(--text-xs);
   color: var(--text-muted);
-  display: block;
-  margin-bottom: 4px;
+  display: inline-block;
+}
+
+.chat-ts {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.chat-content {
+  white-space: pre-wrap;
+  line-height: 1.6;
 }
 
 .chat-user {
@@ -1156,6 +1446,12 @@ watch(
 .chat-input-row {
   display: grid;
   gap: var(--space-sm);
+}
+
+.chat-typing {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .report-pane {

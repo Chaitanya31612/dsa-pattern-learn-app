@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import List, Dict, Any
 
 from dotenv import load_dotenv
+from sub_patterns import get_sub_patterns_for_pattern
 
 # Load .env from backend root
 load_dotenv(Path(__file__).parent.parent / ".env")
@@ -64,6 +65,14 @@ OUTPUT_SCHEMA = """{
   "time_complexity": "string - typical time complexity",
   "space_complexity": "string - typical space complexity",
   "related_patterns": ["list of 2-4 related pattern IDs"],
+  "sub_patterns": [
+    {
+      "sub_pattern_id": "string - kebab-case unique under this pattern",
+      "name": "string - display name",
+      "description": "string - when/why this sub-pattern is used",
+      "trigger_phrases": ["list of 3-6 phrases specific to this sub-pattern"]
+    }
+  ],
   "sample_walkthrough": {
     "problem": "string - canonical problem name",
     "problem_number": "int - LeetCode problem number",
@@ -85,10 +94,15 @@ def generate_pattern_prompt(pattern: dict, problems: List[dict]) -> str:
         for p in problems
     )
 
+    sub_pattern_schema = json.dumps(get_sub_patterns_for_pattern(pattern["id"]), indent=2)
+
     return f"""You are a DSA teaching expert. Generate a comprehensive learning resource for the "{pattern['name']}" pattern.
 
 Here are some canonical problems that use this pattern:
 {problem_list}
+
+Use the following sub-pattern taxonomy for this pattern exactly as-is:
+{sub_pattern_schema}
 
 Generate a JSON object with the following schema:
 {OUTPUT_SCHEMA}
@@ -99,6 +113,7 @@ Important:
 - The explanation should be thorough but accessible, aimed at someone preparing for coding interviews
 - Template code should be clean, well-commented, and use standard patterns
 - Trigger phrases should be specific words/phrases from problem statements that signal this pattern
+- Keep `sub_patterns` aligned with the provided taxonomy IDs and names
 - The sample walkthrough should use one of the listed problems
 - related_patterns should reference IDs from: {', '.join(p['id'] for p in PATTERNS)}
 - Return ONLY the JSON, no markdown fences or extra text"""
@@ -149,6 +164,8 @@ def generate_single_pattern(
             # Ensure IDs are correct
             data["pattern_id"] = pattern["id"]
             data["name"] = pattern["name"]
+            # Keep sub-pattern taxonomy deterministic across regenerations.
+            data["sub_patterns"] = get_sub_patterns_for_pattern(pattern["id"])
 
             logger.info(f"  ✓ Generated {pattern['name']} "
                        f"(tokens: {response.tokens_used}, provider: {response.provider.value})")
@@ -176,6 +193,7 @@ def generate_single_pattern(
         "time_complexity": "",
         "space_complexity": "",
         "related_patterns": [],
+        "sub_patterns": get_sub_patterns_for_pattern(pattern["id"]),
         "sample_walkthrough": {"problem": "", "problem_number": 0, "approach": ""},
         "_generation_failed": True,
     }

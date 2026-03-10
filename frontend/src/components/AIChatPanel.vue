@@ -100,34 +100,56 @@ function handleClear() {
 function renderMarkdown(content: string): string {
   let html = content
 
-  // Escape HTML entities first
+  const codeBlocks: { lang: string; code: string }[] = []
+  const inlineCodes: string[] = []
+
+  // Extract fenced code blocks
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_match, lang, code) => {
+    codeBlocks.push({ lang: lang || 'java', code: code.trim() })
+    return `__CODE_BLOCK_${codeBlocks.length - 1}__`
+  })
+
+  // Extract inline code
+  html = html.replace(/`([^`]+)`/g, (_match, code) => {
+    inlineCodes.push(code)
+    return `__INLINE_CODE_${inlineCodes.length - 1}__`
+  })
+
+  // Escape HTML entities for regular text
   html = html
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-
-  // Fenced code blocks: ```lang\n...\n```
-  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_match, lang, code) => {
-    const language = lang || 'java'
-    let highlighted = code.trim()
-    try {
-      if (hljs.getLanguage(language)) {
-        highlighted = hljs.highlight(code.trim(), { language }).value
-      }
-    } catch {
-      // keep raw
-    }
-    return `<div class="ai-code-block"><span class="ai-code-lang">${language}</span><pre><code class="hljs">${highlighted}</code></pre></div>`
-  })
-
-  // Inline code: `code`
-  html = html.replace(/`([^`]+)`/g, '<code class="ai-inline-code">$1</code>')
 
   // Bold: **text**
   html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
 
   // Line breaks
   html = html.replace(/\n/g, '<br/>')
+
+  // Re-inject inline code
+  html = html.replace(/__INLINE_CODE_(\d+)__/g, (_match, id) => {
+    const code = inlineCodes[parseInt(id, 10)]
+    if (code === undefined) return ''
+    const escaped = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    return `<code class="ai-inline-code">${escaped}</code>`
+  })
+
+  // Re-inject fenced code blocks
+  html = html.replace(/__CODE_BLOCK_(\d+)__/g, (_match, id) => {
+    const block = codeBlocks[parseInt(id, 10)]
+    if (!block) return ''
+    const { lang, code } = block
+    let highlighted = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    try {
+      if (hljs.getLanguage(lang)) {
+        highlighted = hljs.highlight(code, { language: lang }).value
+      }
+    } catch {
+      // keep basic escaping
+    }
+    return `<div class="ai-code-block"><span class="ai-code-lang">${lang}</span><pre><code class="hljs">${highlighted}</code></pre></div>`
+  })
 
   return html
 }
@@ -136,6 +158,7 @@ function renderMarkdown(content: string): string {
 <template>
   <!-- Floating chat trigger button -->
   <button
+    v-show="!isOpen || !isExpanded"
     class="ai-chat-trigger"
     :class="{ open: isOpen }"
     @click="toggle"
@@ -166,6 +189,7 @@ function renderMarkdown(content: string): string {
             {{ isExpanded ? '🗕' : '⛶' }}
           </button>
           <button class="btn-icon" @click="handleClear" title="Clear chat">🗑</button>
+          <button class="btn-icon" @click="toggle" title="Close chat">✕</button>
         </div>
       </header>
 
@@ -242,7 +266,7 @@ function renderMarkdown(content: string): string {
         <textarea
           v-model="inputText"
           class="ai-chat-input"
-          rows="2"
+          rows="1"
           :placeholder="contextType === 'pattern'
             ? 'Ask about this pattern, its variations, techniques...'
             : 'Ask about the approach, solution, edge cases...'"
@@ -592,7 +616,7 @@ function renderMarkdown(content: string): string {
   padding: 10px 12px;
   border-top: 1px solid var(--border-subtle);
   background: var(--bg-secondary);
-  align-items: flex-end;
+  align-items: center;
 }
 
 .ai-chat-input {
@@ -615,10 +639,14 @@ function renderMarkdown(content: string): string {
 }
 
 .ai-send-btn {
-  padding: 8px 14px;
+  padding: 0 14px;
   min-width: 40px;
+  height: 38px;
   font-size: 16px;
   font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ── Slide Animation ─────────────────────── */

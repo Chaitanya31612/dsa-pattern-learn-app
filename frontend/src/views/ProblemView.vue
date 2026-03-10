@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue'
+import { computed, ref, watch, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
 import { useSmartRandom } from '../composables/useSmartRandom'
 import ReflectionModal from '../components/ReflectionModal.vue'
 import AIChatPanel from '../components/AIChatPanel.vue'
+import CodeHighlight from '../components/CodeHighlight.vue'
 
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
@@ -22,6 +23,8 @@ const confidence = computed(() => getConfidence(slug.value))
 const noteText = ref('')
 const showNotes = ref(false)
 const showReflection = ref(false)
+const showSolutionBreakdown = ref(false)
+const revealedStepCount = ref(0)
 const interviewRoute = computed(() => ({
   path: '/mock-interview',
   query: {
@@ -128,6 +131,36 @@ const problemChatChips = computed(() => {
       : 'How does this connect to the pattern?',
   ]
 })
+
+const solutionBreakdown = computed(() => problem.value?.solution_breakdown)
+const revealedSteps = computed(() => {
+  const steps = solutionBreakdown.value?.steps ?? []
+  return steps.slice(0, revealedStepCount.value)
+})
+const allBreakdownStepsRevealed = computed(() => {
+  const total = solutionBreakdown.value?.steps?.length ?? 0
+  return total > 0 && revealedStepCount.value >= total
+})
+
+watch(slug, () => {
+  showSolutionBreakdown.value = false
+  revealedStepCount.value = 0
+})
+
+function revealSolutionBreakdown() {
+  if (!solutionBreakdown.value) return
+  showSolutionBreakdown.value = true
+  if (revealedStepCount.value === 0) {
+    revealedStepCount.value = 1
+  }
+}
+
+function revealNextStep() {
+  const total = solutionBreakdown.value?.steps?.length ?? 0
+  if (revealedStepCount.value < total) {
+    revealedStepCount.value += 1
+  }
+}
 </script>
 
 <template>
@@ -246,6 +279,84 @@ const problemChatChips = computed(() => {
           placeholder="Write your approach, key observations, or things to remember..."
           rows="4"
         ></textarea>
+      </div>
+    </section>
+
+    <section
+      class="solution-breakdown-section animate-in"
+      style="margin-bottom: var(--space-xl)"
+      v-if="solutionBreakdown"
+    >
+      <div class="card card-flat">
+        <div class="solution-breakdown-head">
+          <div>
+            <h3 class="section-heading" style="margin-bottom: var(--space-xs)">📖 Solution Breakdown</h3>
+            <p class="solution-breakdown-sub">
+              Progressive reveal: intuition → approach steps → pseudo-code → edge cases.
+            </p>
+          </div>
+
+          <button class="btn btn-primary" v-if="!showSolutionBreakdown" @click="revealSolutionBreakdown">
+            Reveal Solution
+          </button>
+        </div>
+
+        <div v-if="showSolutionBreakdown" class="solution-breakdown-body">
+          <article class="solution-callout">
+            <span class="solution-callout-label">Intuition</span>
+            <p class="solution-callout-text">{{ solutionBreakdown.intuition }}</p>
+          </article>
+
+          <article class="solution-callout">
+            <span class="solution-callout-label">Pattern Connection</span>
+            <p class="solution-callout-text">{{ solutionBreakdown.pattern_connection }}</p>
+          </article>
+
+          <ol class="solution-step-list" v-if="revealedSteps.length">
+            <li
+              class="solution-step-item"
+              v-for="(step, index) in revealedSteps"
+              :key="`breakdown-step-${index}-${step.title}`"
+            >
+              <span class="solution-step-index mono">Step {{ index + 1 }}</span>
+              <h4 class="solution-step-title">{{ step.title }}</h4>
+              <p class="solution-step-detail">{{ step.detail }}</p>
+            </li>
+          </ol>
+
+          <button
+            class="btn"
+            v-if="!allBreakdownStepsRevealed"
+            @click="revealNextStep"
+          >
+            Reveal Next Step
+          </button>
+
+          <div v-if="allBreakdownStepsRevealed" class="solution-extra">
+            <div class="solution-code-wrap" v-if="solutionBreakdown.java_pseudocode">
+              <span class="terminal-prompt">java_pseudo_code</span>
+              <CodeHighlight :code="solutionBreakdown.java_pseudocode" language="java" />
+            </div>
+
+            <div class="solution-checklists">
+              <article class="solution-list-card" v-if="solutionBreakdown.edge_cases?.length">
+                <h4 class="section-heading" style="margin-bottom: var(--space-sm)">Edge Cases Checklist</h4>
+                <ul class="solution-mini-list">
+                  <li v-for="edge in solutionBreakdown.edge_cases" :key="`edge-${edge}`">{{ edge }}</li>
+                </ul>
+              </article>
+
+              <article class="solution-list-card" v-if="solutionBreakdown.alternatives?.length">
+                <h4 class="section-heading" style="margin-bottom: var(--space-sm)">Alternative Approaches</h4>
+                <ul class="solution-mini-list">
+                  <li v-for="alt in solutionBreakdown.alternatives" :key="`alt-${alt.approach}`">
+                    <strong>{{ alt.approach }}:</strong> {{ alt.tradeoff }}
+                  </li>
+                </ul>
+              </article>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -524,6 +635,113 @@ const problemChatChips = computed(() => {
   color: var(--text-muted);
 }
 
+/* ── Solution Breakdown ─────────────── */
+.solution-breakdown-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.solution-breakdown-sub {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.solution-breakdown-body {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.solution-callout {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.solution-callout-label {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+.solution-callout-text {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.solution-step-list {
+  list-style: none;
+  display: grid;
+  gap: var(--space-sm);
+  padding: 0;
+  margin: 0;
+}
+
+.solution-step-item {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.solution-step-index {
+  font-size: var(--text-xs);
+  color: var(--accent-cyan);
+}
+
+.solution-step-title {
+  margin: 4px 0 6px;
+  font-size: var(--text-base);
+}
+
+.solution-step-detail {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.solution-extra {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.solution-code-wrap {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.solution-checklists {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+
+.solution-list-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.solution-mini-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
 /* ── Insights Grid ──────────────────── */
 .insights-grid {
   display: grid;
@@ -738,6 +956,15 @@ const problemChatChips = computed(() => {
   .prob-title-row {
     flex-direction: column;
     gap: var(--space-sm);
+  }
+
+  .solution-breakdown-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .solution-checklists {
+    grid-template-columns: 1fr;
   }
 
   .breadcrumbs {

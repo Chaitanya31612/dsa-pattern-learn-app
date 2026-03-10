@@ -62,6 +62,21 @@ export interface Problem {
   source_signals?: string[]
   interview_lists_count?: number
   company_count?: number
+  solution_breakdown?: {
+    intuition: string
+    pattern_connection: string
+    steps: Array<{
+      title: string
+      detail: string
+    }>
+    java_pseudocode: string
+    edge_cases: string[]
+    alternatives: Array<{
+      approach: string
+      tradeoff: string
+    }>
+    source?: 'deterministic' | 'ai' | string
+  }
   in_neetcode: boolean
   in_striver: boolean
   in_both: boolean
@@ -96,6 +111,7 @@ export interface Database {
     total_patterns: number
     difficulty_distribution: Record<string, number>
     company_frequency_enabled?: boolean
+    solution_breakdowns_enabled?: boolean
   }
 }
 

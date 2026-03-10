@@ -186,6 +186,12 @@ def build_db():
     else:
         company_frequency_raw = {}
         logger.info("company_frequency.json not found — continuing without company metadata")
+    solution_breakdowns_path = DATA_DIR / "solution_breakdowns.json"
+    if solution_breakdowns_path.exists():
+        solution_breakdowns_raw = load_json("solution_breakdowns.json") or {}
+    else:
+        solution_breakdowns_raw = {}
+        logger.info("solution_breakdowns.json not found — continuing without solution breakdowns")
 
     if not all([patterns_raw, enriched, insights_raw]):
         logger.error("Missing data files. Run the pipeline steps first.")
@@ -203,6 +209,10 @@ def build_db():
     if isinstance(company_frequency_raw, dict):
         company_by_slug = company_frequency_raw.get("problems", {})
     logger.info(f"Indexed {len(company_by_slug)} company-frequency rows")
+    breakdown_by_slug = {}
+    if isinstance(solution_breakdowns_raw, dict):
+        breakdown_by_slug = solution_breakdowns_raw.get("problems", {})
+    logger.info(f"Indexed {len(breakdown_by_slug)} solution breakdown rows")
 
     # Normalize pattern-level sub-pattern schemas first so they can be used
     # while building per-problem records.
@@ -263,6 +273,9 @@ def build_db():
         problem["source_signals"] = freq.get("source_signals", [])
         problem["interview_lists_count"] = freq.get("interview_lists_count", 0)
         problem["company_count"] = freq.get("company_count", len(problem["companies"]))
+        breakdown = breakdown_by_slug.get(slug, {}) if isinstance(breakdown_by_slug, dict) else {}
+        if isinstance(breakdown, dict) and breakdown:
+            problem["solution_breakdown"] = breakdown
 
         problems[slug] = problem
 
@@ -357,6 +370,7 @@ def build_db():
             "total_patterns": len(patterns),
             "difficulty_distribution": diff_dist,
             "company_frequency_enabled": bool(company_by_slug),
+            "solution_breakdowns_enabled": bool(breakdown_by_slug),
         },
     }
 

@@ -54,17 +54,32 @@ class AIAnalyzerFactory:
     def create_default(cls) -> AIAnalyzerInterface:
         """
         Create analyzer using best available provider.
-        Priority: Gemini > Groq > Ollama
-        """
-        # Check Gemini first (best rate limits)
-        if os.getenv("GEMINI_API_KEY"):
-            return cls.create(AIProvider.GEMINI)
 
-        # Check Groq second
+        Resolution order:
+        1) Explicit override via AI_DEFAULT_PROVIDER (groq|gemini|ollama)
+        2) Default priority: Groq > Gemini > Ollama
+        """
+        explicit = (os.getenv("AI_DEFAULT_PROVIDER") or "").strip().lower()
+        if explicit:
+            if explicit == "groq":
+                if os.getenv("GROQ_API_KEY"):
+                    return cls.create(AIProvider.GROQ)
+                raise ValueError("AI_DEFAULT_PROVIDER=groq but GROQ_API_KEY is not set")
+            if explicit == "gemini":
+                if os.getenv("GEMINI_API_KEY"):
+                    return cls.create(AIProvider.GEMINI)
+                raise ValueError("AI_DEFAULT_PROVIDER=gemini but GEMINI_API_KEY is not set")
+            if explicit == "ollama":
+                return cls.create(AIProvider.OLLAMA)
+            raise ValueError(
+                "AI_DEFAULT_PROVIDER must be one of: groq, gemini, ollama"
+            )
+
+        # Explicit default priority: Groq first.
         if os.getenv("GROQ_API_KEY"):
             return cls.create(AIProvider.GROQ)
-
-        # Fallback to Ollama (local, always available)
+        if os.getenv("GEMINI_API_KEY"):
+            return cls.create(AIProvider.GEMINI)
         return cls.create(AIProvider.OLLAMA)
 
     @classmethod

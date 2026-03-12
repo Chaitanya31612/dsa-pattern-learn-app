@@ -19,7 +19,7 @@ export interface AIChatMessage {
   timestamp: string
 }
 
-type ContextType = 'pattern' | 'problem'
+type ContextType = 'pattern' | 'problem' | 'sub-pattern'
 
 const STORAGE_PREFIX = 'dsa-ai-chat-'
 
@@ -82,9 +82,9 @@ export function useAIChat(contextType: ContextType, contextId: string) {
 
     try {
       const endpoint =
-        contextType === 'pattern' ? '/api/ai/pattern-chat' : '/api/ai/problem-chat'
+        contextType === 'pattern' || contextType === 'sub-pattern' ? '/api/ai/pattern-chat' : '/api/ai/problem-chat'
 
-      const bodyKey = contextType === 'pattern' ? 'pattern_id' : 'problem_slug'
+      const bodyKey = (contextType === 'pattern' || contextType === 'sub-pattern') ? 'pattern_id' : 'problem_slug'
 
       const body = {
         [bodyKey]: contextId,

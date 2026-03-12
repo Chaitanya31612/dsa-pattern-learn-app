@@ -30,17 +30,22 @@ class GeminiAnalyzer(AIAnalyzerInterface):
     def model_name(self) -> str:
         return self._model_key
 
-    def analyze(self, content: str, prompt: str) -> AIResponse:
+    def analyze(self, content: str, prompt: str, json_mode: bool = False) -> AIResponse:
         try:
             full_prompt = f"{prompt}\n\nContent:\n{content}"
+
+            config_kwargs = {
+                "temperature": 0.1,
+                "max_output_tokens": 8192,
+            }
+
+            if json_mode:
+                config_kwargs["response_mime_type"] = "application/json"
 
             response = self.client.models.generate_content(
                 model=self._model_key,
                 contents=full_prompt,
-                config=types.GenerateContentConfig(
-                    temperature=0.1,
-                    max_output_tokens=4096,
-                )
+                config=types.GenerateContentConfig(**config_kwargs)
             )
 
             # Token counting

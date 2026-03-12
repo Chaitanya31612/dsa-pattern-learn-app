@@ -266,6 +266,16 @@ const patternChatChips = computed(() => {
                 {{ problem.title }}
               </router-link>
             </div>
+
+            <div style="margin-top: var(--space-md)">
+              <router-link
+                :to="`/learn/${patternId}/${subPattern.sub_pattern_id}`"
+                class="btn btn-primary"
+                style="width: 100%; text-align: center;"
+              >
+                Learn Sub-Pattern
+              </router-link>
+            </div>
           </div>
         </details>
       </div>

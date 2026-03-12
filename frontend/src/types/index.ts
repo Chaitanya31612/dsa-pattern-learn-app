@@ -7,6 +7,9 @@ export interface SubPattern {
   trigger_phrases: string[]
   problem_count: number
   problem_slugs: string[]
+  explanation?: string
+  mental_model?: string
+  template_code_java?: string
 }
 
 export interface Pattern {

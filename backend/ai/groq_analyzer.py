@@ -40,19 +40,25 @@ class GroqAnalyzer(AIAnalyzerInterface):
             time.sleep(self.min_interval - elapsed)
         self.last_request = time.time()
 
-    def analyze(self, content: str, prompt: str) -> AIResponse:
+    def analyze(self, content: str, prompt: str, json_mode: bool = False) -> AIResponse:
         self._rate_limit()
 
         try:
-            response = self.client.chat.completions.create(
-                model=self._model,
-                messages=[
+            kwargs = {
+                "model": self._model,
+                "messages": [
                     {"role": "system", "content": prompt},
                     {"role": "user", "content": content}
                 ],
-                max_tokens=4096,
-                temperature=0.1,
-            )
+                "max_tokens": 4096,
+                "temperature": 0.1,
+            }
+
+            if json_mode:
+                kwargs["response_format"] = {"type": "json_object"}
+
+            response = self.client.chat.completions.create(**kwargs)
+
 
             return AIResponse(
                 content=response.choices[0].message.content,

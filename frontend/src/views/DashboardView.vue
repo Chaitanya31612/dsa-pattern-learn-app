@@ -170,7 +170,7 @@ function getPatternAccent(index: number): string {
       </div>
     </section>
 
-    <section class="utility-hub card card-flat animate-in stagger-1">
+    <!-- <section class="utility-hub card card-flat animate-in stagger-1">
       <div class="utility-column utility-recent">
         <h3 class="utility-title">Recent Activity</h3>
         <ul class="activity-list" v-if="recentActivity.length">
@@ -216,7 +216,7 @@ function getPatternAccent(index: number): string {
           </router-link>
         </div>
       </div>
-    </section>
+    </section> -->
 
     <!-- ═══ Sort bar ═══ -->
     <section class="sort-bar animate-in stagger-2">

@@ -1411,5 +1411,1350 @@
         ]
       }
     ]
+  },
+  {
+    "pattern_id": "two-pointers",
+    "sub_pattern_id": "two-pointer-opposite-direction",
+    "name": "Two Pointers Moving in Opposite Directions",
+    "description": "This sub-pattern involves two pointers moving towards each other from opposite ends of a sorted array or string, often used for finding pairs or checking palindromes.",
+    "problem_slugs": [
+      "two-sum-ii-input-array-is-sorted",
+      "valid-palindrome",
+      "valid-palindrome-ii",
+      "reverse-string"
+    ],
+    "explanation": "This sub-pattern involves two pointers moving towards each other from opposite ends of a sorted array or string. It is often used for finding pairs or checking palindromes. The key insight is to initialize two pointers, one at the start and one at the end of the array, and then move them towards each other based on the problem's conditions.",
+    "mental_model": "Meet in the middle",
+    "template_code_java": "class Solution { public boolean isValid(String s) { int left = 0, right = s.length() - 1; while (left < right) { if (s.charAt(left) != s.charAt(right)) return false; left++; right--; } return true; } }",
+    "trigger_phrases": [
+      "find pairs",
+      "check palindrome",
+      "opposite ends"
+    ]
+  },
+  {
+    "pattern_id": "two-pointers",
+    "sub_pattern_id": "two-pointer-same-direction",
+    "name": "Two Pointers Moving in the Same Direction",
+    "description": "This sub-pattern involves two pointers moving in the same direction, often used for finding duplicates, merging arrays, or checking for certain conditions in a sorted array.",
+    "problem_slugs": [
+      "remove-duplicates-from-sorted-array",
+      "merge-sorted-array",
+      "move-zeroes"
+    ],
+    "explanation": "This sub-pattern involves two pointers moving in the same direction, often used for finding duplicates, merging arrays, or checking for certain conditions in a sorted array. The key insight is to initialize two pointers and move them based on the problem's conditions, often using one pointer as a 'slow' pointer and the other as a 'fast' pointer.",
+    "mental_model": "Follow the leader",
+    "template_code_java": "class Solution { public int removeDuplicates(int[] nums) { if (nums.length == 0) return 0; int i = 0; for (int j = 1; j < nums.length; j++) { if (nums[j] != nums[i]) { i++; nums[i] = nums[j]; } } return i + 1; } }",
+    "trigger_phrases": [
+      "find duplicates",
+      "merge arrays",
+      "same direction"
+    ]
+  },
+  {
+    "pattern_id": "two-pointers",
+    "sub_pattern_id": "two-pointer-array-manipulation",
+    "name": "Two Pointers for Array Manipulation",
+    "description": "This sub-pattern involves using two pointers to manipulate arrays, often used for finding the maximum or minimum of something, or for trapping something between two pointers.",
+    "problem_slugs": [
+      "container-with-most-water",
+      "trapping-rain-water",
+      "minimum-difference-between-highest-and-lowest-of-k-scores"
+    ],
+    "explanation": "This sub-pattern involves using two pointers to manipulate arrays, often used for finding the maximum or minimum of something, or for trapping something between two pointers. The key insight is to initialize two pointers and move them based on the problem's conditions, often using the pointers to track the maximum or minimum value.",
+    "mental_model": "Trap and optimize",
+    "template_code_java": "class Solution { public int maxArea(int[] height) { int maxArea = 0; int left = 0, right = height.length - 1; while (left < right) { int area = Math.min(height[left], height[right]) * (right - left); maxArea = Math.max(maxArea, area); if (height[left] < height[right]) left++; else right--; } return maxArea; } }",
+    "trigger_phrases": [
+      "maximize area",
+      "trap between pointers",
+      "array manipulation"
+    ]
+  },
+  {
+    "pattern_id": "two-pointers",
+    "sub_pattern_id": "two-pointer-k-sum",
+    "name": "Two Pointers for K-Sum Problems",
+    "description": "This sub-pattern involves using two pointers to solve k-sum problems, often used for finding all unique triplets or quadruplets that sum to a target value.",
+    "problem_slugs": [
+      "3sum",
+      "4sum"
+    ],
+    "explanation": "This sub-pattern involves using two pointers to solve k-sum problems, often used for finding all unique triplets or quadruplets that sum to a target value. The key insight is to initialize two pointers and move them based on the problem's conditions, often using the pointers to track the sum of the elements.",
+    "mental_model": "Sum and converge",
+    "template_code_java": "class Solution { public List<List<Integer>> threeSum(int[] nums) { Arrays.sort(nums); List<List<Integer>> result = new ArrayList<>(); for (int i = 0; i < nums.length - 2; i++) { if (i > 0 && nums[i] == nums[i - 1]) continue; int left = i + 1, right = nums.length - 1; while (left < right) { int sum = nums[i] + nums[left] + nums[right]; if (sum < 0) left++; else if (sum > 0) right--; else { result.add(Arrays.asList(nums[i], nums[left], nums[right])); while (left < right && nums[left] == nums[left + 1]) left++; while (left < right && nums[right] == nums[right - 1]) right--; left++; right--; } } } return result; } }",
+    "trigger_phrases": [
+      "k-sum problem",
+      "unique triplets",
+      "two pointers sum"
+    ]
+  },
+  {
+    "pattern_id": "arrays-hashing",
+    "sub_pattern_id": "hashing-frequency-count",
+    "name": "Hashing Frequency Count",
+    "description": "This sub-pattern involves using hashing to count the frequency of elements in an array, often to find the most frequent or least frequent elements. It requires understanding how to utilize hash maps to store and retrieve frequency information.",
+    "problem_slugs": [
+      "top-k-frequent-elements",
+      "contains-duplicate",
+      "valid-anagram",
+      "group-anagrams",
+      "maximum-number-of-balloons",
+      "find-all-anagrams-in-a-string",
+      "unique-email-addresses",
+      "subarray-sum-equals-k"
+    ],
+    "explanation": "This sub-pattern involves using hashing to count the frequency of elements in an array. It requires understanding how to utilize hash maps to store and retrieve frequency information. The key idea is to create a hash map where the keys are the elements in the array and the values are their corresponding frequencies. This allows for efficient lookup and counting of elements.",
+    "mental_model": "Hash map as a frequency counter",
+    "template_code_java": "\n      class Solution {\n        public int[] topKFrequent(int[] nums, int k) {\n          // Create a hash map to store the frequency of each element\n          Map<Integer, Integer> frequencyMap = new HashMap<>();\n          for (int num : nums) {\n            frequencyMap.put(num, frequencyMap.getOrDefault(num, 0) + 1);\n          }\n          \n          // Use a priority queue to get the top k frequent elements\n          PriorityQueue<Map.Entry<Integer, Integer>> pq = new PriorityQueue<>((a, b) -> b.getValue() - a.getValue());\n          for (Map.Entry<Integer, Integer> entry : frequencyMap.entrySet()) {\n            pq.offer(entry);\n          }\n          \n          int[] result = new int[k];\n          for (int i = 0; i < k; i++) {\n            result[i] = pq.poll().getKey();\n          }\n          return result;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "frequency count",
+      "most frequent",
+      "least frequent"
+    ]
+  },
+  {
+    "pattern_id": "arrays-hashing",
+    "sub_pattern_id": "array-manipulation-indexing",
+    "name": "Array Manipulation and Indexing",
+    "description": "This sub-pattern involves manipulating arrays by indexing, sorting, or searching for specific elements. It requires understanding how to work with arrays and their indices to solve problems.",
+    "problem_slugs": [
+      "two-sum",
+      "next-greater-element-i",
+      "concatenation-of-array",
+      "length-of-last-word",
+      "replace-elements-with-greatest-element-on-right-side",
+      "find-pivot-index",
+      "range-sum-query-immutable",
+      "find-all-numbers-disappeared-in-an-array",
+      "sort-an-array",
+      "non-decreasing-array"
+    ],
+    "explanation": "This sub-pattern involves manipulating arrays by indexing, sorting, or searching for specific elements. It requires understanding how to work with arrays and their indices to solve problems. The key idea is to use array indexing to access and modify elements, and to use sorting and searching algorithms to find specific elements.",
+    "mental_model": "Array as a collection of indexed elements",
+    "template_code_java": "\n      class Solution {\n        public int[] twoSum(int[] nums, int target) {\n          // Create a hash map to store the indices of the elements\n          Map<Integer, Integer> indexMap = new HashMap<>();\n          for (int i = 0; i < nums.length; i++) {\n            int complement = target - nums[i];\n            if (indexMap.containsKey(complement)) {\n              return new int[] { indexMap.get(complement), i };\n            }\n            indexMap.put(nums[i], i);\n          }\n          return new int[] {};\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "array indexing",
+      "element search",
+      "array manipulation"
+    ]
+  },
+  {
+    "pattern_id": "arrays-hashing",
+    "sub_pattern_id": "string-pattern-matching",
+    "name": "String Pattern Matching",
+    "description": "This sub-pattern involves finding patterns or anagrams in strings, often requiring the use of hashing or sorting. It requires understanding how to work with strings and identify patterns.",
+    "problem_slugs": [
+      "valid-anagram",
+      "isomorphic-strings",
+      "word-pattern",
+      "find-the-index-of-the-first-occurrence-in-a-string",
+      "encode-and-decode-strings"
+    ],
+    "explanation": "This sub-pattern involves finding patterns or anagrams in strings, often requiring the use of hashing or sorting. It requires understanding how to work with strings and identify patterns. The key idea is to use hashing or sorting to compare strings and find matches.",
+    "mental_model": "String as a sequence of characters",
+    "template_code_java": "\n      class Solution {\n        public boolean isAnagram(String s, String t) {\n          // Create a hash map to store the frequency of each character\n          Map<Character, Integer> frequencyMap = new HashMap<>();\n          for (char c : s.toCharArray()) {\n            frequencyMap.put(c, frequencyMap.getOrDefault(c, 0) + 1);\n          }\n          for (char c : t.toCharArray()) {\n            frequencyMap.put(c, frequencyMap.getOrDefault(c, 0) - 1);\n          }\n          // Check if all frequencies are zero\n          for (int freq : frequencyMap.values()) {\n            if (freq != 0) {\n              return false;\n            }\n          }\n          return true;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "string pattern",
+      "anagram",
+      "character matching"
+    ]
+  },
+  {
+    "pattern_id": "arrays-hashing",
+    "sub_pattern_id": "hash-set-hash-map-design",
+    "name": "Hash Set and Hash Map Design",
+    "description": "This sub-pattern involves designing and implementing hash sets and hash maps, often requiring the use of arrays and hashing. It requires understanding how to design and implement these data structures.",
+    "problem_slugs": [
+      "design-hashset",
+      "design-hashmap",
+      "insert-delete-getrandom-o1"
+    ],
+    "explanation": "This sub-pattern involves designing and implementing hash sets and hash maps, often requiring the use of arrays and hashing. It requires understanding how to design and implement these data structures. The key idea is to use arrays and hashing to store and retrieve elements efficiently.",
+    "mental_model": "Hash set and hash map as array-based data structures",
+    "template_code_java": "\n      class Solution {\n        public class MyHashSet {\n          private boolean[] set;\n          public MyHashSet() {\n            set = new boolean[1000000];\n          }\n          public void add(int key) {\n            set[key] = true;\n          }\n          public void remove(int key) {\n            set[key] = false;\n          }\n          public boolean contains(int key) {\n            return set[key];\n          }\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "hash set design",
+      "hash map implementation",
+      "array-based data structure"
+    ]
+  },
+  {
+    "pattern_id": "arrays-hashing",
+    "sub_pattern_id": "array-prefix-sum",
+    "name": "Array Prefix Sum",
+    "description": "This sub-pattern involves using prefix sums to solve problems involving arrays and sums. It requires understanding how to calculate and utilize prefix sums.",
+    "problem_slugs": [
+      "longest-common-prefix",
+      "majority-element",
+      "longest-consecutive-sequence",
+      "product-of-array-except-self",
+      "brick-wall"
+    ],
+    "explanation": "This sub-pattern involves using prefix sums to solve problems involving arrays and sums. It requires understanding how to calculate and utilize prefix sums. The key idea is to use prefix sums to efficiently calculate the sum of subarrays.",
+    "mental_model": "Prefix sum as a cumulative sum",
+    "template_code_java": "\n      class Solution {\n        public int[] prefixSum(int[] nums) {\n          int[] prefixSum = new int[nums.length];\n          prefixSum[0] = nums[0];\n          for (int i = 1; i < nums.length; i++) {\n            prefixSum[i] = prefixSum[i - 1] + nums[i];\n          }\n          return prefixSum;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "prefix sum",
+      "cumulative sum",
+      "array sum"
+    ]
+  },
+  {
+    "pattern_id": "arrays-hashing",
+    "sub_pattern_id": "miscellaneous-array-problems",
+    "name": "Miscellaneous Array Problems",
+    "description": "This sub-pattern involves solving various array problems that do not fit into other categories, often requiring the use of sorting, searching, or hashing. It requires understanding how to approach and solve a wide range of array problems.",
+    "problem_slugs": [
+      "pascals-triangle",
+      "sort-colors",
+      "can-place-flowers",
+      "valid-sudoku",
+      "largest-number",
+      "remove-element",
+      "encode-and-decode-tinyurl",
+      "sign-of-the-product-of-an-array",
+      "minimum-number-of-swaps-to-make-the-string-balanced",
+      "maximum-product-of-the-length-of-two-palindromic-subsequences"
+    ],
+    "explanation": "This sub-pattern involves solving various array problems that do not fit into other categories, often requiring the use of sorting, searching, or hashing. It requires understanding how to approach and solve a wide range of array problems, such as finding the next greater element, checking if an array can be divided into two parts with equal sum, or determining the minimum number of swaps to make the string balanced.",
+    "mental_model": "Approach array problems by first identifying the type of problem, then selecting the appropriate algorithm or data structure, and finally implementing the solution with attention to edge cases and efficiency.",
+    "template_code_java": "\n      class Solution {\n        public int[] solution(int[] nums) {\n          // Initialize variables and data structures as needed\n          int n = nums.length;\n          int[] result = new int[n];\n          \n          // Iterate through the array and apply the necessary operations\n          for (int i = 0; i < n; i++) {\n            // Check for specific conditions and handle edge cases\n            if (nums[i] == 0) {\n              // Handle zero values\n            } else {\n              // Apply the main logic of the algorithm\n            }\n          }\n          \n          // Return the result or perform any final operations\n          return result;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "array manipulation",
+      "hashing required",
+      "sorting needed",
+      "searching array",
+      "miscellaneous array"
+    ]
+  },
+  {
+    "pattern_id": "sliding-window",
+    "sub_pattern_id": "fixed-size-window",
+    "name": "Fixed Size Window",
+    "description": "This sub-pattern involves using a sliding window of fixed size to solve problems, often with a focus on finding a specific arrangement or maximum/minimum value within the window.",
+    "problem_slugs": [
+      "contains-duplicate-ii",
+      "best-time-to-buy-and-sell-stock"
+    ],
+    "explanation": "This sub-pattern involves using a sliding window of fixed size to solve problems, often with a focus on finding a specific arrangement or maximum/minimum value within the window. It is commonly used in problems where a fixed-size window is required to track a specific condition or property.",
+    "mental_model": "Imagine a window of fixed size moving over a sequence, tracking a specific condition or property.",
+    "template_code_java": "\n      class Solution {\n        public boolean containsNearbyDuplicate(int[] nums, int k) {\n          // Create a HashSet to store the elements within the window\n          Set<Integer> window = new HashSet<>();\n          \n          // Iterate over the array\n          for (int i = 0; i < nums.length; i++) {\n            // If the window contains the current element, return true\n            if (window.contains(nums[i])) {\n              return true;\n            }\n            \n            // Add the current element to the window\n            window.add(nums[i]);\n            \n            // If the window size exceeds k, remove the oldest element\n            if (window.size() > k) {\n              window.remove(nums[i - k]);\n            }\n          }\n          \n          // If no duplicates are found, return false\n          return false;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "fixed size window",
+      "sliding window of fixed size",
+      "track a specific condition"
+    ]
+  },
+  {
+    "pattern_id": "sliding-window",
+    "sub_pattern_id": "variable-size-window-with-character-frequencies",
+    "name": "Variable Size Window with Character Frequencies",
+    "description": "This sub-pattern involves using a sliding window of variable size to solve problems, often with a focus on character frequencies and finding the longest/shortest substring that meets certain conditions.",
+    "problem_slugs": [
+      "longest-substring-without-repeating-characters",
+      "longest-repeating-character-replacement",
+      "permutation-in-string"
+    ],
+    "explanation": "This sub-pattern involves using a sliding window of variable size to solve problems, often with a focus on character frequencies and finding the longest/shortest substring that meets certain conditions. It is commonly used in problems where the window size needs to be adjusted based on the character frequencies.",
+    "mental_model": "Imagine a window of variable size moving over a sequence, tracking character frequencies and adjusting its size accordingly.",
+    "template_code_java": "\n      class Solution {\n        public int lengthOfLongestSubstring(String s) {\n          // Create a HashMap to store the character frequencies\n          Map<Character, Integer> freq = new HashMap<>();\n          \n          // Initialize the window boundaries\n          int left = 0, maxLen = 0;\n          \n          // Iterate over the string\n          for (int right = 0; right < s.length(); right++) {\n            // Increment the frequency of the current character\n            freq.put(s.charAt(right), freq.getOrDefault(s.charAt(right), 0) + 1);\n            \n            // While the window contains duplicate characters, shrink the window\n            while (freq.get(s.charAt(right)) > 1) {\n              freq.put(s.charAt(left), freq.get(s.charAt(left)) - 1);\n              left++;\n            }\n            \n            // Update the maximum length\n            maxLen = Math.max(maxLen, right - left + 1);\n          }\n          \n          // Return the maximum length\n          return maxLen;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "variable size window",
+      "character frequencies",
+      "longest substring without repeating characters"
+    ]
+  },
+  {
+    "pattern_id": "sliding-window",
+    "sub_pattern_id": "minimum-window-substring",
+    "name": "Minimum Window Substring",
+    "description": "This sub-pattern involves finding the minimum window substring that contains all characters of a given string, often with a focus on optimization and efficiency.",
+    "problem_slugs": [
+      "minimum-window-substring",
+      "frequency-of-the-most-frequent-element"
+    ],
+    "explanation": "This sub-pattern involves finding the minimum window substring that contains all characters of a given string, often with a focus on optimization and efficiency. It is commonly used in problems where the minimum window needs to be found.",
+    "mental_model": "Imagine a window of minimum size moving over a sequence, tracking the required characters and adjusting its size accordingly.",
+    "template_code_java": "\n      class Solution {\n        public String minWindow(String s, String t) {\n          // Create a HashMap to store the character frequencies of the target string\n          Map<Character, Integer> tFreq = new HashMap<>();\n          \n          // Initialize the window boundaries\n          int left = 0, minLen = Integer.MAX_VALUE;\n          String minWindow = \"\";\n          \n          // Initialize the count of characters in the target string\n          int count = 0;\n          \n          // Iterate over the string\n          for (int right = 0; right < s.length(); right++) {\n            // If the current character is in the target string, increment the count\n            if (tFreq.containsKey(s.charAt(right))) {\n              tFreq.put(s.charAt(right), tFreq.get(s.charAt(right)) - 1);\n              if (tFreq.get(s.charAt(right)) >= 0) {\n                count++;\n              }\n            }\n            \n            // While the window contains all characters of the target string, try to shrink the window\n            while (count == t.length()) {\n              // Update the minimum length and window\n              if (right - left + 1 < minLen) {\n                minLen = right - left + 1;\n                minWindow = s.substring(left, right + 1);\n              }\n              \n              // If the character at the left boundary is in the target string, decrement the count\n              if (tFreq.containsKey(s.charAt(left))) {\n                tFreq.put(s.charAt(left), tFreq.get(s.charAt(left)) + 1);\n                if (tFreq.get(s.charAt(left)) > 0) {\n                  count--;\n                }\n              }\n              \n              // Move the left boundary to the right\n              left++;\n            }\n          }\n          \n          // Return the minimum window\n          return minWindow;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "minimum window substring",
+      "minimum window",
+      "contains all characters"
+    ]
+  },
+  {
+    "pattern_id": "sliding-window",
+    "sub_pattern_id": "sliding-window-maximum",
+    "name": "Sliding Window Maximum",
+    "description": "This sub-pattern involves using a sliding window to find the maximum value within a given array or string, often with a focus on optimization and efficiency.",
+    "problem_slugs": [
+      "sliding-window-maximum"
+    ],
+    "explanation": "This sub-pattern involves using a sliding window to find the maximum value within a given array or string, often with a focus on optimization and efficiency. It is commonly used in problems where the maximum value needs to be found within a window.",
+    "mental_model": "Imagine a window moving over a sequence, tracking the maximum value within the window.",
+    "template_code_java": "\n      class Solution {\n        public int[] maxSlidingWindow(int[] nums, int k) {\n          // Create a deque to store the indices of the elements in the window\n          Deque<Integer> deque = new ArrayDeque<>();\n          \n          // Create an array to store the maximum values\n          int[] maxValues = new int[nums.length - k + 1];\n          \n          // Iterate over the array\n          for (int i = 0; i < nums.length; i++) {\n            // Remove the elements from the back of the deque that are out of the window\n            while (!deque.isEmpty() && deque.peekFirst() < i - k + 1) {\n              deque.pollFirst();\n            }\n            \n            // Remove the elements from the front of the deque that are smaller than the current element\n            while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) {\n              deque.pollLast();\n            }\n            \n            // Add the current element to the deque\n            deque.offerLast(i);\n            \n            // If the window is full, add the maximum value to the result array\n            if (i >= k - 1) {\n              maxValues[i - k + 1] = nums[deque.peekFirst()];\n            }\n          }\n          \n          // Return the maximum values\n          return maxValues;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "sliding window maximum",
+      "maximum value within a window",
+      "window maximum"
+    ]
+  },
+  {
+    "pattern_id": "stack",
+    "sub_pattern_id": "stack-implementation",
+    "name": "Stack Implementation",
+    "description": "This sub-pattern involves implementing a stack from scratch or using other data structures to mimic stack behavior.",
+    "problem_slugs": [
+      "min-stack",
+      "implement-stack-using-queues"
+    ],
+    "explanation": "This sub-pattern involves implementing a stack from scratch or using other data structures to mimic stack behavior. It requires understanding the basic operations of a stack, such as push, pop, and peek, and how to implement them using arrays or linked lists.",
+    "mental_model": "Last In, First Out (LIFO) data structure",
+    "template_code_java": "\nclass Solution {\n  private int[] stack;\n  private int top;\n\n  public Solution(int size) {\n    stack = new int[size];\n    top = -1;\n  }\n\n  public void push(int x) {\n    if (top < stack.length - 1) {\n      stack[++top] = x;\n    }\n  }\n\n  public int pop() {\n    if (top >= 0) {\n      return stack[top--];\n    }\n    return -1; // or throw exception\n  }\n\n  public int peek() {\n    if (top >= 0) {\n      return stack[top];\n    }\n    return -1; // or throw exception\n  }\n}\n",
+    "trigger_phrases": [
+      "implement stack",
+      "stack from scratch",
+      "mimic stack behavior"
+    ]
+  },
+  {
+    "pattern_id": "stack",
+    "sub_pattern_id": "parentheses-validation",
+    "name": "Parentheses Validation",
+    "description": "This sub-pattern involves validating or generating parentheses sequences.",
+    "problem_slugs": [
+      "valid-parentheses",
+      "generate-parentheses"
+    ],
+    "explanation": "This sub-pattern involves validating or generating parentheses sequences. It requires understanding how to use a stack to keep track of opening parentheses and match them with closing parentheses.",
+    "mental_model": "Matching opening and closing parentheses",
+    "template_code_java": "\nclass Solution {\n  public boolean isValid(String s) {\n    Stack<Character> stack = new Stack<>();\n    for (char c : s.toCharArray()) {\n      if (c == '(' || c == '[' || c == '{') {\n        stack.push(c);\n      } else if (c == ')' || c == ']' || c == '}') {\n        if (stack.isEmpty()) {\n          return false;\n        }\n        char opening = stack.pop();\n        if ((c == ')' && opening != '(') || (c == ']' && opening != '[') || (c == '}' && opening != '{')) {\n          return false;\n        }\n      }\n    }\n    return stack.isEmpty();\n  }\n}\n",
+    "trigger_phrases": [
+      "validate parentheses",
+      "generate parentheses",
+      "matching parentheses"
+    ]
+  },
+  {
+    "pattern_id": "stack",
+    "sub_pattern_id": "monotonic-stack",
+    "name": "Monotonic Stack",
+    "description": "This sub-pattern involves using a stack to keep track of monotonic sequences, such as daily temperatures or stock spans.",
+    "problem_slugs": [
+      "daily-temperatures",
+      "online-stock-span"
+    ],
+    "explanation": "This sub-pattern involves using a stack to keep track of monotonic sequences, such as daily temperatures or stock spans. It requires understanding how to use a stack to keep track of indices or values and update them accordingly.",
+    "mental_model": "Monotonic sequence tracking",
+    "template_code_java": "\nclass Solution {\n  public int[] dailyTemperatures(int[] temperatures) {\n    Stack<Integer> stack = new Stack<>();\n    int[] result = new int[temperatures.length];\n    for (int i = 0; i < temperatures.length; i++) {\n      while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n        int index = stack.pop();\n        result[index] = i - index;\n      }\n      stack.push(i);\n    }\n    return result;\n  }\n}\n",
+    "trigger_phrases": [
+      "monotonic sequence",
+      "daily temperatures",
+      "stock spans"
+    ]
+  },
+  {
+    "pattern_id": "stack",
+    "sub_pattern_id": "stack-based-evaluation",
+    "name": "Stack-Based Evaluation",
+    "description": "This sub-pattern involves using a stack to evaluate expressions or notation.",
+    "problem_slugs": [
+      "evaluate-reverse-polish-notation"
+    ],
+    "explanation": "This sub-pattern involves using a stack to evaluate expressions or notation. It requires understanding how to use a stack to parse and evaluate postfix notation.",
+    "mental_model": "Postfix notation evaluation",
+    "template_code_java": "\nclass Solution {\n  public int evalRPN(String[] tokens) {\n    Stack<Integer> stack = new Stack<>();\n    for (String token : tokens) {\n      if (token.equals(\"+\") || token.equals(\"-\") || token.equals(\"*\") || token.equals(\"/\")) {\n        int b = stack.pop();\n        int a = stack.pop();\n        int result;\n        if (token.equals(\"+\")) {\n          result = a + b;\n        } else if (token.equals(\"-\")) {\n          result = a - b;\n        } else if (token.equals(\"*\")) {\n          result = a * b;\n        } else {\n          result = a / b;\n        }\n        stack.push(result);\n      } else {\n        stack.push(Integer.parseInt(token));\n      }\n    }\n    return stack.pop();\n  }\n}\n",
+    "trigger_phrases": [
+      "evaluate postfix",
+      "stack-based evaluation",
+      "notation parsing"
+    ]
+  },
+  {
+    "pattern_id": "stack",
+    "sub_pattern_id": "histogram-and-rectangles",
+    "name": "Histogram and Rectangles",
+    "description": "This sub-pattern involves finding the largest rectangle in a histogram.",
+    "problem_slugs": [
+      "largest-rectangle-in-histogram"
+    ],
+    "explanation": "This sub-pattern involves finding the largest rectangle in a histogram. It requires understanding how to use a stack to keep track of indices and heights of the histogram bars.",
+    "mental_model": "Largest rectangle finding",
+    "template_code_java": "\nclass Solution {\n  public int largestRectangleArea(int[] heights) {\n    Stack<Integer> stack = new Stack<>();\n    int maxArea = 0;\n    for (int i = 0; i <= heights.length; i++) {\n      int height = i == heights.length ? 0 : heights[i];\n      while (!stack.isEmpty() && height < heights[stack.peek()]) {\n        int h = heights[stack.pop()];\n        int w = stack.isEmpty() ? i : i - stack.peek() - 1;\n        maxArea = Math.max(maxArea, h * w);\n      }\n      stack.push(i);\n    }\n    return maxArea;\n  }\n}\n",
+    "trigger_phrases": [
+      "largest rectangle",
+      "histogram area",
+      "rectangle finding"
+    ]
+  },
+  {
+    "pattern_id": "stack",
+    "sub_pattern_id": "stack-based-simulation",
+    "name": "Stack-Based Simulation",
+    "description": "This sub-pattern involves using a stack to simulate real-world scenarios, such as a baseball game or car fleet.",
+    "problem_slugs": [
+      "baseball-game",
+      "car-fleet"
+    ],
+    "explanation": "This sub-pattern involves using a stack to simulate real-world scenarios, such as a baseball game or car fleet, where elements are added and removed in a Last-In-First-Out (LIFO) order, allowing for efficient modeling of complex systems.",
+    "mental_model": "LIFO Simulation",
+    "template_code_java": "\n      class Solution {\n        public void simulate(String[] operations) {\n          // Initialize an empty stack to store elements\n          java.util.Stack<String> stack = new java.util.Stack<>();\n          \n          // Iterate over each operation in the input array\n          for (String operation : operations) {\n            // If the operation is a 'push', add the element to the stack\n            if (operation.startsWith(\"push\")) {\n              String element = operation.split(\" \")[1];\n              stack.push(element);\n            } \n            // If the operation is a 'pop', remove the top element from the stack\n            else if (operation.equals(\"pop\")) {\n              if (!stack.isEmpty()) {\n                stack.pop();\n              }\n            }\n          }\n          \n          // Print the final state of the stack\n          System.out.println(stack);\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "simulate real-world",
+      "baseball game",
+      "car fleet",
+      "LIFO order",
+      "stack simulation"
+    ]
+  },
+  {
+    "pattern_id": "binary-search",
+    "sub_pattern_id": "standard-binary-search",
+    "name": "Standard Binary Search",
+    "description": "This sub-pattern involves using binary search on a sorted array or matrix to find a specific target or element. It typically involves a straightforward application of the binary search algorithm.",
+    "problem_slugs": [
+      "binary-search",
+      "search-insert-position",
+      "guess-number-higher-or-lower"
+    ],
+    "explanation": "This sub-pattern involves using binary search on a sorted array or matrix to find a specific target or element. It typically involves a straightforward application of the binary search algorithm, where we repeatedly divide the search interval in half until the target is found. The key insight is to maintain a search space and iteratively narrow it down by comparing the target with the middle element of the current search space.",
+    "mental_model": "Divide and Conquer",
+    "template_code_java": "\n      class Solution {\n        public int search(int[] nums, int target) {\n          int left = 0;\n          int right = nums.length - 1;\n          while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) {\n              return mid;\n            } else if (nums[mid] < target) {\n              left = mid + 1;\n            } else {\n              right = mid - 1;\n            }\n          }\n          return -1;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "sorted array",
+      "find target",
+      "binary search"
+    ]
+  },
+  {
+    "pattern_id": "binary-search",
+    "sub_pattern_id": "rotated-sorted-array",
+    "name": "Rotated Sorted Array",
+    "description": "This sub-pattern involves using binary search on a rotated sorted array to find a specific target or the minimum element. It requires modifying the standard binary search algorithm to account for the rotation.",
+    "problem_slugs": [
+      "search-in-rotated-sorted-array",
+      "find-minimum-in-rotated-sorted-array"
+    ],
+    "explanation": "This sub-pattern involves using binary search on a rotated sorted array to find a specific target or the minimum element. The rotation introduces a twist, as the standard binary search algorithm may not work directly. We need to modify the algorithm to account for the rotation, typically by checking which half of the search space is sorted and adjusting our search accordingly.",
+    "mental_model": "Rotated Search Space",
+    "template_code_java": "\n      class Solution {\n        public int search(int[] nums, int target) {\n          int left = 0;\n          int right = nums.length - 1;\n          while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) {\n              return mid;\n            }\n            if (nums[left] <= nums[mid]) {\n              if (nums[left] <= target && target < nums[mid]) {\n                right = mid - 1;\n              } else {\n                left = mid + 1;\n              }\n            } else {\n              if (nums[mid] < target && target <= nums[right]) {\n                left = mid + 1;\n              } else {\n                right = mid - 1;\n              }\n            }\n          }\n          return -1;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "rotated array",
+      "find minimum",
+      "rotated binary search"
+    ]
+  },
+  {
+    "pattern_id": "binary-search",
+    "sub_pattern_id": "binary-search-variants",
+    "name": "Binary Search Variants",
+    "description": "This sub-pattern involves using binary search on arrays or matrices with additional constraints or requirements, such as finding the median of two sorted arrays or searching a 2D matrix.",
+    "problem_slugs": [
+      "search-a-2d-matrix",
+      "median-of-two-sorted-arrays"
+    ],
+    "explanation": "This sub-pattern involves using binary search on arrays or matrices with additional constraints or requirements, such as finding the median of two sorted arrays or searching a 2D matrix. The key insight is to recognize that the standard binary search algorithm can be adapted to these variants by modifying the search space or the comparison logic.",
+    "mental_model": "Adaptive Search",
+    "template_code_java": "\n      class Solution {\n        public double findMedianSortedArrays(int[] nums1, int[] nums2) {\n          int[] merged = new int[nums1.length + nums2.length];\n          int i = 0, j = 0, k = 0;\n          while (i < nums1.length && j < nums2.length) {\n            if (nums1[i] < nums2[j]) {\n              merged[k++] = nums1[i++];\n            } else {\n              merged[k++] = nums2[j++];\n            }\n          }\n          while (i < nums1.length) {\n            merged[k++] = nums1[i++];\n          }\n          while (j < nums2.length) {\n            merged[k++] = nums2[j++];\n          }\n          int n = merged.length;\n          if (n % 2 == 0) {\n            return (merged[n / 2 - 1] + merged[n / 2]) / 2.0;\n          } else {\n            return merged[n / 2];\n          }\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "median of two arrays",
+      "search 2D matrix",
+      "adaptive binary search"
+    ]
+  },
+  {
+    "pattern_id": "binary-search",
+    "sub_pattern_id": "modified-binary-search",
+    "name": "Modified Binary Search",
+    "description": "This sub-pattern involves using binary search on arrays with modified requirements, such as finding a single element in a sorted array or determining the minimum number of bananas Koko can eat.",
+    "problem_slugs": [
+      "single-element-in-a-sorted-array",
+      "koko-eating-bananas"
+    ],
+    "explanation": "This sub-pattern involves using binary search on arrays with modified requirements, such as finding a single element in a sorted array or determining the minimum number of bananas Koko can eat. The key insight is to recognize that the standard binary search algorithm can be modified to accommodate these requirements by adjusting the search logic or the comparison criteria.",
+    "mental_model": "Customized Search",
+    "template_code_java": "\n      class Solution {\n        public int singleNonDuplicate(int[] nums) {\n          int low = 0;\n          int high = nums.length - 1;\n          while (low < high) {\n            int mid = low + (high - low) / 2;\n            if (mid % 2 == 1) {\n              mid--;\n            }\n            if (nums[mid] == nums[mid + 1]) {\n              low = mid + 2;\n            } else {\n              high = mid;\n            }\n          }\n          return nums[low];\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "single element",
+      "modified binary search",
+      "customized search"
+    ]
+  },
+  {
+    "pattern_id": "binary-search",
+    "sub_pattern_id": "unconventional-binary-search",
+    "name": "Unconventional Binary Search",
+    "description": "This sub-pattern involves using binary search in unconventional scenarios, such as populating next right pointers in each node or implementing a time-based key-value store.",
+    "problem_slugs": [
+      "populating-next-right-pointers-in-each-node",
+      "time-based-key-value-store"
+    ],
+    "explanation": "This sub-pattern involves using binary search in unconventional scenarios, such as populating next right pointers in each node or implementing a time-based key-value store. The key insight is to recognize that the standard binary search algorithm can be applied to these scenarios by creatively defining the search space and the comparison logic.",
+    "mental_model": "Creative Search",
+    "template_code_java": "\n      class Solution {\n        public Node connect(Node root) {\n          if (root == null) {\n            return null;\n          }\n          Node leftmost = root;\n          while (leftmost.left != null) {\n            Node head = leftmost;\n            while (head != null) {\n              head.left.next = head.right;\n              if (head.next != null) {\n                head.right.next = head.next.left;\n              }\n              head = head.next;\n            }\n            leftmost = leftmost.left;\n          }\n          return root;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "next right pointers",
+      "time-based key-value store",
+      "unconventional binary search"
+    ]
+  },
+  {
+    "pattern_id": "linked-list",
+    "sub_pattern_id": "linked-list-reversal",
+    "name": "Reversal and Rotation",
+    "description": "This sub-pattern involves reversing or rotating a linked list, which requires updating node pointers to achieve the desired order.",
+    "problem_slugs": [
+      "reverse-linked-list",
+      "reverse-nodes-in-k-group",
+      "rotate-list",
+      "reorder-list"
+    ],
+    "explanation": "This sub-pattern involves reversing or rotating a linked list, which requires updating node pointers to achieve the desired order. It can be solved by iterating through the list and reversing the direction of the pointers. For rotation, we need to find the new tail and new head of the list.",
+    "mental_model": "Reverse the arrows, rotate the list",
+    "template_code_java": "\n      class Solution {\n        public ListNode reverseList(ListNode head) {\n          ListNode prev = null;\n          ListNode curr = head;\n          while (curr != null) {\n            ListNode nextTemp = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = nextTemp;\n          }\n          return prev;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "reverse linked list",
+      "rotate list",
+      "k group reversal"
+    ]
+  },
+  {
+    "pattern_id": "linked-list",
+    "sub_pattern_id": "linked-list-merging",
+    "name": "Merging and Sorting",
+    "description": "This sub-pattern involves merging two or more sorted linked lists into a single sorted list, which requires comparing node values and updating pointers.",
+    "problem_slugs": [
+      "merge-two-sorted-lists",
+      "merge-k-sorted-lists"
+    ],
+    "explanation": "This sub-pattern involves merging two or more sorted linked lists into a single sorted list, which requires comparing node values and updating pointers. It can be solved by using a priority queue or by comparing the heads of the lists and appending the smaller one.",
+    "mental_model": "Compare and merge, smaller first",
+    "template_code_java": "\n      class Solution {\n        public ListNode mergeKLists(ListNode[] lists) {\n          PriorityQueue<ListNode> queue = new PriorityQueue<>((a, b) -> a.val - b.val);\n          for (ListNode list : lists) {\n            if (list != null) {\n              queue.offer(list);\n            }\n          }\n          ListNode dummy = new ListNode(0);\n          ListNode curr = dummy;\n          while (!queue.isEmpty()) {\n            ListNode node = queue.poll();\n            curr.next = node;\n            curr = curr.next;\n            if (node.next != null) {\n              queue.offer(node.next);\n            }\n          }\n          return dummy.next;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "merge sorted lists",
+      "k sorted lists",
+      "sorted list merge"
+    ]
+  },
+  {
+    "pattern_id": "linked-list",
+    "sub_pattern_id": "linked-list-cycles",
+    "name": "Cycles and Intersections",
+    "description": "This sub-pattern involves detecting cycles or intersections in a linked list, which requires tracking node visits and comparing pointers.",
+    "problem_slugs": [
+      "linked-list-cycle",
+      "intersection-of-two-linked-lists",
+      "find-the-duplicate-number"
+    ],
+    "explanation": "This sub-pattern involves detecting cycles or intersections in a linked list, which requires tracking node visits and comparing pointers. It can be solved by using a HashSet to store visited nodes or by using the Floyd's cycle-finding algorithm.",
+    "mental_model": "Detect the cycle, find the intersection",
+    "template_code_java": "\n      class Solution {\n        public boolean hasCycle(ListNode head) {\n          Set<ListNode> set = new HashSet<>();\n          while (head != null) {\n            if (set.contains(head)) {\n              return true;\n            }\n            set.add(head);\n            head = head.next;\n          }\n          return false;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "detect cycle",
+      "linked list cycle",
+      "intersection of lists"
+    ]
+  },
+  {
+    "pattern_id": "linked-list",
+    "sub_pattern_id": "linked-list-manipulation",
+    "name": "Node Manipulation",
+    "description": "This sub-pattern involves adding, removing, or modifying nodes in a linked list, which requires updating node pointers and handling edge cases.",
+    "problem_slugs": [
+      "add-two-numbers",
+      "remove-nth-node-from-end-of-list",
+      "copy-list-with-random-pointer"
+    ],
+    "explanation": "This sub-pattern involves adding, removing, or modifying nodes in a linked list, which requires updating node pointers and handling edge cases. It can be solved by finding the correct position and updating the pointers.",
+    "mental_model": "Update the pointers, handle the edges",
+    "template_code_java": "\n      class Solution {\n        public ListNode removeNthFromEnd(ListNode head, int n) {\n          ListNode dummy = new ListNode(0);\n          dummy.next = head;\n          ListNode first = dummy;\n          ListNode second = dummy;\n          for (int i = 0; i <= n; i++) {\n            first = first.next;\n          }\n          while (first != null) {\n            first = first.next;\n            second = second.next;\n          }\n          second.next = second.next.next;\n          return dummy.next;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "remove nth node",
+      "add node to list",
+      "modify linked list"
+    ]
+  },
+  {
+    "pattern_id": "linked-list",
+    "sub_pattern_id": "linked-list-caching",
+    "name": "Caching and Priority",
+    "description": "This sub-pattern involves implementing caching mechanisms or priority queues using linked lists, which requires managing node insertion and removal based on frequency or priority.",
+    "problem_slugs": [
+      "lru-cache",
+      "lfu-cache"
+    ],
+    "explanation": "This sub-pattern involves implementing caching mechanisms or priority queues using linked lists, which requires managing node insertion and removal based on frequency or priority. It can be solved by using a doubly linked list and a HashMap to store the nodes.",
+    "mental_model": "Cache the nodes, prioritize the access",
+    "template_code_java": "\n      class Solution {\n        class Node {\n          int key;\n          int value;\n          Node prev;\n          Node next;\n          public Node(int key, int value) {\n            this.key = key;\n            this.value = value;\n          }\n        }\n        public LRUCache(int capacity) {\n          this.capacity = capacity;\n          cache = new HashMap<>();\n          head = new Node(0, 0);\n          tail = new Node(0, 0);\n          head.next = tail;\n          tail.prev = head;\n        }\n        public int get(int key) {\n          if (cache.containsKey(key)) {\n            Node node = cache.get(key);\n            remove(node);\n            add(node);\n            return node.value;\n          }\n          return -1;\n        }\n        public void put(int key, int value) {\n          if (cache.containsKey(key)) {\n            remove(cache.get(key));\n          }\n          Node node = new Node(key, value);\n          add(node);\n          cache.put(key, node);\n          if (cache.size() > capacity) {\n            Node lru = head.next;\n            remove(lru);\n            cache.remove(lru.key);\n          }\n        }\n        private void remove(Node node) {\n          Node prev = node.prev;\n          Node next = node.next;\n          prev.next = next;\n          next.prev = prev;\n        }\n        private void add(Node node) {\n          Node prev = tail.prev;\n          prev.next = node;\n          tail.prev = node;\n          node.prev = prev;\n          node.next = tail;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "lru cache",
+      "lfu cache",
+      "priority queue"
+    ]
+  },
+  {
+    "pattern_id": "linked-list",
+    "sub_pattern_id": "linked-list-inspection",
+    "name": "Inspection and Validation",
+    "description": "This sub-pattern involves inspecting or validating a linked list, which requires traversing the list and checking node properties or relationships.",
+    "problem_slugs": [
+      "middle-of-the-linked-list",
+      "palindrome-linked-list"
+    ],
+    "explanation": "This sub-pattern involves inspecting or validating a linked list, which requires traversing the list and checking node properties or relationships. It's essential to understand how to iterate through the list, access node values, and compare them to solve problems like finding the middle of the linked list or determining if the list is a palindrome.",
+    "mental_model": "Traverse and Validate",
+    "template_code_java": "\n      class Solution {\n        public boolean isValid(ListNode head) {\n          // Initialize two pointers, slow and fast\n          ListNode slow = head;\n          ListNode fast = head;\n          \n          // Traverse the list using the two pointers\n          while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n          }\n          \n          // Validate the list based on the problem requirements\n          // For example, check if the list is a palindrome\n          ListNode current = slow;\n          ListNode prev = null;\n          while (current != null) {\n            ListNode nextTemp = current.next;\n            current.next = prev;\n            prev = current;\n            current = nextTemp;\n          }\n          \n          // Compare the first half and the reversed second half\n          ListNode first = head;\n          ListNode second = prev;\n          while (second != null) {\n            if (first.val != second.val) {\n              return false;\n            }\n            first = first.next;\n            second = second.next;\n          }\n          return true;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "check linked list",
+      "validate node properties",
+      "traverse and compare",
+      "inspect node relationships",
+      "linked list validation"
+    ]
+  },
+  {
+    "pattern_id": "trees",
+    "sub_pattern_id": "tree-traversal",
+    "name": "Tree Traversal",
+    "description": "This sub-pattern involves traversing a tree in a specific order, such as inorder, preorder, or postorder, and performing operations on the nodes.",
+    "problem_slugs": [
+      "binary-tree-inorder-traversal",
+      "binary-tree-preorder-traversal",
+      "binary-tree-postorder-traversal",
+      "binary-tree-level-order-traversal",
+      "binary-tree-zigzag-level-order-traversal",
+      "binary-tree-right-side-view"
+    ],
+    "explanation": "Tree traversal involves visiting each node in a tree exactly once, in a specific order. This can be done using recursive or iterative methods, and is commonly used to perform operations such as searching, inserting, or deleting nodes. The three main types of tree traversal are inorder, preorder, and postorder, each with its own unique characteristics and use cases.",
+    "mental_model": "Imagine a tree as a hierarchical structure, where each node has a specific position and relationship to its neighbors. Tree traversal is like navigating this structure, visiting each node in a logical and consistent order.",
+    "template_code_java": "\n      class Solution {\n        public List<Integer> inorderTraversal(TreeNode root) {\n          List<Integer> result = new ArrayList<>();\n          traverse(root, result);\n          return result;\n        }\n        \n        private void traverse(TreeNode node, List<Integer> result) {\n          if (node == null) return;\n          traverse(node.left, result);\n          result.add(node.val);\n          traverse(node.right, result);\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "traverse tree",
+      "visit nodes",
+      "inorder traversal"
+    ]
+  },
+  {
+    "pattern_id": "trees",
+    "sub_pattern_id": "tree-construction",
+    "name": "Tree Construction",
+    "description": "This sub-pattern involves constructing a tree from a given set of nodes or traversals, such as constructing a binary tree from preorder and inorder traversals.",
+    "problem_slugs": [
+      "construct-binary-tree-from-preorder-and-inorder-traversal",
+      "construct-binary-tree-from-inorder-and-postorder-traversal",
+      "convert-sorted-array-to-binary-search-tree"
+    ],
+    "explanation": "Tree construction involves building a tree from a given set of nodes or traversals. This can be done using recursive or iterative methods, and is commonly used to create binary search trees, AVL trees, or other types of trees. The key challenge is to ensure that the constructed tree satisfies the required properties, such as being balanced or having a specific structure.",
+    "mental_model": "Imagine a tree as a puzzle, where each node is a piece that must be fitted together in a specific way to form a complete and valid structure. Tree construction is like solving this puzzle, using the given information to build a tree that meets the required conditions.",
+    "template_code_java": "\n      class Solution {\n        public TreeNode constructTree(int[] preorder, int[] inorder) {\n          return constructTree(preorder, 0, preorder.length - 1, inorder, 0, inorder.length - 1);\n        }\n        \n        private TreeNode constructTree(int[] preorder, int preStart, int preEnd, int[] inorder, int inStart, int inEnd) {\n          if (preStart > preEnd) return null;\n          TreeNode root = new TreeNode(preorder[preStart]);\n          int index = findIndex(inorder, inStart, inEnd, root.val);\n          root.left = constructTree(preorder, preStart + 1, preStart + index - inStart, inorder, inStart, index - 1);\n          root.right = constructTree(preorder, preStart + index - inStart + 1, preEnd, inorder, index + 1, inEnd);\n          return root;\n        }\n        \n        private int findIndex(int[] array, int start, int end, int target) {\n          for (int i = start; i <= end; i++) {\n            if (array[i] == target) return i;\n          }\n          return -1;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "build tree",
+      "construct tree",
+      "create tree from traversal"
+    ]
+  },
+  {
+    "pattern_id": "trees",
+    "sub_pattern_id": "tree-validation",
+    "name": "Tree Validation",
+    "description": "This sub-pattern involves checking if a given tree satisfies certain properties, such as being a valid binary search tree or being balanced.",
+    "problem_slugs": [
+      "validate-binary-search-tree",
+      "balanced-binary-tree",
+      "symmetric-tree"
+    ],
+    "explanation": "Tree validation involves checking if a given tree satisfies certain properties, such as being a valid binary search tree or being balanced. This can be done using recursive or iterative methods, and is commonly used to verify the correctness of tree construction or modification operations.",
+    "mental_model": "Imagine a tree as a structure that must conform to certain rules or constraints. Tree validation is like checking if the tree satisfies these rules, using a systematic and thorough approach to ensure that the tree is valid and consistent.",
+    "template_code_java": "\n      class Solution {\n        public boolean isValidBST(TreeNode root) {\n          return isValidBST(root, Long.MIN_VALUE, Long.MAX_VALUE);\n        }\n        \n        private boolean isValidBST(TreeNode node, long minVal, long maxVal) {\n          if (node == null) return true;\n          if (node.val <= minVal || node.val >= maxVal) return false;\n          return isValidBST(node.left, minVal, node.val) && isValidBST(node.right, node.val, maxVal);\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "validate tree",
+      "check tree properties",
+      "is tree valid"
+    ]
+  },
+  {
+    "pattern_id": "trees",
+    "sub_pattern_id": "tree-serialization",
+    "name": "Tree Serialization",
+    "description": "This sub-pattern involves converting a tree into a serialized form, such as a string or array, and vice versa.",
+    "problem_slugs": [
+      "serialize-and-deserialize-binary-tree"
+    ],
+    "explanation": "Tree serialization involves converting a tree into a serialized form, such as a string or array, and vice versa. This can be done using recursive or iterative methods, and is commonly used to store or transmit tree data.",
+    "mental_model": "Imagine a tree as a complex structure that must be flattened into a linear representation. Tree serialization is like packing the tree into a compact and efficient format, using a systematic approach to ensure that the tree can be reconstructed accurately.",
+    "template_code_java": "\n      class Solution {\n        public String serialize(TreeNode root) {\n          StringBuilder sb = new StringBuilder();\n          serialize(root, sb);\n          return sb.toString();\n        }\n        \n        private void serialize(TreeNode node, StringBuilder sb) {\n          if (node == null) {\n            sb.append(\"#,\");\n            return;\n          }\n          sb.append(node.val + \",\");\n          serialize(node.left, sb);\n          serialize(node.right, sb);\n        }\n        \n        public TreeNode deserialize(String data) {\n          String[] nodes = data.split(\",\");\n          int[] index = new int[] { 0 };\n          return deserialize(nodes, index);\n        }\n        \n        private TreeNode deserialize(String[] nodes, int[] index) {\n          if (index[0] >= nodes.length || nodes[index[0]].equals(\"#\")) {\n            index[0]++;\n            return null;\n          }\n          TreeNode node = new TreeNode(Integer.parseInt(nodes[index[0]++]));\n          node.left = deserialize(nodes, index);\n          node.right = deserialize(nodes, index);\n          return node;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "serialize tree",
+      "deserialize tree",
+      "convert tree to string"
+    ]
+  },
+  {
+    "pattern_id": "trees",
+    "sub_pattern_id": "tree-properties",
+    "name": "Tree Properties",
+    "description": "This sub-pattern involves finding properties of a tree, such as its maximum depth, diameter, or width.",
+    "problem_slugs": [
+      "maximum-depth-of-binary-tree",
+      "diameter-of-binary-tree",
+      "maximum-width-of-binary-tree"
+    ],
+    "explanation": "Tree properties involve finding characteristics of a tree, such as its maximum depth, diameter, or width. This can be done using recursive or iterative methods, and is commonly used to analyze or optimize tree structures.",
+    "mental_model": "Imagine a tree as a complex system with various attributes and characteristics. Tree properties is like measuring or calculating these attributes, using a systematic approach to understand the tree's behavior and performance.",
+    "template_code_java": "\n      class Solution {\n        public int maxDepth(TreeNode root) {\n          if (root == null) return 0;\n          return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "find tree depth",
+      "calculate tree width",
+      "determine tree properties"
+    ]
+  },
+  {
+    "pattern_id": "trees",
+    "sub_pattern_id": "tree-manipulation",
+    "name": "Tree Manipulation",
+    "description": "This sub-pattern involves modifying a tree, such as inverting it, finding the lowest common ancestor, or counting good nodes.",
+    "problem_slugs": [
+      "invert-binary-tree",
+      "lowest-common-ancestor-of-a-binary-search-tree",
+      "count-good-nodes-in-binary-tree",
+      "same-tree",
+      "subtree-of-another-tree",
+      "kth-smallest-element-in-a-bst",
+      "binary-tree-maximum-path-sum",
+      "binary-search-tree-iterator"
+    ],
+    "explanation": "Tree manipulation involves modifying a tree data structure, such as inverting it, finding the lowest common ancestor, or counting good nodes. This sub-pattern requires a deep understanding of tree traversal algorithms, including recursive and iterative approaches. Problems assigned to this sub-pattern often involve modifying the tree while maintaining its structural integrity.",
+    "mental_model": "Modify tree, maintain structure",
+    "template_code_java": "\n      class Solution {\n        // Example: Invert Binary Tree\n        public TreeNode invertTree(TreeNode root) {\n          if (root == null) return null;\n          // Swap left and right subtrees\n          TreeNode temp = root.left;\n          root.left = invertTree(root.right);\n          root.right = invertTree(temp);\n          return root;\n        }\n\n        // Example: Lowest Common Ancestor of a Binary Search Tree\n        public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n          if (root == null) return null;\n          if (root.val > p.val && root.val > q.val) {\n            return lowestCommonAncestor(root.left, p, q);\n          } else if (root.val < p.val && root.val < q.val) {\n            return lowestCommonAncestor(root.right, p, q);\n          } else {\n            return root;\n          }\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "invert binary tree",
+      "lowest common ancestor",
+      "count good nodes"
+    ]
+  },
+  {
+    "pattern_id": "tries",
+    "sub_pattern_id": "trie-implementation",
+    "name": "Trie Implementation",
+    "description": "This sub-pattern involves creating a Trie data structure from scratch, focusing on the basic operations such as insert, search, and delete. It distinguishes itself by requiring the implementation of the Trie's core functionality.",
+    "problem_slugs": [
+      "implement-trie-prefix-tree",
+      "design-add-and-search-words-data-structure"
+    ],
+    "explanation": "This sub-pattern involves creating a Trie data structure from scratch, focusing on the basic operations such as insert, search, and delete. It requires the implementation of the Trie's core functionality, including node creation, child node management, and word storage. The Trie data structure is particularly useful for tasks that involve frequent prefix matching, such as autocomplete and spell-checking.",
+    "mental_model": "Imagine a tree-like structure where each node represents a character, and the path from the root to a node represents a prefix.",
+    "template_code_java": "\n      class Solution {\n        class TrieNode {\n          TrieNode[] children = new TrieNode[26];\n          boolean isEndOfWord;\n\n          public TrieNode() {}\n        }\n\n        public void insert(TrieNode root, String word) {\n          TrieNode node = root;\n          for (char ch : word.toCharArray()) {\n            int index = ch - 'a';\n            if (node.children[index] == null) {\n              node.children[index] = new TrieNode();\n            }\n            node = node.children[index];\n          }\n          node.isEndOfWord = true;\n        }\n\n        public boolean search(TrieNode root, String word) {\n          TrieNode node = root;\n          for (char ch : word.toCharArray()) {\n            int index = ch - 'a';\n            if (node.children[index] == null) {\n              return false;\n            }\n            node = node.children[index];\n          }\n          return node.isEndOfWord;\n        }\n\n        public void delete(TrieNode root, String word) {\n          delete(root, word, 0);\n        }\n\n        private boolean delete(TrieNode node, String word, int index) {\n          if (index == word.length()) {\n            if (!node.isEndOfWord) {\n              return false;\n            }\n            node.isEndOfWord = false;\n            return node.children == null || isEmpty(node);\n          }\n          int chIndex = word.charAt(index) - 'a';\n          if (node.children[chIndex] == null) {\n            return false;\n          }\n          boolean shouldDeleteCurrentNode = delete(node.children[chIndex], word, index + 1);\n          if (shouldDeleteCurrentNode) {\n            node.children[chIndex] = null;\n            return isEmpty(node);\n          }\n          return false;\n        }\n\n        private boolean isEmpty(TrieNode node) {\n          for (TrieNode child : node.children) {\n            if (child != null) {\n              return false;\n            }\n          }\n          return true;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "implement trie",
+      "prefix tree",
+      "insert search delete"
+    ]
+  },
+  {
+    "pattern_id": "tries",
+    "sub_pattern_id": "trie-application",
+    "name": "Trie Application",
+    "description": "This sub-pattern involves using a Trie to solve a specific problem, often requiring additional data structures or algorithms to achieve the desired outcome. It is characterized by the use of a Trie as a tool to facilitate the solution.",
+    "problem_slugs": [
+      "word-search-ii"
+    ],
+    "explanation": "This sub-pattern involves using a Trie to solve a specific problem, often requiring additional data structures or algorithms to achieve the desired outcome. It is characterized by the use of a Trie as a tool to facilitate the solution, such as finding all words in a grid that are present in a given dictionary.",
+    "mental_model": "Imagine using a Trie as a filter to narrow down the search space and then applying additional logic to find the solution.",
+    "template_code_java": "\n      class Solution {\n        class TrieNode {\n          TrieNode[] children = new TrieNode[26];\n          String word;\n\n          public TrieNode() {}\n        }\n\n        public List<String> findWords(char[][] board, String[] words) {\n          TrieNode root = new TrieNode();\n          for (String word : words) {\n            TrieNode node = root;\n            for (char ch : word.toCharArray()) {\n              int index = ch - 'a';\n              if (node.children[index] == null) {\n                node.children[index] = new TrieNode();\n              }\n              node = node.children[index];\n            }\n            node.word = word;\n          }\n\n          List<String> result = new ArrayList<>();\n          boolean[][] visited = new boolean[board.length][board[0].length];\n          for (int i = 0; i < board.length; i++) {\n            for (int j = 0; j < board[0].length; j++) {\n              dfs(board, i, j, root, result, visited);\n            }\n          }\n          return result;\n        }\n\n        private void dfs(char[][] board, int i, int j, TrieNode node, List<String> result, boolean[][] visited) {\n          if (i < 0 || i >= board.length || j < 0 || j >= board[0].length || visited[i][j] || node.children[board[i][j] - 'a'] == null) {\n            return;\n          }\n          visited[i][j] = true;\n          node = node.children[board[i][j] - 'a'];\n          if (node.word != null) {\n            result.add(node.word);\n            node.word = null;\n          }\n          dfs(board, i - 1, j, node, result, visited);\n          dfs(board, i + 1, j, node, result, visited);\n          dfs(board, i, j - 1, node, result, visited);\n          dfs(board, i, j + 1, node, result, visited);\n          visited[i][j] = false;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "word search",
+      "trie application",
+      "grid search"
+    ]
+  },
+  {
+    "pattern_id": "heap-priority-queue",
+    "sub_pattern_id": "top-k-elements",
+    "name": "Top K Elements",
+    "description": "This sub-pattern involves finding the kth largest or smallest element in an array or stream, often requiring the use of heaps or priority queues to efficiently solve the problem.",
+    "problem_slugs": [
+      "kth-largest-element-in-an-array",
+      "kth-largest-element-in-a-stream",
+      "k-closest-points-to-origin"
+    ],
+    "explanation": "This sub-pattern involves finding the kth largest or smallest element in an array or stream. It requires the use of heaps or priority queues to efficiently solve the problem. The key idea is to maintain a heap of size k, where the heap stores the k largest or smallest elements seen so far. As we iterate through the array or stream, we add elements to the heap and remove the smallest or largest element when the heap size exceeds k.",
+    "mental_model": "Maintain a heap of size k to track the k largest or smallest elements",
+    "template_code_java": "\n      class Solution {\n        public int findKthLargest(int[] nums, int k) {\n          // Create a min heap to store the k largest elements\n          PriorityQueue<Integer> minHeap = new PriorityQueue<>();\n          \n          // Iterate through the array\n          for (int num : nums) {\n            // Add the current element to the heap\n            minHeap.add(num);\n            \n            // If the heap size exceeds k, remove the smallest element\n            if (minHeap.size() > k) {\n              minHeap.poll();\n            }\n          }\n          \n          // The kth largest element is the smallest element in the heap\n          return minHeap.peek();\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "kth largest",
+      "kth smallest",
+      "top k elements"
+    ]
+  },
+  {
+    "pattern_id": "heap-priority-queue",
+    "sub_pattern_id": "median-and-streams",
+    "name": "Median and Streams",
+    "description": "This sub-pattern involves maintaining a data structure to efficiently calculate the median of a stream of numbers, often requiring the use of heaps or priority queues to balance the data.",
+    "problem_slugs": [
+      "find-median-from-data-stream"
+    ],
+    "explanation": "This sub-pattern involves maintaining a data structure to efficiently calculate the median of a stream of numbers. It requires the use of heaps or priority queues to balance the data. The key idea is to maintain two heaps, a max heap to store the smaller half of the numbers and a min heap to store the larger half. The max heap is used to store the smaller half of the numbers, and the min heap is used to store the larger half.",
+    "mental_model": "Maintain two heaps to balance the data and calculate the median",
+    "template_code_java": "\n      class Solution {\n        public double findMedianFromDataStream(int num) {\n          // Create a max heap to store the smaller half of the numbers\n          PriorityQueue<Integer> maxHeap = new PriorityQueue<>((a, b) -> b - a);\n          \n          // Create a min heap to store the larger half of the numbers\n          PriorityQueue<Integer> minHeap = new PriorityQueue<>();\n          \n          // Add the current number to the appropriate heap\n          if (maxHeap.isEmpty() || num <= maxHeap.peek()) {\n            maxHeap.add(num);\n          } else {\n            minHeap.add(num);\n          }\n          \n          // Balance the heaps to ensure the size difference is at most 1\n          if (maxHeap.size() > minHeap.size() + 1) {\n            minHeap.add(maxHeap.poll());\n          } else if (minHeap.size() > maxHeap.size()) {\n            maxHeap.add(minHeap.poll());\n          }\n          \n          // Calculate the median\n          if (maxHeap.size() == minHeap.size()) {\n            return (maxHeap.peek() + minHeap.peek()) / 2.0;\n          } else {\n            return (double) maxHeap.peek();\n          }\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "median of stream",
+      "stream of numbers",
+      "calculate median"
+    ]
+  },
+  {
+    "pattern_id": "heap-priority-queue",
+    "sub_pattern_id": "scheduling-and-priority",
+    "name": "Scheduling and Priority",
+    "description": "This sub-pattern involves scheduling tasks or prioritizing elements based on certain conditions, often requiring the use of heaps or priority queues to manage the tasks or elements.",
+    "problem_slugs": [
+      "task-scheduler",
+      "last-stone-weight"
+    ],
+    "explanation": "This sub-pattern involves scheduling tasks or prioritizing elements based on certain conditions. It requires the use of heaps or priority queues to manage the tasks or elements. The key idea is to maintain a heap or priority queue to store the tasks or elements, where the heap or priority queue is ordered based on the priority or scheduling condition.",
+    "mental_model": "Maintain a heap or priority queue to manage tasks or elements based on priority",
+    "template_code_java": "\n      class Solution {\n        public int leastInterval(char[] tasks, int n) {\n          // Create a frequency array to store the frequency of each task\n          int[] freq = new int[26];\n          for (char task : tasks) {\n            freq[task - 'A']++;\n          }\n          \n          // Create a max heap to store the tasks\n          PriorityQueue<Integer> maxHeap = new PriorityQueue<>((a, b) -> b - a);\n          for (int i = 0; i < 26; i++) {\n            if (freq[i] > 0) {\n              maxHeap.add(freq[i]);\n            }\n          }\n          \n          // Initialize the result and the current time\n          int result = 0;\n          int time = 0;\n          \n          // Process the tasks\n          while (!maxHeap.isEmpty()) {\n            // Dequeue the task with the highest frequency\n            int freqTask = maxHeap.poll();\n            \n            // Increment the time\n            time++;\n            \n            // Decrement the frequency of the task\n            freqTask--;\n            \n            // If the task still has frequency, add it back to the heap\n            if (freqTask > 0) {\n              maxHeap.add(freqTask);\n            }\n            \n            // If the heap is empty and the time is less than n, increment the time\n            if (maxHeap.isEmpty() && time < n) {\n              time++;\n            }\n          }\n          \n          // Return the result\n          return result;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "task scheduler",
+      "scheduling tasks",
+      "priority queue"
+    ]
+  },
+  {
+    "pattern_id": "backtracking",
+    "sub_pattern_id": "unrestricted-backtracking",
+    "name": "Unrestricted Backtracking",
+    "description": "This sub-pattern involves generating all possible combinations or permutations of a given set without any restrictions, such as in the case of subsets or permutations. It is characterized by the absence of constraints on the selection process.",
+    "problem_slugs": [
+      "subsets",
+      "permutations",
+      "letter-combinations-of-a-phone-number"
+    ],
+    "explanation": "This sub-pattern involves generating all possible combinations or permutations of a given set without any restrictions. It is used to solve problems such as subsets, permutations, and letter combinations of a phone number. The key characteristic of this sub-pattern is the absence of constraints on the selection process, allowing for the exploration of all possible solutions.",
+    "mental_model": "Explore all possible combinations without constraints",
+    "template_code_java": "\nclass Solution {\n    public void backtrack(int[] nums, int start, List<List<Integer>> result, List<Integer> tempList) {\n        result.add(new ArrayList<>(tempList));\n        for (int i = start; i < nums.length; i++) {\n            // Add current element to the temporary list\n            tempList.add(nums[i]);\n            // Recur for the next element\n            backtrack(nums, i + 1, result, tempList);\n            // Remove the current element from the temporary list (backtrack)\n            tempList.remove(tempList.size() - 1);\n        }\n    }\n\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> result = new ArrayList<>();\n        backtrack(nums, 0, result, new ArrayList<>());\n        return result;\n    }\n}\n",
+    "trigger_phrases": [
+      "generate all combinations",
+      "no restrictions",
+      "all possible permutations"
+    ]
+  },
+  {
+    "pattern_id": "backtracking",
+    "sub_pattern_id": "restricted-backtracking",
+    "name": "Restricted Backtracking",
+    "description": "This sub-pattern involves generating combinations or permutations with certain restrictions, such as a target sum or a specific pattern. It requires careful consideration of the constraints to prune the search space.",
+    "problem_slugs": [
+      "combination-sum",
+      "combination-sum-ii",
+      "subsets-ii"
+    ],
+    "explanation": "This sub-pattern involves generating combinations or permutations with certain restrictions, such as a target sum or a specific pattern. It requires careful consideration of the constraints to prune the search space and explore only the valid solutions.",
+    "mental_model": "Explore valid combinations with constraints",
+    "template_code_java": "\nclass Solution {\n    public void backtrack(int[] candidates, int start, int target, List<List<Integer>> result, List<Integer> tempList, int remain) {\n        if (remain < 0) return;\n        else if (remain == 0) result.add(new ArrayList<>(tempList));\n        else {\n            for (int i = start; i < candidates.length; i++) {\n                // Add current element to the temporary list\n                tempList.add(candidates[i]);\n                // Recur for the next element\n                backtrack(candidates, i, target, result, tempList, remain - candidates[i]);\n                // Remove the current element from the temporary list (backtrack)\n                tempList.remove(tempList.size() - 1);\n            }\n        }\n    }\n\n    public List<List<Integer>> combinationSum(int[] candidates, int target) {\n        List<List<Integer>> result = new ArrayList<>();\n        backtrack(candidates, 0, target, result, new ArrayList<>(), target);\n        return result;\n    }\n}\n",
+    "trigger_phrases": [
+      "target sum",
+      "specific pattern",
+      "restricted combinations"
+    ]
+  },
+  {
+    "pattern_id": "backtracking",
+    "sub_pattern_id": "spatial-backtracking",
+    "name": "Spatial Backtracking",
+    "description": "This sub-pattern involves searching for a solution in a spatial context, such as a grid or a board, where the goal is to find a specific arrangement or path. It often requires exploring different configurations and backtracking when a dead end is reached.",
+    "problem_slugs": [
+      "word-search",
+      "n-queens"
+    ],
+    "explanation": "This sub-pattern involves searching for a solution in a spatial context, such as a grid or a board, where the goal is to find a specific arrangement or path. It often requires exploring different configurations and backtracking when a dead end is reached.",
+    "mental_model": "Explore spatial configurations and backtrack",
+    "template_code_java": "\nclass Solution {\n    public boolean exist(char[][] board, String word) {\n        for (int i = 0; i < board.length; i++) {\n            for (int j = 0; j < board[0].length; j++) {\n                if (board[i][j] == word.charAt(0)) {\n                    if (backtrack(board, i, j, word, 0)) return true;\n                }\n            }\n        }\n        return false;\n    }\n\n    private boolean backtrack(char[][] board, int i, int j, String word, int index) {\n        if (index == word.length()) return true;\n        if (i < 0 || i >= board.length || j < 0 || j >= board[0].length || word.charAt(index) != board[i][j]) return false;\n        char temp = board[i][j];\n        board[i][j] = '#';\n        boolean found = backtrack(board, i + 1, j, word, index + 1) ||\n                         backtrack(board, i - 1, j, word, index + 1) ||\n                         backtrack(board, i, j + 1, word, index + 1) ||\n                         backtrack(board, i, j - 1, word, index + 1);\n        board[i][j] = temp;\n        return found;\n    }\n}\n",
+    "trigger_phrases": [
+      "grid search",
+      "board arrangement",
+      "spatial path"
+    ]
+  },
+  {
+    "pattern_id": "backtracking",
+    "sub_pattern_id": "string-backtracking",
+    "name": "String Backtracking",
+    "description": "This sub-pattern involves generating all possible partitions or combinations of a string, often with specific constraints such as palindrome conditions. It requires careful consideration of the string properties and the constraints.",
+    "problem_slugs": [
+      "palindrome-partitioning"
+    ],
+    "explanation": "This sub-pattern involves generating all possible partitions or combinations of a string, often with specific constraints such as palindrome conditions. It requires careful consideration of the string properties and the constraints.",
+    "mental_model": "Explore string partitions and combinations",
+    "template_code_java": "\nclass Solution {\n    public List<List<String>> partition(String s) {\n        List<List<String>> result = new ArrayList<>();\n        backtrack(s, 0, result, new ArrayList<>());\n        return result;\n    }\n\n    private void backtrack(String s, int start, List<List<String>> result, List<String> tempList) {\n        if (start == s.length()) {\n            result.add(new ArrayList<>(tempList));\n        } else {\n            for (int i = start; i < s.length(); i++) {\n                if (isPalindrome(s, start, i)) {\n                    // Add current substring to the temporary list\n                    tempList.add(s.substring(start, i + 1));\n                    // Recur for the next substring\n                    backtrack(s, i + 1, result, tempList);\n                    // Remove the current substring from the temporary list (backtrack)\n                    tempList.remove(tempList.size() - 1);\n                }\n            }\n        }\n    }\n\n    private boolean isPalindrome(String s, int left, int right) {\n        while (left < right) {\n            if (s.charAt(left++) != s.charAt(right--)) return false;\n        }\n        return true;\n    }\n}\n",
+    "trigger_phrases": [
+      "string partitions",
+      "palindrome conditions",
+      "string combinations"
+    ]
+  },
+  {
+    "pattern_id": "graphs",
+    "sub_pattern_id": "graph-traversal-flood-fill",
+    "name": "Graph Traversal and Flood Fill",
+    "description": "This sub-pattern involves traversing a graph or a grid and using flood fill techniques to solve problems, often involving finding connected components or areas.",
+    "problem_slugs": [
+      "number-of-islands",
+      "max-area-of-island",
+      "rotting-oranges",
+      "pacific-atlantic-water-flow",
+      "surrounded-regions"
+    ],
+    "explanation": "This sub-pattern involves traversing a graph or a grid and using flood fill techniques to solve problems, often involving finding connected components or areas. It requires understanding of graph traversal algorithms such as DFS and BFS, and how to apply them to solve problems.",
+    "mental_model": "Flood the graph to find connected areas",
+    "template_code_java": "\n      class Solution {\n        public int numIslands(char[][] grid) {\n          if (grid == null || grid.length == 0) return 0;\n          int count = 0;\n          for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n              if (grid[i][j] == '1') {\n                dfs(grid, i, j);\n                count++;\n              }\n            }\n          }\n          return count;\n        }\n        \n        private void dfs(char[][] grid, int i, int j) {\n          if (i < 0 || j < 0 || i >= grid.length || j >= grid[0].length || grid[i][j] != '1') return;\n          grid[i][j] = '0';\n          dfs(grid, i - 1, j);\n          dfs(grid, i + 1, j);\n          dfs(grid, i, j - 1);\n          dfs(grid, i, j + 1);\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "flood fill",
+      "connected components",
+      "graph traversal"
+    ]
+  },
+  {
+    "pattern_id": "graphs",
+    "sub_pattern_id": "graph-representation-and-cloning",
+    "name": "Graph Representation and Cloning",
+    "description": "This sub-pattern involves representing graphs and cloning or reconstructing them, often requiring understanding of graph data structures and algorithms.",
+    "problem_slugs": [
+      "clone-graph",
+      "reconstruct-itinerary"
+    ],
+    "explanation": "This sub-pattern involves representing graphs and cloning or reconstructing them, often requiring understanding of graph data structures and algorithms. It requires knowledge of how to represent graphs using adjacency lists or matrices, and how to clone or reconstruct them.",
+    "mental_model": "Clone the graph to preserve its structure",
+    "template_code_java": "\n      class Solution {\n        public Node cloneGraph(Node node) {\n          if (node == null) return null;\n          Map<Node, Node> map = new HashMap<>();\n          return clone(node, map);\n        }\n        \n        private Node clone(Node node, Map<Node, Node> map) {\n          if (map.containsKey(node)) return map.get(node);\n          Node clone = new Node(node.val);\n          map.put(node, clone);\n          for (Node neighbor : node.neighbors) {\n            clone.neighbors.add(clone(neighbor, map));\n          }\n          return clone;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "clone graph",
+      "graph representation",
+      "reconstruct graph"
+    ]
+  },
+  {
+    "pattern_id": "graphs",
+    "sub_pattern_id": "graph-topological-sorting-and-cycles",
+    "name": "Graph Topological Sorting and Cycles",
+    "description": "This sub-pattern involves detecting cycles, performing topological sorting, and finding redundant connections in graphs, often requiring understanding of graph algorithms and cycle detection.",
+    "problem_slugs": [
+      "course-schedule",
+      "redundant-connection",
+      "min-cost-to-connect-all-points"
+    ],
+    "explanation": "This sub-pattern involves detecting cycles, performing topological sorting, and finding redundant connections in graphs, often requiring understanding of graph algorithms and cycle detection. It requires knowledge of how to detect cycles using DFS or BFS, and how to perform topological sorting.",
+    "mental_model": "Sort the graph to detect cycles",
+    "template_code_java": "\n      class Solution {\n        public int[] findOrder(int numCourses, int[][] prerequisites) {\n          int[] indegree = new int[numCourses];\n          List<Integer>[] graph = new List[numCourses];\n          for (int[] edge : prerequisites) {\n            indegree[edge[0]]++;\n            graph[edge[1]].add(edge[0]);\n          }\n          Queue<Integer> queue = new LinkedList<>();\n          for (int i = 0; i < numCourses; i++) {\n            if (indegree[i] == 0) queue.add(i);\n          }\n          int[] order = new int[numCourses];\n          int index = 0;\n          while (!queue.isEmpty()) {\n            int course = queue.poll();\n            order[index++] = course;\n            for (int neighbor : graph[course]) {\n              indegree[neighbor]--;\n              if (indegree[neighbor] == 0) queue.add(neighbor);\n            }\n          }\n          return index == numCourses ? order : new int[0];\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "topological sorting",
+      "cycle detection",
+      "graph ordering"
+    ]
+  },
+  {
+    "pattern_id": "graphs",
+    "sub_pattern_id": "graph-bipartiteness-and-coloring",
+    "name": "Graph Bipartiteness and Coloring",
+    "description": "This sub-pattern involves checking if a graph is bipartite, coloring graphs, and solving problems related to graph coloring.",
+    "problem_slugs": [
+      "is-graph-bipartite"
+    ],
+    "explanation": "This sub-pattern involves checking if a graph is bipartite, coloring graphs, and solving problems related to graph coloring. It requires understanding of graph coloring algorithms and how to check if a graph is bipartite.",
+    "mental_model": "Color the graph to check bipartiteness",
+    "template_code_java": "\n      class Solution {\n        public boolean isBipartite(int[][] graph) {\n          int[] color = new int[graph.length];\n          for (int i = 0; i < graph.length; i++) {\n            if (color[i] == 0) {\n              if (!dfs(graph, color, i, 1)) return false;\n            }\n          }\n          return true;\n        }\n        \n        private boolean dfs(int[][] graph, int[] color, int node, int currColor) {\n          color[node] = currColor;\n          for (int neighbor : graph[node]) {\n            if (color[neighbor] == currColor) return false;\n            if (color[neighbor] == 0) {\n              if (!dfs(graph, color, neighbor, -currColor)) return false;\n            }\n          }\n          return true;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "graph coloring",
+      "bipartite graph",
+      "coloring algorithm"
+    ]
+  },
+  {
+    "pattern_id": "graphs",
+    "sub_pattern_id": "graph-shortest-paths-and-word-ladders",
+    "name": "Graph Shortest Paths and Word Ladders",
+    "description": "This sub-pattern involves finding shortest paths in graphs, constructing word ladders, and solving problems related to graph traversal and word transformations.",
+    "problem_slugs": [
+      "word-ladder",
+      "swim-in-rising-water"
+    ],
+    "explanation": "This sub-pattern involves finding shortest paths in graphs, constructing word ladders, and solving problems related to graph traversal and word transformations. It requires understanding of graph traversal algorithms such as BFS and DFS, and how to apply them to solve problems.",
+    "mental_model": "Find the shortest path to transform words",
+    "template_code_java": "\n      class Solution {\n        public int ladderLength(String beginWord, String endWord, List<String> wordList) {\n          Set<String> wordSet = new HashSet<>(wordList);\n          Queue<String> queue = new LinkedList<>();\n          queue.add(beginWord);\n          int length = 1;\n          while (!queue.isEmpty()) {\n            int size = queue.size();\n            for (int i = 0; i < size; i++) {\n              String word = queue.poll();\n              if (word.equals(endWord)) return length;\n              for (int j = 0; j < word.length(); j++) {\n                for (char c = 'a'; c <= 'z'; c++) {\n                  String nextWord = word.substring(0, j) + c + word.substring(j + 1);\n                  if (wordSet.contains(nextWord)) {\n                    queue.add(nextWord);\n                    wordSet.remove(nextWord);\n                  }\n                }\n              }\n            }\n            length++;\n          }\n          return 0;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "shortest path",
+      "word ladder",
+      "graph traversal"
+    ]
+  },
+  {
+    "pattern_id": "1d-dp",
+    "sub_pattern_id": "unbounded-knapsack",
+    "name": "Unbounded Knapsack",
+    "description": "This sub-pattern involves finding the optimal solution by considering all possible combinations of elements, often with a constraint on the total weight or cost. Problems in this category typically involve counting or minimizing/maximizing a quantity.",
+    "problem_slugs": [
+      "coin-change",
+      "min-cost-climbing-stairs",
+      "house-robber",
+      "house-robber-ii"
+    ],
+    "explanation": "This sub-pattern involves finding the optimal solution by considering all possible combinations of elements, often with a constraint on the total weight or cost. It is used to solve problems that require counting or minimizing/maximizing a quantity. The key characteristic of this sub-pattern is that each element can be used any number of times, hence the term 'unbounded'.",
+    "mental_model": "Think of it as having unlimited copies of each item, and we need to find the optimal combination that maximizes or minimizes a certain quantity.",
+    "template_code_java": "\n      class Solution {\n        public int solve(int[] weights, int[] values, int capacity) {\n          int[] dp = new int[capacity + 1];\n          for (int i = 1; i <= capacity; i++) {\n            for (int j = 0; j < weights.length; j++) {\n              if (weights[j] <= i) {\n                dp[i] = Math.max(dp[i], dp[i - weights[j]] + values[j]);\n              }\n            }\n          }\n          return dp[capacity];\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "unlimited items",
+      "maximize quantity",
+      "minimize cost"
+    ]
+  },
+  {
+    "pattern_id": "1d-dp",
+    "sub_pattern_id": "longest-increasing-subsequence",
+    "name": "Longest Increasing Subsequence",
+    "description": "This sub-pattern involves finding the longest subsequence that satisfies a specific condition, such as increasing order. Problems in this category typically involve comparing adjacent elements or finding a specific pattern.",
+    "problem_slugs": [
+      "longest-increasing-subsequence"
+    ],
+    "explanation": "This sub-pattern involves finding the longest subsequence that satisfies a specific condition, such as increasing order. It is used to solve problems that require comparing adjacent elements or finding a specific pattern. The key characteristic of this sub-pattern is that each element can only be used once, and the order of elements matters.",
+    "mental_model": "Think of it as building a sequence of elements where each element is larger than the previous one, and we need to find the longest such sequence.",
+    "template_code_java": "\n      class Solution {\n        public int solve(int[] nums) {\n          int[] dp = new int[nums.length];\n          dp[0] = 1;\n          for (int i = 1; i < nums.length; i++) {\n            dp[i] = 1;\n            for (int j = 0; j < i; j++) {\n              if (nums[i] > nums[j]) {\n                dp[i] = Math.max(dp[i], dp[j] + 1);\n              }\n            }\n          }\n          int max = 0;\n          for (int i = 0; i < dp.length; i++) {\n            max = Math.max(max, dp[i]);\n          }\n          return max;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "increasing order",
+      "longest subsequence",
+      "compare adjacent"
+    ]
+  },
+  {
+    "pattern_id": "1d-dp",
+    "sub_pattern_id": "palindromic-substrings",
+    "name": "Palindromic Substrings",
+    "description": "This sub-pattern involves finding palindromic substrings or substrings with specific properties. Problems in this category typically involve checking for symmetry or specific patterns in the input string.",
+    "problem_slugs": [
+      "longest-palindromic-substring",
+      "palindromic-substrings"
+    ],
+    "explanation": "This sub-pattern involves finding palindromic substrings or substrings with specific properties. It is used to solve problems that require checking for symmetry or specific patterns in the input string. The key characteristic of this sub-pattern is that the string is read from both ends towards the center.",
+    "mental_model": "Think of it as expanding around the center of the string, checking for symmetry and finding the longest palindromic substring.",
+    "template_code_java": "\n      class Solution {\n        public String solve(String s) {\n          int start = 0, end = 0;\n          for (int i = 0; i < s.length(); i++) {\n            int len1 = expandAroundCenter(s, i, i);\n            int len2 = expandAroundCenter(s, i, i + 1);\n            int len = Math.max(len1, len2);\n            if (len > (end - start)) {\n              start = i - (len - 1) / 2;\n              end = i + len / 2;\n            }\n          }\n          return s.substring(start, end + 1);\n        }\n        private int expandAroundCenter(String s, int left, int right) {\n          while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {\n            left--;\n            right++;\n          }\n          return right - left - 1;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "palindromic substring",
+      "symmetry",
+      "expand around center"
+    ]
+  },
+  {
+    "pattern_id": "1d-dp",
+    "sub_pattern_id": "single-array-dp",
+    "name": "Single Array DP",
+    "description": "This sub-pattern involves finding the optimal solution by considering a single array and making decisions based on the current state. Problems in this category typically involve finding a maximum or minimum value.",
+    "problem_slugs": [
+      "maximum-product-subarray",
+      "decode-ways",
+      "climbing-stairs"
+    ],
+    "explanation": "This sub-pattern involves finding the optimal solution by considering a single array and making decisions based on the current state. It is used to solve problems that require finding a maximum or minimum value. The key characteristic of this sub-pattern is that each state depends only on the previous state.",
+    "mental_model": "Think of it as iterating through the array and making decisions based on the current state, keeping track of the maximum or minimum value.",
+    "template_code_java": "\n      class Solution {\n        public int solve(int[] nums) {\n          int[] dp = new int[nums.length];\n          dp[0] = nums[0];\n          for (int i = 1; i < nums.length; i++) {\n            dp[i] = Math.max(dp[i - 1] + nums[i], nums[i]);\n          }\n          int max = dp[0];\n          for (int i = 1; i < dp.length; i++) {\n            max = Math.max(max, dp[i]);\n          }\n          return max;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "single array",
+      "maximize value",
+      "minimize value"
+    ]
+  },
+  {
+    "pattern_id": "2d-dp",
+    "sub_pattern_id": "grid-walks",
+    "name": "Grid Walks",
+    "description": "This sub-pattern involves finding the number of ways to reach a target position in a grid, often with constraints on movement. Problems in this category typically involve calculating the number of unique paths.",
+    "problem_slugs": [
+      "unique-paths",
+      "minimum-path-sum"
+    ],
+    "explanation": "This sub-pattern involves finding the number of ways to reach a target position in a grid, often with constraints on movement. Problems in this category typically involve calculating the number of unique paths. The key insight is to recognize that each cell in the grid can be reached from the cells above and to the left, and that the number of ways to reach a cell is the sum of the number of ways to reach the cells above and to the left.",
+    "mental_model": "Think of the grid as a matrix where each cell represents a state, and the number of ways to reach a cell is the sum of the number of ways to reach the previous states.",
+    "template_code_java": "\n      class Solution {\n        public int uniquePaths(int m, int n) {\n          int[][] dp = new int[m][n];\n          // Initialize the base cases\n          for (int i = 0; i < m; i++) {\n            dp[i][0] = 1;\n          }\n          for (int j = 0; j < n; j++) {\n            dp[0][j] = 1;\n          }\n          // Fill in the rest of the table\n          for (int i = 1; i < m; i++) {\n            for (int j = 1; j < n; j++) {\n              dp[i][j] = dp[i-1][j] + dp[i][j-1];\n            }\n          }\n          return dp[m-1][n-1];\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "grid",
+      "unique paths",
+      "movement constraints"
+    ]
+  },
+  {
+    "pattern_id": "2d-dp",
+    "sub_pattern_id": "sequence-alignment",
+    "name": "Sequence Alignment",
+    "description": "This sub-pattern involves finding the longest common subsequence or the edit distance between two sequences. Problems in this category typically involve comparing or aligning strings or arrays.",
+    "problem_slugs": [
+      "longest-common-subsequence",
+      "edit-distance",
+      "interleaving-string",
+      "regular-expression-matching"
+    ],
+    "explanation": "This sub-pattern involves finding the longest common subsequence or the edit distance between two sequences. Problems in this category typically involve comparing or aligning strings or arrays. The key insight is to recognize that the longest common subsequence can be found by comparing characters at corresponding positions in the two sequences and building up a table of lengths of common subsequences.",
+    "mental_model": "Think of the sequences as two strings, and the longest common subsequence as the longest string that can be formed by taking characters from both strings without reordering them.",
+    "template_code_java": "\n      class Solution {\n        public int longestCommonSubsequence(String text1, String text2) {\n          int m = text1.length();\n          int n = text2.length();\n          int[][] dp = new int[m+1][n+1];\n          // Fill in the table\n          for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n              if (text1.charAt(i-1) == text2.charAt(j-1)) {\n                dp[i][j] = dp[i-1][j-1] + 1;\n              } else {\n                dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);\n              }\n            }\n          }\n          return dp[m][n];\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "longest common subsequence",
+      "edit distance",
+      "sequence alignment"
+    ]
+  },
+  {
+    "pattern_id": "2d-dp",
+    "sub_pattern_id": "coin-change-and-target-sum",
+    "name": "Coin Change and Target Sum",
+    "description": "This sub-pattern involves finding the number of ways to reach a target sum using coins or integers, often with constraints on the number of coins or integers used. Problems in this category typically involve calculating the number of combinations.",
+    "problem_slugs": [
+      "coin-change-ii",
+      "target-sum"
+    ],
+    "explanation": "This sub-pattern involves finding the number of ways to reach a target sum using coins or integers, often with constraints on the number of coins or integers used. Problems in this category typically involve calculating the number of combinations. The key insight is to recognize that the number of ways to reach a target sum can be found by building up a table of combinations of coins or integers.",
+    "mental_model": "Think of the coins or integers as a set of building blocks, and the target sum as a structure that can be built using these blocks. The number of ways to build the structure is the number of combinations of blocks.",
+    "template_code_java": "\n      class Solution {\n        public int change(int amount, int[] coins) {\n          int[] dp = new int[amount + 1];\n          dp[0] = 1;\n          // Fill in the table\n          for (int coin : coins) {\n            for (int i = coin; i <= amount; i++) {\n              dp[i] += dp[i - coin];\n            }\n          }\n          return dp[amount];\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "coin change",
+      "target sum",
+      "combinations"
+    ]
+  },
+  {
+    "pattern_id": "2d-dp",
+    "sub_pattern_id": "state-machine-and-cooldown",
+    "name": "State Machine and Cooldown",
+    "description": "This sub-pattern involves modeling a system with states and cooldown periods, often to find the maximum or minimum value of a metric. Problems in this category typically involve using dynamic programming to track state transitions.",
+    "problem_slugs": [
+      "best-time-to-buy-and-sell-stock-with-cooldown"
+    ],
+    "explanation": "This sub-pattern involves modeling a system with states and cooldown periods, often to find the maximum or minimum value of a metric. Problems in this category typically involve using dynamic programming to track state transitions. The key insight is to recognize that the state of the system at each time step can be represented as a vector of values, and that the state transitions can be modeled as a set of recursive equations.",
+    "mental_model": "Think of the system as a state machine, where each state represents a possible configuration of the system, and the state transitions represent the possible actions that can be taken.",
+    "template_code_java": "\n      class Solution {\n        public int maxProfit(int[] prices) {\n          int buy = Integer.MIN_VALUE;\n          int sell = 0;\n          int cooldown = 0;\n          // Fill in the table\n          for (int price : prices) {\n            int newBuy = Math.max(buy, cooldown - price);\n            int newSell = Math.max(sell, buy + price);\n            int newCooldown = Math.max(cooldown, sell);\n            buy = newBuy;\n            sell = newSell;\n            cooldown = newCooldown;\n          }\n          return sell;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "state machine",
+      "cooldown",
+      "dynamic programming"
+    ]
+  },
+  {
+    "pattern_id": "greedy",
+    "sub_pattern_id": "maximum-subarray-variant",
+    "name": "Maximum Subarray Variant",
+    "description": "This sub-pattern involves finding the maximum or minimum subarray or sequence that satisfies certain conditions, often using a single pass through the data.",
+    "problem_slugs": [
+      "maximum-subarray",
+      "merge-triplets-to-form-target-triplet"
+    ],
+    "explanation": "This sub-pattern involves finding the maximum or minimum subarray or sequence that satisfies certain conditions, often using a single pass through the data. The key idea is to keep track of the current sum and the maximum sum seen so far, and update them accordingly as we iterate through the data.",
+    "mental_model": "Keep track of current and max sum",
+    "template_code_java": "\n      class Solution {\n        public int maxSubArray(int[] nums) {\n          int currentSum = nums[0];\n          int maxSum = nums[0];\n          for (int i = 1; i < nums.length; i++) {\n            currentSum = Math.max(nums[i], currentSum + nums[i]);\n            maxSum = Math.max(maxSum, currentSum);\n          }\n          return maxSum;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "max subarray",
+      "min subarray",
+      "single pass",
+      "cumulative sum"
+    ]
+  },
+  {
+    "pattern_id": "greedy",
+    "sub_pattern_id": "jump-game-variant",
+    "name": "Jump Game Variant",
+    "description": "This sub-pattern involves determining whether it's possible to reach a certain position or complete a task, often with limited resources or constraints.",
+    "problem_slugs": [
+      "jump-game",
+      "jump-game-ii",
+      "gas-station"
+    ],
+    "explanation": "This sub-pattern involves determining whether it's possible to reach a certain position or complete a task, often with limited resources or constraints. The key idea is to keep track of the farthest reachable position and update it accordingly as we iterate through the data.",
+    "mental_model": "Farthest reachable position",
+    "template_code_java": "\n      class Solution {\n        public boolean canJump(int[] nums) {\n          int farthestReachable = 0;\n          for (int i = 0; i < nums.length; i++) {\n            if (i > farthestReachable) {\n              return false;\n            }\n            farthestReachable = Math.max(farthestReachable, i + nums[i]);\n          }\n          return true;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "jump game",
+      "reach position",
+      "limited resources",
+      "farthest reachable"
+    ]
+  },
+  {
+    "pattern_id": "greedy",
+    "sub_pattern_id": "string-partitioning",
+    "name": "String Partitioning",
+    "description": "This sub-pattern involves dividing a string into partitions or segments based on certain conditions or rules.",
+    "problem_slugs": [
+      "partition-labels",
+      "hand-of-straights",
+      "valid-parenthesis-string"
+    ],
+    "explanation": "This sub-pattern involves dividing a string into partitions or segments based on certain conditions or rules. The key idea is to keep track of the current partition and update it accordingly as we iterate through the string.",
+    "mental_model": "Partition and update",
+    "template_code_java": "\n      class Solution {\n        public List<Integer> partitionLabels(String S, String[] wordDict) {\n          int[] lastOccurrence = new int[26];\n          for (int i = 0; i < S.length(); i++) {\n            lastOccurrence[S.charAt(i) - 'a'] = i;\n          }\n          List<Integer> result = new ArrayList<>();\n          int anchor = 0;\n          int j = 0;\n          for (int i = 0; i < S.length(); i++) {\n            j = Math.max(j, lastOccurrence[S.charAt(i) - 'a']);\n            if (i == j) {\n              result.add(i - anchor + 1);\n              anchor = i + 1;\n            }\n          }\n          return result;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "string partition",
+      "divide string",
+      "segments based",
+      "partition labels"
+    ]
+  },
+  {
+    "pattern_id": "intervals",
+    "sub_pattern_id": "interval-merging",
+    "name": "Merging Intervals",
+    "description": "This sub-pattern involves combining overlapping intervals into a single interval, often to simplify or optimize a given set of intervals. It requires identifying and merging intervals based on their start and end points.",
+    "problem_slugs": [
+      "merge-intervals",
+      "insert-interval"
+    ],
+    "explanation": "This sub-pattern involves combining overlapping intervals into a single interval, often to simplify or optimize a given set of intervals. It requires identifying and merging intervals based on their start and end points. The goal is to minimize the number of intervals while preserving the original coverage.",
+    "mental_model": "Combine overlapping ranges",
+    "template_code_java": "\n      class Solution {\n        public int[][] merge(int[][] intervals) {\n          // Sort intervals by start time\n          Arrays.sort(intervals, (a, b) -> a[0] - b[0]);\n          \n          List<int[]> merged = new ArrayList<>();\n          for (int[] interval : intervals) {\n            // If the list of merged intervals is empty or if the current interval does not overlap with the previous, append it.\n            if (merged.isEmpty() || merged.get(merged.size() - 1)[1] < interval[0]) {\n              merged.add(interval);\n            } else {\n              // Otherwise, there is overlap, so we merge the current and previous intervals.\n              merged.get(merged.size() - 1)[1] = Math.max(merged.get(merged.size() - 1)[1], interval[1]);\n            }\n          }\n          \n          return merged.toArray(new int[0][]);\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "merge intervals",
+      "combine overlapping",
+      "interval merging"
+    ]
+  },
+  {
+    "pattern_id": "intervals",
+    "sub_pattern_id": "interval-selection",
+    "name": "Selecting Non-Overlapping Intervals",
+    "description": "This sub-pattern focuses on selecting a subset of intervals such that none of them overlap, often to maximize a certain condition like the number of intervals or their total length.",
+    "problem_slugs": [
+      "non-overlapping-intervals"
+    ],
+    "explanation": "This sub-pattern focuses on selecting a subset of intervals such that none of them overlap, often to maximize a certain condition like the number of intervals or their total length. The goal is to find the optimal subset that satisfies the given conditions.",
+    "mental_model": "Pick non-overlapping ranges",
+    "template_code_java": "\n      class Solution {\n        public int eraseOverlapIntervals(int[][] intervals) {\n          if (intervals.length == 0) return 0;\n          \n          // Sort intervals by end time\n          Arrays.sort(intervals, (a, b) -> a[1] - b[1]);\n          \n          int count = 1;\n          int end = intervals[0][1];\n          for (int[] interval : intervals) {\n            if (interval[0] >= end) {\n              count++;\n              end = interval[1];\n            }\n          }\n          \n          return intervals.length - count;\n        }\n      }\n    ",
+    "trigger_phrases": [
+      "non overlapping",
+      "select intervals",
+      "maximize interval count"
+    ]
+  },
+  {
+    "pattern_id": "bit-manipulation",
+    "sub_pattern_id": "bit-counting",
+    "name": "Bit Counting",
+    "description": "This sub-pattern involves counting the number of bits in a binary representation, including counting 1-bits, total bits, or missing numbers in a sequence.",
+    "problem_slugs": [
+      "number-of-1-bits",
+      "counting-bits",
+      "missing-number"
+    ],
+    "explanation": "This sub-pattern involves counting the number of bits in a binary representation. It can be used to count the number of 1-bits, total bits, or missing numbers in a sequence. The key idea is to use bitwise operations to iterate over the bits of a number and count the desired bits.",
+    "mental_model": "Counting bits by iterating over the binary representation",
+    "template_code_java": "class Solution { public int countBits(int num) { int count = 0; while (num != 0) { count += num & 1; num >>>= 1; } return count; } }",
+    "trigger_phrases": [
+      "counting bits",
+      "number of 1-bits",
+      "missing numbers"
+    ]
+  },
+  {
+    "pattern_id": "bit-manipulation",
+    "sub_pattern_id": "bit-reversal",
+    "name": "Bit Reversal",
+    "description": "This sub-pattern involves reversing the binary representation of a number, either partially or entirely.",
+    "problem_slugs": [
+      "reverse-bits",
+      "reverse-integer"
+    ],
+    "explanation": "This sub-pattern involves reversing the binary representation of a number, either partially or entirely. It can be used to reverse the bits of a number or to reverse the integer value of a number.",
+    "mental_model": "Reversing bits by swapping or shifting",
+    "template_code_java": "class Solution { public int reverseBits(int num) { int result = 0; for (int i = 0; i < 32; i++) { result = (result << 1) | (num & 1); num >>>= 1; } return result; } }",
+    "trigger_phrases": [
+      "reverse bits",
+      "bit reversal",
+      "integer reversal"
+    ]
+  },
+  {
+    "pattern_id": "bit-manipulation",
+    "sub_pattern_id": "bit-manipulation-operations",
+    "name": "Bit Manipulation Operations",
+    "description": "This sub-pattern involves performing operations using bit manipulation, such as finding a single number or calculating the sum of two integers.",
+    "problem_slugs": [
+      "single-number",
+      "sum-of-two-integers"
+    ],
+    "explanation": "This sub-pattern involves performing operations using bit manipulation, such as finding a single number or calculating the sum of two integers. It can be used to solve problems that require bitwise operations to achieve the desired result.",
+    "mental_model": "Using bitwise operations to perform calculations",
+    "template_code_java": "class Solution { public int singleNumber(int[] nums) { int result = 0; for (int num : nums) { result ^= num; } return result; } }",
+    "trigger_phrases": [
+      "bitwise operations",
+      "single number",
+      "sum of two integers"
+    ]
+  },
+  {
+    "pattern_id": "math-geometry",
+    "sub_pattern_id": "matrix-manipulation",
+    "name": "Matrix Manipulation",
+    "description": "This sub-pattern involves problems that require manipulating matrices, such as rotating or setting values to zero.",
+    "problem_slugs": [
+      "rotate-image",
+      "set-matrix-zeroes",
+      "spiral-matrix"
+    ],
+    "explanation": "This sub-pattern involves problems that require manipulating matrices, such as rotating or setting values to zero. It requires understanding of matrix operations and how to efficiently perform these operations.",
+    "mental_model": "Visualize the matrix as a 2D array and think about how to manipulate it in a way that achieves the desired result.",
+    "template_code_java": "class Solution { public void rotate(int[][] matrix) { int n = matrix.length; for (int i = 0; i < n; i++) { for (int j = i; j < n; j++) { int temp = matrix[j][i]; matrix[j][i] = matrix[i][j]; matrix[i][j] = temp; } } for (int i = 0; i < n; i++) { int left = 0; int right = n - 1; while (left < right) { int temp = matrix[i][left]; matrix[i][left] = matrix[i][right]; matrix[i][right] = temp; left++; right--; } } } }",
+    "trigger_phrases": [
+      "matrix rotation",
+      "set matrix zero",
+      "spiral matrix"
+    ]
+  },
+  {
+    "pattern_id": "math-geometry",
+    "sub_pattern_id": "number-theory",
+    "name": "Number Theory",
+    "description": "This sub-pattern involves problems that require understanding properties of numbers, such as happy numbers or palindrome numbers.",
+    "problem_slugs": [
+      "happy-number",
+      "palindrome-number",
+      "ugly-number"
+    ],
+    "explanation": "This sub-pattern involves problems that require understanding properties of numbers, such as happy numbers or palindrome numbers. It requires knowledge of number theory concepts and how to apply them to solve problems.",
+    "mental_model": "Think about the properties of numbers and how they can be used to solve the problem.",
+    "template_code_java": "class Solution { public boolean isHappy(int n) { Set<Integer> seen = new HashSet<>(); while (n != 1 && !seen.contains(n)) { seen.add(n); n = getSumOfSquares(n); } return n == 1; } private int getSumOfSquares(int n) { int sum = 0; while (n > 0) { int digit = n % 10; sum += digit * digit; n /= 10; } return sum; } }",
+    "trigger_phrases": [
+      "happy number",
+      "palindrome number",
+      "ugly number"
+    ]
+  },
+  {
+    "pattern_id": "math-geometry",
+    "sub_pattern_id": "arithmetic-operations",
+    "name": "Arithmetic Operations",
+    "description": "This sub-pattern involves problems that require performing arithmetic operations, such as exponentiation or multiplication.",
+    "problem_slugs": [
+      "powx-n",
+      "multiply-strings",
+      "plus-one"
+    ],
+    "explanation": "This sub-pattern involves problems that require performing arithmetic operations, such as exponentiation or multiplication. It requires understanding of arithmetic operations and how to efficiently perform them.",
+    "mental_model": "Think about the arithmetic operations required to solve the problem and how to optimize them.",
+    "template_code_java": "class Solution { public double myPow(double x, int n) { if (n == 0) return 1; if (n < 0) { x = 1 / x; n = -n; } double result = 1; for (int i = 0; i < n; i++) { result *= x; } return result; } }",
+    "trigger_phrases": [
+      "exponentiation",
+      "multiplication",
+      "division"
+    ]
+  },
+  {
+    "pattern_id": "math-geometry",
+    "sub_pattern_id": "number-conversion",
+    "name": "Number Conversion",
+    "description": "This sub-pattern involves problems that require converting between different number representations, such as Roman numerals to integers.",
+    "problem_slugs": [
+      "roman-to-integer"
+    ],
+    "explanation": "This sub-pattern involves problems that require converting between different number representations, such as Roman numerals to integers. It requires knowledge of different number systems and how to convert between them.",
+    "mental_model": "Think about the number system being used and how to convert it to the desired system.",
+    "template_code_java": "class Solution { public int romanToInt(String s) { int result = 0; Map<Character, Integer> romanMap = new HashMap<>(); romanMap.put('I', 1); romanMap.put('V', 5); romanMap.put('X', 10); romanMap.put('L', 50); romanMap.put('C', 100); romanMap.put('D', 500); romanMap.put('M', 1000); for (int i = 0; i < s.length() - 1; i++) { if (romanMap.get(s.charAt(i)) < romanMap.get(s.charAt(i + 1))) { result -= romanMap.get(s.charAt(i)); } else { result += romanMap.get(s.charAt(i)); } } result += romanMap.get(s.charAt(s.length() - 1)); return result; } }",
+    "trigger_phrases": [
+      "roman to integer",
+      "integer to roman",
+      "number conversion"
+    ]
   }
 ]

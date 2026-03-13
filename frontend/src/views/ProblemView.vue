@@ -12,7 +12,7 @@ const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
 const { problems, loading, getProblemsForPattern } = usePatterns()
-const { isSolved, markSolved, unmarkSolved, getConfidence, getNote, addNote, getReflection } = useProgress()
+const { state, isSolved, markSolved, unmarkSolved, getConfidence, getNote, addNote, getReflection } = useProgress()
 const { navigateSmartRandom } = useSmartRandom()
 
 const problem = computed(() => problems.value[slug.value])
@@ -34,10 +34,10 @@ const interviewRoute = computed(() => ({
   },
 }))
 
-// Load existing note
+// Load existing note and keep it synced
 watchEffect(() => {
   if (slug.value) {
-    noteText.value = getNote(slug.value)
+    noteText.value = state.notes[slug.value] ?? ''
   }
 })
 

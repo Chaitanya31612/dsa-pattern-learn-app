@@ -770,7 +770,6 @@ export function useMockInterview() {
     stateForProblem.thoughts.unshift(trimmed)
     persist()
   }
-
   async function sendMessage(message: string) {
     /**
      * Chat send path:

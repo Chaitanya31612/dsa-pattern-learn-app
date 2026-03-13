@@ -2,6 +2,7 @@
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { usePatterns } from '../composables/usePatterns'
+import { useProgress } from '../composables/useProgress'
 import { useMockInterview } from '../composables/useMockInterview'
 import CodeHighlight from '../components/CodeHighlight.vue'
 
@@ -45,6 +46,7 @@ const {
 } = useMockInterview()
 
 const { problems, loading } = usePatterns()
+const { getNote, addNote } = useProgress()
 const route = useRoute()
 const router = useRouter()
 
@@ -380,6 +382,21 @@ function beginInterviewStart() {
 
 function submitThought() {
   if (!thoughtInput.value.trim()) return
+
+  // Sync with global problem notes immediately
+  const slug = currentProblem.value?.slug
+  if (slug) {
+    const existingNote = getNote(slug)
+    const nextIndex = (currentProblemState.value?.thoughts.length || 0) + 1
+    const formattedThought = `${nextIndex}. ${thoughtInput.value.trim()}`
+
+    const combinedNote = existingNote
+      ? `${existingNote}\n${formattedThought}`
+      : formattedThought
+
+    addNote(slug, combinedNote)
+  }
+
   addThought(thoughtInput.value)
   thoughtInput.value = ''
 }

@@ -20,6 +20,20 @@ watch(() => state, () => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
 }, { deep: true })
 
+// Sync state across multiple tabs
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (event) => {
+    if (event.key === STORAGE_KEY && event.newValue) {
+      try {
+        const newData = JSON.parse(event.newValue)
+        Object.assign(state, newData)
+      } catch (e) {
+        console.warn('Failed to sync state from storage event:', e)
+      }
+    }
+  })
+}
+
 export function useProgress() {
   function markSolved(slug: string, confidence: 1 | 2 | 3) {
     state.solved[slug] = {

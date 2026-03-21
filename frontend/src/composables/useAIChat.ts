@@ -86,12 +86,29 @@ export function useAIChat(contextType: ContextType, contextId: string) {
 
       const bodyKey = (contextType === 'pattern' || contextType === 'sub-pattern') ? 'pattern_id' : 'problem_slug'
 
-      const body = {
-        [bodyKey]: contextId,
-        messages: messages.value.map((m) => ({
+      // Implement a sliding window character limit to prevent 422 payload errors.
+      // We iterate backwards to keep the most recent context.
+      const MAX_CHARS = 12000
+      let charCount = 0
+      const payloadMessages = []
+
+      for (let i = messages.value.length - 1; i >= 0; i--) {
+        const m = messages.value[i]
+        if (!m) continue
+        const len = m.content.length
+        if (charCount + len > MAX_CHARS && payloadMessages.length > 0) {
+          break
+        }
+        payloadMessages.unshift({
           role: m.role,
           content: m.content,
-        })),
+        })
+        charCount += len
+      }
+
+      const body = {
+        [bodyKey]: contextId,
+        messages: payloadMessages,
       }
 
       const response = await fetch(getApiUrl(endpoint), {

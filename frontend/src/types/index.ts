@@ -96,8 +96,11 @@ export interface Progress {
   solved: Record<string, {
     date: string
     confidence: 1 | 2 | 3
+    score?: number
+    reasoning?: string[]
   }>
   notes: Record<string, string>
+  code: Record<string, string>
   reflections: Record<string, {
     pattern: string
     signal: string
@@ -125,6 +128,7 @@ export interface MockInterviewConfig {
   totalTimeMinutes: number
   language: 'java'
   allowPause: boolean
+  isIndividualMode?: boolean
 }
 
 export interface MockInterviewChatMessage {

@@ -470,7 +470,7 @@ function normalizeAIDebriefResult(
 
 export function useMockInterview() {
   const { getAllProblems, problems } = usePatterns()
-  const { isSolved, getConfidence, state } = useProgress()
+  const { isSolved, getConfidence, state, getCode, addCode } = useProgress()
   const isInterviewerResponding = ref(false)
 
   function getCurrentSlug(session = activeSession.value): string | null {
@@ -692,6 +692,7 @@ export function useMockInterview() {
       totalQuestions,
       totalTimeMinutes: options?.totalTimeMinutes ?? DEFAULT_CONFIG.totalTimeMinutes,
       language: 'java',
+      isIndividualMode: options?.isIndividualMode ?? false,
     }
 
     const questionSlugs = selectQuestions(config.totalQuestions, options?.preferredSlug)
@@ -701,13 +702,14 @@ export function useMockInterview() {
 
     const problemsState = Object.fromEntries(
       questionSlugs.map((slug): [string, InterviewProblemState] => {
+        const prevCode = config.isIndividualMode ? getCode(slug) : ''
         return [
           slug,
           {
             slug,
             startedAt: null,
             submittedAt: null,
-            code: DEFAULT_JAVA_TEMPLATE,
+            code: prevCode || DEFAULT_JAVA_TEMPLATE,
             thoughts: [],
             chat: [
               {
@@ -754,9 +756,15 @@ export function useMockInterview() {
   }
 
   function updateCode(code: string) {
+    const session = activeSession.value
     const stateForProblem = getCurrentProblemState()
-    if (!stateForProblem) return
+    if (!stateForProblem || !session) return
     stateForProblem.code = code
+
+    if (session.config.isIndividualMode) {
+      addCode(stateForProblem.slug, code)
+    }
+
     persist()
   }
 

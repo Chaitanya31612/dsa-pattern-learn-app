@@ -20,10 +20,13 @@ The endpoint supports two modes:
 
 - `GET /api/health`
 - `POST /api/mock-interview/respond`
+- `POST /api/analyze-code`
 
 `/api/health` is used for quick verification of current provider/model wiring.
 
 `/api/mock-interview/respond` is the core path used by `frontend/src/composables/useMockInterview.ts`.
+
+`/api/analyze-code` is a standalone endpoint used by `DetailedAnalysisView.vue` to evaluate space/time complexity and provide structured improvements for a single problem submission.
 
 ## Data Flow (End-to-End)
 
@@ -136,6 +139,17 @@ When `analyzer.analyze(...)` fails:
 - backend returns a deterministic guidance reply,
 - includes `provider_error` in `safety_flags`,
 - keeps payload shape stable for frontend rendering.
+
+## Detailed Analysis Mode
+
+For isolated single-problem interviews, the frontend can request a deep analysis via `POST /api/analyze-code`.
+
+This endpoint consumes:
+- target problem slug,
+- actual code and approach notes written by the candidate,
+- recent chat.
+
+It returns a structured JSON payload defining Space/Time complexity estimates and a list of strengths/weaknesses. It utilizes the same safe fallback behavior as the primary mock interview endpoints.
 
 ## Caching and Performance
 

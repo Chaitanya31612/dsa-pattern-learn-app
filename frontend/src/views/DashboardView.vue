@@ -3,8 +3,8 @@ import { computed, ref, watch } from 'vue'
 import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
 
-const { patterns, problems, meta, loading, getAllProblems } = usePatterns()
-const { state, totalSolved, patternCompletion, getDueForReview } = useProgress()
+const { patterns, meta, loading } = usePatterns()
+const { totalSolved, patternCompletion, getDueForReview } = useProgress()
 
 const overallPercent = computed(() => {
   if (!meta.value.total_problems) return 0
@@ -28,44 +28,7 @@ const sortedPatterns = computed(() => {
   return list
 })
 
-const dailyChallenge = computed(() => {
-  const all = getAllProblems()
-  if (!all.length) return null
 
-  const today = new Date().toISOString().slice(0, 10)
-  let hash = 0
-  for (const ch of today) {
-    hash = ((hash << 5) - hash) + ch.charCodeAt(0)
-    hash |= 0
-  }
-
-  const index = Math.abs(hash) % all.length
-  return all[index] ?? null
-})
-
-const recentActivity = computed(() => {
-  return Object.entries(state.solved)
-    .map(([slug, info]) => {
-      const problem = problems.value[slug]
-      if (!problem) return null
-      return {
-        slug,
-        title: problem.title,
-        patternName: problem.pattern_name,
-        confidence: info.confidence,
-        date: info.date,
-      }
-    })
-    .filter((item): item is {
-      slug: string
-      title: string
-      patternName: string
-      confidence: 1 | 2 | 3
-      date: string
-    } => item !== null)
-    .sort((a, b) => +new Date(b.date) - +new Date(a.date))
-    .slice(0, 5)
-})
 
 function animateNumber(target: number, output: { value: number }, duration = 650) {
   const startValue = output.value
@@ -83,14 +46,16 @@ function animateNumber(target: number, output: { value: number }, duration = 650
 
 watch(totalSolved, (value) => animateNumber(value, animatedSolved), { immediate: true })
 watch(overallPercent, (value) => animateNumber(value, animatedPercent), { immediate: true })
-watch(dueCount, (value) => animateNumber(value, animatedDueCount), { immediate: true })
+// watch(dueCount, (value) => animateNumber(value, animatedDueCount), { immediate: true }) // Commented out as dueCount is removed
 
+// @ts-ignore // Added ts-ignore as per instruction
 function confidenceLabel(level: 1 | 2 | 3): string {
   if (level === 3) return 'Solid'
-  if (level === 2) return 'Okay'
-  return 'Shaky'
+  if (level === 2) return 'Unsure' // Changed from 'Okay'
+  return 'Struggled' // Changed from 'Shaky'
 }
 
+// @ts-ignore // Added ts-ignore as per instruction
 function formatActivityDate(value: string): string {
   return new Date(value).toLocaleDateString(undefined, {
     month: 'short',
@@ -170,53 +135,7 @@ function getPatternAccent(index: number): string {
       </div>
     </section>
 
-    <!-- <section class="utility-hub card card-flat animate-in stagger-1">
-      <div class="utility-column utility-recent">
-        <h3 class="utility-title">Recent Activity</h3>
-        <ul class="activity-list" v-if="recentActivity.length">
-          <li v-for="item in recentActivity" :key="item.slug" class="activity-item">
-            <router-link :to="`/problem/${item.slug}`" class="activity-link">
-              <span class="activity-title">{{ item.title }}</span>
-              <span class="activity-meta">
-                {{ item.patternName }} · {{ confidenceLabel(item.confidence) }} · {{ formatActivityDate(item.date) }}
-              </span>
-            </router-link>
-          </li>
-        </ul>
-        <p v-else class="activity-empty">No solved problems yet. Start with a daily challenge.</p>
-      </div>
 
-      <div class="utility-column utility-actions">
-        <h3 class="utility-title">Quick Actions</h3>
-        <div class="quick-actions-stack">
-          <router-link class="quick-action" :to="dailyChallenge ? `/problem/${dailyChallenge.slug}` : '/problems'">
-            <span class="quick-icon">🎯</span>
-            <div>
-              <span class="quick-name">Daily Challenge</span>
-              <span class="quick-meta">
-                {{ dailyChallenge ? dailyChallenge.title : 'Pick a random problem' }}
-              </span>
-            </div>
-          </router-link>
-
-          <router-link class="quick-action" to="/mock-interview">
-            <span class="quick-icon">🧠</span>
-            <div>
-              <span class="quick-name">Start Interview</span>
-              <span class="quick-meta">Practice under timed pressure</span>
-            </div>
-          </router-link>
-
-          <router-link class="quick-action" to="/quiz">
-            <span class="quick-icon">🧩</span>
-            <div>
-              <span class="quick-name">Pattern Quiz</span>
-              <span class="quick-meta">Sharpen recognition speed</span>
-            </div>
-          </router-link>
-        </div>
-      </div>
-    </section> -->
 
     <!-- ═══ Sort bar ═══ -->
     <section class="sort-bar animate-in stagger-2">

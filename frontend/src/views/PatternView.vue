@@ -5,6 +5,7 @@ import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
 import CodeHighlight from '../components/CodeHighlight.vue'
 import AIChatPanel from '../components/AIChatPanel.vue'
+import { marked } from 'marked'
 
 const route = useRoute()
 const patternId = computed(() => route.params.id as string)
@@ -150,27 +151,44 @@ const patternChatChips = computed(() => {
         </div>
       </div>
 
-      <div class="pv-progress">
-        <div class="pv-ring">
-          <svg viewBox="0 0 44 44" aria-label="Pattern completion progress">
-            <circle class="pv-ring-bg" cx="22" cy="22" r="18" />
-            <circle
-              class="pv-ring-fill"
-              cx="22"
-              cy="22"
-              r="18"
-              :stroke-dasharray="ringCircumference"
-              :stroke-dashoffset="ringOffset"
-            />
-          </svg>
-          <span class="pv-ring-label mono">{{ completion }}%</span>
+      <div class="pv-header-stats">
+        <div class="pv-progress">
+          <div class="pv-ring">
+            <svg viewBox="0 0 44 44" aria-label="Pattern completion progress">
+              <circle class="pv-ring-bg" cx="22" cy="22" r="18" />
+              <circle
+                class="pv-ring-fill"
+                cx="22"
+                cy="22"
+                r="18"
+                :stroke-dasharray="ringCircumference"
+                :stroke-dashoffset="ringOffset"
+              />
+            </svg>
+            <span class="pv-ring-label mono">{{ completion }}%</span>
+          </div>
+
+          <div class="pv-progress-bar-wrap">
+            <div class="progress-bar" style="height: 6px">
+              <div class="progress-fill" :style="{ width: completion + '%' }"></div>
+            </div>
+            <span class="mono pv-progress-label">{{ completion }}% complete</span>
+          </div>
         </div>
 
-        <div class="pv-progress-bar-wrap">
-          <div class="progress-bar" style="height: 6px">
-            <div class="progress-fill" :style="{ width: completion + '%' }"></div>
+        <div class="header-difficulty" v-if="problems.length">
+          <div class="diff-mini-grid">
+            <article v-for="item in difficultyBreakdown" :key="item.label" class="diff-mini-card">
+              <div class="diff-mini-head">
+                <span class="mono">{{ item.label }}</span>
+                <span class="mono">{{ item.count }}</span>
+              </div>
+              <div class="diff-mini-bar">
+                <span class="diff-mini-fill" :style="{ width: `${item.pct}%`, background: item.color }"></span>
+              </div>
+              <span class="diff-mini-pct mono">{{ item.pct }}%</span>
+            </article>
           </div>
-          <span class="mono pv-progress-label">{{ completion }}% complete</span>
         </div>
       </div>
     </header>
@@ -201,23 +219,7 @@ const patternChatChips = computed(() => {
       </div>
     </section>
 
-    <section class="card card-flat difficulty-overview animate-in" v-if="problems.length">
-      <h3 class="section-heading">
-        <span class="heading-icon">📊</span> Difficulty Distribution
-      </h3>
-      <div class="diff-mini-grid">
-        <article v-for="item in difficultyBreakdown" :key="item.label" class="diff-mini-card">
-          <div class="diff-mini-head">
-            <span class="mono">{{ item.label }}</span>
-            <span class="mono">{{ item.count }}</span>
-          </div>
-          <div class="diff-mini-bar">
-            <span class="diff-mini-fill" :style="{ width: `${item.pct}%`, background: item.color }"></span>
-          </div>
-          <span class="diff-mini-pct mono">{{ item.pct }}%</span>
-        </article>
-      </div>
-    </section>
+
 
     <section class="card card-flat company-overview animate-in" v-if="topCompanies.length">
       <h3 class="section-heading">
@@ -347,7 +349,7 @@ const patternChatChips = computed(() => {
         <h3 class="section-heading">
           <span class="heading-icon">🚶</span> Walkthrough: {{ pattern.sample_walkthrough.problem }}
         </h3>
-        <div class="walkthrough-text" v-html="pattern.sample_walkthrough.approach.replace(/\n/g, '<br/>')"></div>
+        <div class="walkthrough-text markdown-body" v-html="marked.parse(pattern.sample_walkthrough.approach || '', { async: false, breaks: true, gfm: true })"></div>
       </section>
 
       <section class="card card-flat" style="margin-top: var(--space-md)" v-if="pattern.related_patterns.length">
@@ -500,10 +502,25 @@ const patternChatChips = computed(() => {
   margin-bottom: var(--space-xl);
 }
 
+.pv-header-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xl);
+  flex-wrap: wrap;
+}
+
+.header-difficulty {
+  flex: 1;
+  min-width: 250px;
+  max-width: 450px;
+}
+
 .pv-progress {
   display: flex;
   align-items: center;
   gap: var(--space-md);
+  flex: 1;
 }
 
 .pv-ring {
@@ -789,9 +806,13 @@ const patternChatChips = computed(() => {
 }
 
 .explanation-text {
-  color: var(--text-secondary);
+  color: #e2e8f0;
   line-height: 1.8;
   font-size: var(--text-base);
+}
+.explanation-text :deep(strong) {
+  color: #fff;
+  font-weight: 700;
 }
 
 .use-list, .mistake-list {
@@ -814,15 +835,20 @@ const patternChatChips = computed(() => {
 }
 
 .use-list li, .mistake-list li {
-  color: var(--text-secondary);
-  font-size: var(--text-sm);
+  color: #e2e8f0;
+  font-size: var(--text-base);
   line-height: 1.6;
 }
 
 .walkthrough-text {
-  color: var(--text-secondary);
+  color: #e2e8f0;
   line-height: 1.8;
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
+}
+
+.walkthrough-text :deep(strong) {
+  color: #fff;
+  font-weight: 700;
 }
 
 .related-list {

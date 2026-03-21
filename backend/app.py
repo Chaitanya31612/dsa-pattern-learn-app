@@ -28,9 +28,9 @@ from pathlib import Path
 from typing import Any, Dict, Literal, Optional
 
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, HttpUrl, Field
 
 from ai.base import AIProvider
 from ai.factory import AIAnalyzerFactory
@@ -190,6 +190,20 @@ class MockInterviewRespondResponse(BaseModel):
     debrief: Optional[DebriefReportPayload] = None
 
 
+class AnalyzeCodeRequest(BaseModel):
+    problem_slug: str = Field(min_length=1, max_length=200)
+    code: str = ''
+    notes: list[str] = Field(default_factory=list)
+    chat: list[ChatMessagePayload] = Field(default_factory=list)
+
+class AnalyzeCodeResponse(BaseModel):
+    timeComplexity: str
+    spaceComplexity: str
+    improvements: list[str]
+    strengths: list[str]
+    interview_walkthrough: str
+
+
 # ---------------------------------------------------------------------------
 # Loading/caching helpers
 # ---------------------------------------------------------------------------
@@ -220,6 +234,26 @@ def load_db() -> Dict[str, Any]:
         return json.loads(path.read_text(encoding='utf-8'))
     except Exception:
         return {}
+
+
+def _save_to_custom_db(problem_obj: dict):
+    custom_db_path = Path(__file__).parent / 'pipeline' / 'data' / 'custom_problems.json'
+    custom_db_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    existing = []
+    if custom_db_path.exists():
+        try:
+            existing = json.loads(custom_db_path.read_text())
+        except:
+            pass
+            
+    idx = next((i for i, p in enumerate(existing) if p.get("slug") == problem_obj.get("slug")), None)
+    if idx is not None:
+        existing[idx] = problem_obj
+    else:
+        existing.append(problem_obj)
+        
+    custom_db_path.write_text(json.dumps(existing, indent=2))
 
 
 @lru_cache(maxsize=1)
@@ -436,7 +470,7 @@ def parse_json_object(text: str) -> Optional[Dict[str, Any]]:
 
     Handles common model outputs:
     - pure JSON
-    - fenced JSON (```json ... ```)
+    - fenced JSON (``` ... ```)
     - explanatory text wrapped around one JSON object
     """
 
@@ -964,3 +998,179 @@ def problem_chat(payload: ProblemChatRequest):
         provider=response.provider.value,
         model=response.model,
     )
+
+
+def _build_analyze_code_prompt(problem_context: str) -> str:
+    return (
+        f'You are an expert technical interviewer reviewing a candidate\'s code submission.\n'
+        f'You have deep knowledge of the following problem:\n\n'
+        f'{problem_context}\n\n'
+        f'Rules:\n'
+        f'- You MUST return ONLY valid JSON.\n'
+        f'- Use this exact JSON schema (keys must match exactly):\n'
+        f'{{\n'
+        f'  "timeComplexity": "Big-O notation string with a 1-sentence explanation of why",\n'
+        f'  "spaceComplexity": "Big-O notation string with a 1-sentence explanation of why",\n'
+        f'  "improvements": ["actionable improvement 1", "actionable improvement 2"],\n'
+        f'  "strengths": ["what they did well 1", "what they did well 2"],\n'
+        f'  "interview_walkthrough": "A highly detailed, conversational interview roleplay walkthrough. Show the narrative from encountering the question to the brute force, and then arriving at the optimal solution. Format with basic markdown."\n'
+        f'}}\n'
+        f'- Provide 2-4 concrete, actionable improvements based on the logic, edge cases, pattern alignment, and code quality.\n'
+        f'- Provide 1-3 strengths, affirming what they did right (e.g. good naming, right core concepts, optimal pattern).\n'
+        f'- The interview_walkthrough must be written as a dialogue or a chronological mental model from the candidate point of view.\n'
+        f'- CRITICAL: The `interview_walkthrough` is often long. You MUST escape all newlines as `\\\\n` and double quotes as `\\\\"` inside the string. Do NOT output raw literal newlines inside the JSON string!\n'
+        f'- Never wrap the JSON in Markdown delimiters, just return raw JSON.\n'
+    )
+
+@app.post('/api/analyze-code', response_model=AnalyzeCodeResponse)
+def analyze_code(payload: AnalyzeCodeRequest):
+    """
+    Detailed Code Analysis Endpoint.
+    Evaluates submitted code against the problem statement and pattern logic.
+    """
+    context = _build_problem_context(payload.problem_slug)
+    system_prompt = _build_analyze_code_prompt(context)
+
+    content_parts = []
+    if payload.notes:
+        content_parts.append(f"Candidate's Approach Notes:\n{chr(10).join(payload.notes)}")
+    content_parts.append(f"Candidate's Code:\n```java\n{payload.code}\n```")
+    
+    if payload.chat:
+        chat_repr = [f"{m.role}: {m.content}" for m in payload.chat[-10:]]
+        content_parts.append(f"Recent Interview Chat:\n{chr(10).join(chat_repr)}")
+        
+    content = "\n\n".join(content_parts)
+
+    analyzer = get_analyzer()
+    response = analyzer.analyze(content=content, prompt=system_prompt, json_mode=True)
+
+    if not response.success:
+        return AnalyzeCodeResponse(
+            timeComplexity="Unknown (Analysis failed)",
+            spaceComplexity="Unknown (Analysis failed)",
+            improvements=["The AI review service could not be reached."],
+            strengths=[],
+            interview_walkthrough=""
+        )
+
+    parsed = parse_json_object(response.content)
+    if not parsed:
+        return AnalyzeCodeResponse(
+            timeComplexity="Unknown",
+            spaceComplexity="Unknown",
+            improvements=["Failed to parse AI response into structured feedback."],
+            strengths=[],
+            interview_walkthrough=""
+        )
+
+    return AnalyzeCodeResponse(
+        timeComplexity=str(parsed.get('timeComplexity', 'Unknown')),
+        spaceComplexity=str(parsed.get('spaceComplexity', 'Unknown')),
+        improvements=[str(i) for i in parsed.get('improvements', []) if i],
+        strengths=[str(s) for s in parsed.get('strengths', []) if s],
+        interview_walkthrough=str(parsed.get('interview_walkthrough', ''))
+    )
+
+class ProcessLeetcodeRequest(BaseModel):
+    url: str
+
+@app.get('/api/custom-problems')
+def get_custom_problems():
+    custom_db_path = Path(__file__).parent / 'pipeline' / 'data' / 'custom_problems.json'
+    if not custom_db_path.exists():
+        return []
+    try:
+        return json.loads(custom_db_path.read_text())
+    except Exception:
+        return []
+
+@app.post('/api/process-leetcode')
+def process_leetcode(payload: ProcessLeetcodeRequest):
+    import requests
+    import re
+    
+    match = re.search(r'leetcode\.com/problems/([^/]+)', payload.url)
+    if not match:
+        raise HTTPException(status_code=400, detail="Invalid LeetCode URL")
+    slug = match.group(1)
+    
+    # Check if we already have it in db.json
+    db_path = Path(__file__).parent / 'pipeline' / 'data' / 'db.json'
+    if db_path.exists():
+        try:
+            main_db = json.loads(db_path.read_text())
+            problems = main_db if isinstance(main_db, list) else main_db.get("problems", {})
+            if isinstance(problems, list):
+                existing_prob = next((p for p in problems if p.get("slug") == slug), None)
+            else:
+                existing_prob = problems.get(slug)
+                
+            if existing_prob:
+                existing_prob["is_custom"] = True
+                _save_to_custom_db(existing_prob)
+                return existing_prob
+        except Exception:
+            pass
+            
+    # 1. Fetch metadata
+    session = requests.Session()
+    session.headers.update({
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        "Accept": "application/json",
+    })
+    query = """
+    query getQuestion($titleSlug: String!) {
+        question(titleSlug: $titleSlug) {
+            questionId
+            title
+            difficulty
+            content
+            topicTags { name }
+        }
+    }
+    """
+    resp = session.post("https://leetcode.com/graphql", json={
+        "query": query, "variables": {"titleSlug": slug}
+    }, timeout=10)
+    data = resp.json().get("data", {}).get("question")
+    if not data:
+        raise HTTPException(status_code=404, detail="Problem not found on LeetCode")
+        
+    problem_obj = {
+        "slug": slug,
+        "title": data.get("title", slug),
+        "difficulty": data.get("difficulty", "Medium"),
+        "pattern_name": "Custom",
+        "description_html": data.get("content", ""),
+        "topic_tags": [t["name"] for t in data.get("topicTags", [])],
+        "is_custom": True
+    }
+    
+    # 2. AI Enrichment (Insights & Solution)
+    analyzer = get_analyzer()
+    insight_prompt = f"""You are a DSA expert. Analyze this LeetCode problem:
+Title: {problem_obj['title']}
+Description: {problem_obj['description_html'][:1500]}
+
+Return JSON:
+{{
+  "pattern_hint": "1 sentence hint on what to look for",
+  "key_insight": "1 sentence core trick",
+  "time_complexity": "Big O",
+  "space_complexity": "Big O"
+}}"""
+    res1 = analyzer.analyze(content=insight_prompt, prompt="Output valid JSON.", json_mode=True)
+    if res1.success:
+        try:
+            ins = json.loads(res1.content.strip())
+            problem_obj["pattern_hint"] = ins.get("pattern_hint", "")
+            problem_obj["key_insight"] = ins.get("key_insight", "")
+            problem_obj["time_complexity"] = ins.get("time_complexity", "")
+            problem_obj["space_complexity"] = ins.get("space_complexity", "")
+        except:
+            pass
+
+    problem_obj["is_custom"] = True
+    _save_to_custom_db(problem_obj)
+    return problem_obj

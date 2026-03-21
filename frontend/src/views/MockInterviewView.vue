@@ -5,6 +5,7 @@ import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
 import { useMockInterview } from '../composables/useMockInterview'
 import CodeHighlight from '../components/CodeHighlight.vue'
+import ReflectionModal from '../components/ReflectionModal.vue'
 
 /**
  * MockInterviewView
@@ -288,6 +289,22 @@ const clarificationLog = computed(() => {
 const chatMessages = computed(() => currentProblemState.value?.chat ?? [])
 const canSubmit = computed(() => Boolean(activeSession.value && currentProblemState.value))
 
+const showReflection = ref(false)
+const selectedScoreForReflection = computed(() => {
+  const session = activeSession.value
+  if (!session || !session.questionSlugs.length) return undefined
+  const slug = session.questionSlugs[0]
+  if (!slug) return undefined
+  return session.result?.perProblem?.[slug]?.score
+})
+const selectedReasoningForReflection = computed(() => {
+  const session = activeSession.value
+  if (!session || !session.questionSlugs.length) return undefined
+  const slug = session.questionSlugs[0]
+  if (!slug) return undefined
+  return session.result?.perProblem?.[slug]?.reasoning
+})
+
 watch(
   () => chatMessages.value.length,
   async () => {
@@ -334,6 +351,7 @@ function startInterview() {
     language: 'java',
     allowPause: setupConfig.value.allowPause,
     preferredSlug: selectedProblemSlug.value || undefined,
+    isIndividualMode: selectedProblemSlug.value ? shouldSingleQuestionMode.value : false,
   })
 
   if (!result.ok) {
@@ -383,9 +401,9 @@ function beginInterviewStart() {
 function submitThought() {
   if (!thoughtInput.value.trim()) return
 
-  // Sync with global problem notes immediately
+  // Sync with global problem notes only if in individual mode
   const slug = currentProblem.value?.slug
-  if (slug) {
+  if (slug && activeSession.value?.config.isIndividualMode) {
     const existingNote = getNote(slug)
     const nextIndex = (currentProblemState.value?.thoughts.length || 0) + 1
     const formattedThought = `${nextIndex}. ${thoughtInput.value.trim()}`
@@ -407,6 +425,13 @@ async function sendChat() {
   if (!chatInput.value.trim()) return
   await sendMessage(chatInput.value)
   chatInput.value = ''
+}
+
+async function requestCodeReview() {
+  const code = currentProblemState.value?.code?.trim() ?? ''
+  const notes = currentProblemState.value?.thoughts.join('\n') ?? ''
+  const payload = `Can you review my current code and approach notes and provide feedback?\n\n**Approach Notes:**\n${notes || 'No notes yet.'}\n\n**Code:**\n\`\`\`java\n${code || '// No code written yet.'}\n\`\`\``
+  await sendMessage(payload)
 }
 
 function submitProblemAndContinue() {
@@ -815,9 +840,14 @@ watch(
                 placeholder="Ask for clarifications or explain your approach..."
                 :disabled="isInterviewerResponding"
               ></textarea>
-              <button class="btn" :disabled="isInterviewerResponding" @click="sendChat">
-                {{ isInterviewerResponding ? 'Thinking...' : 'Send' }}
-              </button>
+              <div class="chat-actions">
+                <button class="btn" title="Send current code and notes for review" :disabled="isInterviewerResponding" @click="requestCodeReview">
+                  Review Code
+                </button>
+                <button class="btn btn-primary" :disabled="isInterviewerResponding || !chatInput.trim()" @click="sendChat">
+                  {{ isInterviewerResponding ? 'Thinking...' : 'Send' }}
+                </button>
+              </div>
             </div>
           </article>
         </div>
@@ -826,15 +856,15 @@ watch(
 
     <!-- Final report view after completion/early end -->
     <section v-else class="report-pane animate-in stagger-1">
-      <div class="card score-hero">
+      <div class="card score-hero cyber-panel">
         <span class="terminal-prompt">interview.report()</span>
-        <h2 class="score-title">Final Score: {{ activeSession.result?.totalScore ?? 0 }}/100</h2>
+        <h2 class="score-title">Final Score: <span class="score-highlight">{{ activeSession.result?.totalScore ?? 0 }}</span><span class="score-base">/100</span></h2>
         <p class="score-subtitle">
           Session {{ activeSession.status === 'abandoned' ? 'ended early' : 'completed' }} ·
           {{ activeSession.questionSlugs.length }} questions
         </p>
         <p v-if="isReportGenerating" class="score-subtitle report-refreshing">
-          Personalizing feedback from your code, notes, and interviewer chat...
+          <span class="spinner-inline"></span> Personalizing feedback from your code, notes, and interviewer chat...
         </p>
       </div>
 
@@ -889,7 +919,32 @@ watch(
 
       <div class="report-actions">
         <button class="btn btn-primary" @click="restartInterview">Start New Interview</button>
+        <button
+          v-if="activeSession?.config.isIndividualMode && activeSession.questionSlugs.length > 0"
+          class="btn btn-primary"
+          @click="showReflection = true"
+        >
+          Mark Solved & Reflect
+        </button>
+        <router-link
+          v-if="activeSession?.config.isIndividualMode && activeSession.questionSlugs.length > 0"
+          :to="`/detailed-analysis/${activeSession.questionSlugs[0]}`"
+          class="btn special-action-btn"
+        >
+          ✨ Detailed AI Analysis
+        </router-link>
       </div>
+      
+      <!-- Mark Solved Modal outside -->
+      <ReflectionModal
+        v-if="showReflection && activeSession?.questionSlugs.length"
+        :slug="activeSession.questionSlugs[0] || ''"
+        :pattern-name="problems[activeSession.questionSlugs[0] || '']?.pattern_name || ''"
+        :problem-title="problems[activeSession.questionSlugs[0] || '']?.title || ''"
+        :session-score="selectedScoreForReflection"
+        :session-reasoning="selectedReasoningForReflection"
+        @close="showReflection = false"
+      />
     </section>
   </div>
 
@@ -1118,6 +1173,8 @@ watch(
   top: 64px;
   z-index: 20;
   background: var(--bg-secondary);
+  padding: 8px 16px;
+  min-height: 48px;
 }
 
 .meta-block {
@@ -1176,11 +1233,11 @@ watch(
 }
 
 .workspace-timer-ring {
-  --timer-size: 42px;
+  --timer-size: 32px;
 }
 
 .timer-ring-label {
-  font-size: 9px;
+  font-size: 8px;
   color: var(--accent-cyan);
 }
 
@@ -1465,6 +1522,12 @@ watch(
   gap: var(--space-sm);
 }
 
+.chat-actions {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: flex-end;
+}
+
 .chat-typing {
   display: inline-flex;
   align-items: center;
@@ -1476,13 +1539,32 @@ watch(
   gap: var(--space-md);
 }
 
-.score-hero {
-  display: grid;
-  gap: var(--space-sm);
+.score-hero.cyber-panel {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.05);
+  margin-bottom: var(--space-md);
 }
 
 .score-title {
-  font-size: var(--text-2xl);
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin: var(--space-xs) 0;
+  letter-spacing: -0.02em;
+}
+
+.score-highlight {
+  color: var(--accent-cyan);
+  text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+}
+
+.score-base {
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-left: 4px;
 }
 
 .score-subtitle {
@@ -1524,6 +1606,23 @@ watch(
 .report-actions {
   display: flex;
   justify-content: flex-start;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.special-action-btn {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), transparent);
+  border: 1px solid var(--accent-cyan) !important;
+  color: var(--accent-cyan) !important;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+  transition: all var(--transition-fast);
+}
+
+.special-action-btn:hover {
+  background: var(--accent-cyan) !important;
+  color: #000 !important;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
 }
 
 @media (max-width: 1200px) {

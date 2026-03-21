@@ -6,11 +6,18 @@ const STORAGE_KEY = 'dsa-pattern-progress'
 function loadFromStorage(): Progress {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) return JSON.parse(raw)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (!parsed.code) parsed.code = {}
+      if (!parsed.notes) parsed.notes = {}
+      if (!parsed.reflections) parsed.reflections = {}
+      if (!parsed.solved) parsed.solved = {}
+      return parsed
+    }
   } catch (e) {
     console.warn('Failed to load progress from localStorage:', e)
   }
-  return { solved: {}, notes: {}, reflections: {} }
+  return { solved: {}, notes: {}, code: {}, reflections: {} }
 }
 
 const state = reactive<Progress>(loadFromStorage())
@@ -35,10 +42,13 @@ if (typeof window !== 'undefined') {
 }
 
 export function useProgress() {
-  function markSolved(slug: string, confidence: 1 | 2 | 3) {
+  function markSolved(slug: string, confidence: 1 | 2 | 3, score?: number, reasoning?: string[]) {
+    const existing = state.solved[slug]
     state.solved[slug] = {
       date: new Date().toISOString(),
       confidence,
+      score: score ?? existing?.score,
+      reasoning: reasoning ?? existing?.reasoning,
     }
   }
 
@@ -68,6 +78,14 @@ export function useProgress() {
 
   function getReflection(slug: string) {
     return state.reflections[slug] ?? null
+  }
+
+  function addCode(slug: string, code: string) {
+    state.code[slug] = code
+  }
+
+  function getCode(slug: string): string {
+    return state.code[slug] ?? ''
   }
 
   /** Get problems due for spaced repetition review */
@@ -120,6 +138,8 @@ export function useProgress() {
     getNote,
     addReflection,
     getReflection,
+    addCode,
+    getCode,
     getDueForReview,
     totalSolved,
     patternCompletion,

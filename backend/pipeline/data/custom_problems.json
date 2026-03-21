@@ -1,0 +1,102 @@
+[
+  {
+    "number": 1,
+    "title": "Two Sum",
+    "slug": "two-sum",
+    "leetcode_url": "https://leetcode.com/problems/two-sum/",
+    "description_html": "<p>Given an array of integers <code>nums</code>&nbsp;and an integer <code>target</code>, return <em>indices of the two numbers such that they add up to <code>target</code></em>.</p>\n\n<p>You may assume that each input would have <strong><em>exactly</em> one solution</strong>, and you may not use the <em>same</em> element twice.</p>\n\n<p>You can return the answer in any order.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [2,7,11,15], target = 9\n<strong>Output:</strong> [0,1]\n<strong>Explanation:</strong> Because nums[0] + nums[1] == 9, we return [0, 1].\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [3,2,4], target = 6\n<strong>Output:</strong> [1,2]\n</pre>\n\n<p><strong class=\"example\">Example 3:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [3,3], target = 6\n<strong>Output:</strong> [0,1]\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>2 &lt;= nums.length &lt;= 10<sup>4</sup></code></li>\n\t<li><code>-10<sup>9</sup> &lt;= nums[i] &lt;= 10<sup>9</sup></code></li>\n\t<li><code>-10<sup>9</sup> &lt;= target &lt;= 10<sup>9</sup></code></li>\n\t<li><strong>Only one valid answer exists.</strong></li>\n</ul>\n\n<p>&nbsp;</p>\n<strong>Follow-up:&nbsp;</strong>Can you come up with an algorithm that is less than <code>O(n<sup>2</sup>)</code><font face=\"monospace\">&nbsp;</font>time complexity?",
+    "description_text": "Given an array of integers nums and an integer target , return indices of the two numbers such that they add up to target . You may assume that each input would have exactly one solution, and you may not use the same element twice. You can return the answer in any order. Example 1: Input: nums = [2,7,11,15], target = 9 Output: [0,1] Explanation: Because nums[0] + nums[1] == 9, we return [0, 1]. Example 2: Input: nums = [3,2,4], target = 6 Output: [1,2] Example 3: Input: nums = [3,3], target = 6 Output: [0,1] Constraints: 2 <= nums.length <= 104 -109 <= nums[i] <= 109 -109 <= target <= 109 Only one valid answer exists. Follow-up: Can you come up with an algorithm that is less than O(n2) time complexity?",
+    "difficulty": "Easy",
+    "acceptance_rate": 57.1,
+    "topic_tags": [
+      "Array",
+      "Hash Table"
+    ],
+    "pattern_id": "arrays-hashing",
+    "pattern_name": "Arrays & Hashing",
+    "sub_pattern_id": "hashing-frequency-count",
+    "sub_pattern_name": "Hashing Frequency Count",
+    "in_neetcode": true,
+    "in_striver": true,
+    "in_both": true,
+    "score": 113.67,
+    "pattern_hint": "The problem requires finding two elements in an array that sum to a given target, which suggests using a hash table to store the elements we've seen so far and their complements. The need to find a pair of elements that meet a specific condition points towards hashing.",
+    "key_insight": "The key insight is to iterate through the array and for each element, check if its complement (target - current element) is already in the hash table. If it is, we've found a pair that sums to the target.",
+    "template_deviation": "This problem deviates from the standard hashing template by using the hash table to store the complement of each element rather than the element itself, allowing for efficient lookup of pairs.",
+    "common_mistake": "A common mistake is not handling the case where the input array is empty or contains only one element, which cannot satisfy the condition of finding two elements that sum to the target.",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)",
+    "companies": [
+      "Adobe",
+      "Airbnb",
+      "Amazon",
+      "Apple",
+      "Bloomberg",
+      "Google",
+      "JPMorgan",
+      "LinkedIn",
+      "Meta",
+      "Microsoft",
+      "Oracle",
+      "Uber"
+    ],
+    "frequency_tier": "very_high",
+    "last_seen": "2026",
+    "follow_ups": [
+      "3sum",
+      "4sum",
+      "two-sum-ii-input-array-is-sorted"
+    ],
+    "source_signals": [
+      "bridge_overlap",
+      "grind75",
+      "neetcode",
+      "striver"
+    ],
+    "interview_lists_count": 4,
+    "company_count": 12,
+    "solution_breakdown": {
+      "slug": "two-sum",
+      "intuition": "The problem requires finding two elements in an array that sum to a given target, which suggests using a hash table to store the elements we've seen so far and their complements. The key is to iterate through the array and for each element, check if its complement is already in the hash table.",
+      "pattern_connection": "This problem connects to the Arrays & Hashing pattern as it involves finding a pair of elements that meet a specific condition, pointing towards hashing. The need to find a pair of elements that sum to the target suggests using a hash table to store the elements we've seen so far.",
+      "steps": [
+        {
+          "title": "Initialize Hash Table",
+          "detail": "Create a hash table to store the elements we've seen so far and their indices."
+        },
+        {
+          "title": "Iterate Through Array",
+          "detail": "Iterate through the array and for each element, check if its complement is already in the hash table."
+        },
+        {
+          "title": "Check for Pair",
+          "detail": "If the complement is found, return the pair of elements."
+        },
+        {
+          "title": "Store Element",
+          "detail": "If the complement is not found, store the current element in the hash table."
+        },
+        {
+          "title": "Handle Edge Cases",
+          "detail": "Check if the input array is empty or contains only one element, in which case no pair can be found."
+        }
+      ],
+      "java_pseudocode": "\npublic class Solution {\n  public int[] twoSum(int[] nums, int target) {\n    // Initialize hash table\n    Map<Integer, Integer> map = new HashMap<>();\n    \n    // Iterate through array\n    for (int i = 0; i < nums.length; i++) {\n      // Check for pair\n      int complement = target - nums[i];\n      if (map.containsKey(complement)) {\n        return new int[] { map.get(complement), i };\n      }\n      // Store element\n      map.put(nums[i], i);\n    }\n    // Handle edge cases\n    throw new IllegalArgumentException(\"No two sum solution\");\n  }\n}",
+      "edge_cases": [
+        "Empty array",
+        "Array with one element",
+        "Array with duplicate elements",
+        "Array with negative numbers",
+        "Array with zero"
+      ],
+      "alternatives": [
+        {
+          "approach": "Brute Force",
+          "tradeoff": "This approach is worse because it involves checking every pair of elements, resulting in a higher time complexity of O(n^2)."
+        }
+      ],
+      "source": "ai"
+    },
+    "is_custom": true
+  }
+]

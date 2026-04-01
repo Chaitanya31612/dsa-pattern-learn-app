@@ -22,9 +22,23 @@ function loadFromStorage(): Progress {
 
 const state = reactive<Progress>(loadFromStorage())
 
-// Auto-persist on changes
+// Debounce helper — coalesces rapid bursts (e.g. typing) into one write.
+let _persistTimer: ReturnType<typeof setTimeout> | null = null
+function schedulePersist() {
+  if (_persistTimer !== null) clearTimeout(_persistTimer)
+  _persistTimer = setTimeout(() => {
+    _persistTimer = null
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    } catch (e) {
+      console.warn('Failed to persist progress to localStorage:', e)
+    }
+  }, 600)
+}
+
+// Auto-persist on changes — debounced so rapid typing doesn't hammer JSON.stringify
 watch(() => state, () => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+  schedulePersist()
 }, { deep: true })
 
 // Sync state across multiple tabs

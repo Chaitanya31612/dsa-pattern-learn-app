@@ -35,6 +35,7 @@ const {
   defaultConfig,
   startSession,
   updateCode,
+  flushCodeSave,
   addThought,
   sendMessage,
   requestHint,
@@ -67,6 +68,8 @@ const showSyntaxHighlight = ref(false)
 const lastHandledAutoStartKey = ref('')
 const pinnedProblemSlug = ref('')
 const startCountdown = ref<number | null>(null)
+const codeSaved = ref(false)
+let codeSavedTimer: number | null = null
 
 type InterviewLayoutPrefs = {
   editorRatio: number
@@ -441,6 +444,17 @@ function submitProblemAndContinue() {
   chatInput.value = ''
 }
 
+function saveCode() {
+  flushCodeSave()
+  // Flash the "Saved ✓" indicator for 1.5s.
+  if (codeSavedTimer !== null) window.clearTimeout(codeSavedTimer)
+  codeSaved.value = true
+  codeSavedTimer = window.setTimeout(() => {
+    codeSaved.value = false
+    codeSavedTimer = null
+  }, 1500)
+}
+
 async function requestHintMessage() {
   await requestHint()
 }
@@ -673,7 +687,7 @@ watch(
           <button class="btn" :disabled="isInterviewerResponding" @click="requestHintMessage">
             {{ isInterviewerResponding ? 'Thinking...' : 'Need Hint' }}
           </button>
-          <button class="btn" @click="togglePause" :disabled="!activeSession.config.allowPause">
+          <button class="btn" @click="togglePause" :disabled="!activeSession.config.allowPause && !activeSession.config.isIndividualMode">
             {{ activeSession.paused ? 'Resume' : 'Pause' }}
           </button>
           <router-link
@@ -786,6 +800,14 @@ watch(
             <div class="editor-footer">
               <span class="mono">Hints used: {{ currentProblemState?.hintCount ?? 0 }}</span>
               <span class="mono">Submitted: {{ currentProblemState?.submittedAt ? 'Yes' : 'No' }}</span>
+              <div class="editor-save-row">
+                <Transition name="save-flash">
+                  <span v-if="codeSaved" class="save-indicator mono">Saved ✓</span>
+                </Transition>
+                <button class="btn btn-ghost save-btn" @click="saveCode" title="Force-save code to local storage now">
+                  Save Code
+                </button>
+              </div>
             </div>
           </article>
 
@@ -1378,6 +1400,12 @@ watch(
   font-size: var(--text-sm);
 }
 
+/* Preserve newlines and indentation exactly as the user typed them */
+.thought-list li {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 .empty-text {
   color: var(--text-muted);
   font-size: var(--text-sm);
@@ -1453,10 +1481,46 @@ watch(
 
 .editor-footer {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   color: var(--text-muted);
   font-size: var(--text-xs);
+  flex-wrap: wrap;
+  gap: var(--space-xs);
 }
+
+.editor-save-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.save-indicator {
+  color: var(--accent-green);
+  font-size: var(--text-xs);
+}
+
+.save-btn {
+  font-size: var(--text-xs);
+  padding: 3px 10px;
+  opacity: 0.8;
+}
+
+.save-btn:hover {
+  opacity: 1;
+}
+
+/* Saved ✓ flash fade */
+.save-flash-enter-active,
+.save-flash-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.save-flash-enter-from,
+.save-flash-leave-to {
+  opacity: 0;
+}
+
 
 .chat-thread {
   flex: 1;

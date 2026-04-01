@@ -68,6 +68,8 @@ const activeSession = ref<MockInterviewSession | null>(loadSession())
 const featureFlags = ref<MockInterviewFeatureFlags>(loadFlags())
 
 let timerHandle: number | null = null
+// Debounce timer for code-edit persistence — prevents per-keystroke JSON.stringify bursts.
+let _codeEditPersistTimer: number | null = null
 type StartSessionOptions = Partial<MockInterviewConfig> & { preferredSlug?: string }
 
 /**
@@ -686,13 +688,17 @@ export function useMockInterview() {
     // Special case: deep-link flow ("Solve in Interview Mode") can request 1 focused question.
     const requestedTotal = options?.totalQuestions
     const totalQuestions = options?.preferredSlug && requestedTotal === 1 ? 1 : 3
+    const isIndividualMode = options?.isIndividualMode ?? false
     const config: MockInterviewConfig = {
       ...DEFAULT_CONFIG,
       ...options,
       totalQuestions,
       totalTimeMinutes: options?.totalTimeMinutes ?? DEFAULT_CONFIG.totalTimeMinutes,
       language: 'java',
-      isIndividualMode: options?.isIndividualMode ?? false,
+      isIndividualMode,
+      // Individual-mode sessions are focused practice — always allow pause so the
+      // user can step away without losing their timed slot.
+      allowPause: isIndividualMode ? true : (options?.allowPause ?? DEFAULT_CONFIG.allowPause),
     }
 
     const questionSlugs = selectQuestions(config.totalQuestions, options?.preferredSlug)
@@ -759,12 +765,40 @@ export function useMockInterview() {
     const session = activeSession.value
     const stateForProblem = getCurrentProblemState()
     if (!stateForProblem || !session) return
+    // Update reactive state immediately so the editor is never laggy.
     stateForProblem.code = code
 
-    if (session.config.isIndividualMode) {
-      addCode(stateForProblem.slug, code)
+    // Debounce the expensive work: addCode (triggers progress store watcher)
+    // and persist (JSON.stringify of the full session) are coalesced so that
+    // rapid typing only triggers one write per 500ms idle, not per keystroke.
+    if (_codeEditPersistTimer !== null) {
+      window.clearTimeout(_codeEditPersistTimer)
     }
+    _codeEditPersistTimer = window.setTimeout(() => {
+      _codeEditPersistTimer = null
+      if (session.config.isIndividualMode) {
+        addCode(stateForProblem.slug, code)
+      }
+      persist()
+    }, 500)
+  }
 
+  /**
+   * Immediately flush any pending debounced code save.
+   * Called by the manual "Save Code" button so users can force-persist without
+   * waiting for the debounce to expire.
+   */
+  function flushCodeSave() {
+    if (_codeEditPersistTimer !== null) {
+      window.clearTimeout(_codeEditPersistTimer)
+      _codeEditPersistTimer = null
+    }
+    const session = activeSession.value
+    const stateForProblem = getCurrentProblemState()
+    if (!stateForProblem || !session) return
+    if (session.config.isIndividualMode) {
+      addCode(stateForProblem.slug, stateForProblem.code)
+    }
     persist()
   }
 
@@ -1330,6 +1364,12 @@ export function useMockInterview() {
 
   function restartInterview() {
     stopTimer()
+    // Cancel any pending debounced code-edit write before clearing the session
+    // so we don't accidentally write stale code into a null session.
+    if (_codeEditPersistTimer !== null) {
+      window.clearTimeout(_codeEditPersistTimer)
+      _codeEditPersistTimer = null
+    }
     isReportGenerating.value = false
     activeSession.value = null
     saveSession(null)
@@ -1353,7 +1393,11 @@ export function useMockInterview() {
 
   function togglePause() {
     const session = activeSession.value
-    if (!session || !session.config.allowPause || session.status !== 'active') return
+    // Allow pause when explicitly configured OR when this is a single-problem
+    // focused session — covers old sessions loaded from localStorage that were
+    // created before allowPause was auto-set for individual mode.
+    const canPause = session?.config.allowPause || session?.config.isIndividualMode
+    if (!session || !canPause || session.status !== 'active') return
 
     if (session.paused) {
       session.paused = false
@@ -1396,6 +1440,7 @@ export function useMockInterview() {
     defaultConfig: DEFAULT_CONFIG,
     startSession,
     updateCode,
+    flushCodeSave,
     addThought,
     sendMessage,
     requestHint,

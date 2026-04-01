@@ -98,5 +98,100 @@
       "source": "ai"
     },
     "is_custom": true
+  },
+  {
+    "number": 207,
+    "title": "Course Schedule",
+    "slug": "course-schedule",
+    "leetcode_url": "https://leetcode.com/problems/course-schedule/",
+    "description_html": "<p>There are a total of <code>numCourses</code> courses you have to take, labeled from <code>0</code> to <code>numCourses - 1</code>. You are given an array <code>prerequisites</code> where <code>prerequisites[i] = [a<sub>i</sub>, b<sub>i</sub>]</code> indicates that you <strong>must</strong> take course <code>b<sub>i</sub></code> first if you want to take course <code>a<sub>i</sub></code>.</p>\n\n<ul>\n\t<li>For example, the pair <code>[0, 1]</code>, indicates that to take course <code>0</code> you have to first take course <code>1</code>.</li>\n</ul>\n\n<p>Return <code>true</code> if you can finish all courses. Otherwise, return <code>false</code>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> numCourses = 2, prerequisites = [[1,0]]\n<strong>Output:</strong> true\n<strong>Explanation:</strong> There are a total of 2 courses to take. \nTo take course 1 you should have finished course 0. So it is possible.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> numCourses = 2, prerequisites = [[1,0],[0,1]]\n<strong>Output:</strong> false\n<strong>Explanation:</strong> There are a total of 2 courses to take. \nTo take course 1 you should have finished course 0, and to take course 0 you should also have finished course 1. So it is impossible.\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= numCourses &lt;= 2000</code></li>\n\t<li><code>0 &lt;= prerequisites.length &lt;= 5000</code></li>\n\t<li><code>prerequisites[i].length == 2</code></li>\n\t<li><code>0 &lt;= a<sub>i</sub>, b<sub>i</sub> &lt; numCourses</code></li>\n\t<li>All the pairs prerequisites[i] are <strong>unique</strong>.</li>\n</ul>\n",
+    "description_text": "There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1 . You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai . For example, the pair [0, 1] , indicates that to take course 0 you have to first take course 1 . Return true if you can finish all courses. Otherwise, return false . Example 1: Input: numCourses = 2, prerequisites = [[1,0]] Output: true Explanation: There are a total of 2 courses to take. To take course 1 you should have finished course 0. So it is possible. Example 2: Input: numCourses = 2, prerequisites = [[1,0],[0,1]] Output: false Explanation: There are a total of 2 courses to take. To take course 1 you should have finished course 0, and to take course 0 you should also have finished course 1. So it is impossible. Constraints: 1 <= numCourses <= 2000 0 <= prerequisites.length <= 5000 prerequisites[i].length == 2 0 <= ai, bi < numCourses All the pairs prerequisites[i] are unique.",
+    "difficulty": "Medium",
+    "acceptance_rate": 50.8,
+    "topic_tags": [
+      "Depth-First Search",
+      "Breadth-First Search",
+      "Graph Theory",
+      "Topological Sort"
+    ],
+    "pattern_id": "graphs",
+    "pattern_name": "Graphs",
+    "sub_pattern_id": "graph-traversal-flood-fill",
+    "sub_pattern_name": "Graph Traversal and Flood Fill",
+    "in_neetcode": true,
+    "in_striver": true,
+    "in_both": true,
+    "score": 112.67,
+    "pattern_hint": "The problem involves finding a valid course schedule, which suggests using a graph-based approach to model the course dependencies. The presence of a graph structure with nodes and edges also hints at a graphs pattern.",
+    "key_insight": "The key insight is to use a topological sorting approach to find a valid course schedule, detecting any cycles in the graph that would indicate an invalid schedule.",
+    "template_deviation": "This problem deviates from the standard graphs template in that we need to find a valid topological sorting of the graph, rather than just traversing it.",
+    "common_mistake": "A common mistake is to not handle the case where the graph has a cycle, which would indicate an invalid schedule.",
+    "time_complexity": "O(n + m)",
+    "space_complexity": "O(n + m)",
+    "companies": [
+      "Amazon",
+      "Apple",
+      "Bloomberg",
+      "Google",
+      "LinkedIn",
+      "Meta",
+      "Microsoft",
+      "Oracle",
+      "Uber"
+    ],
+    "frequency_tier": "high",
+    "last_seen": "2026",
+    "follow_ups": [],
+    "source_signals": [
+      "bridge_overlap",
+      "grind75",
+      "neetcode",
+      "striver"
+    ],
+    "interview_lists_count": 4,
+    "company_count": 9,
+    "solution_breakdown": {
+      "slug": "course-schedule",
+      "intuition": "The problem involves finding a valid course schedule, which suggests using a graph-based approach to model the course dependencies. The presence of a graph structure with nodes and edges also hints at a graphs pattern.",
+      "pattern_connection": "This problem is connected to the graphs pattern, where we use a topological sorting approach to find a valid course schedule, detecting any cycles in the graph that would indicate an invalid schedule.",
+      "steps": [
+        {
+          "title": "Create Graph",
+          "detail": "Create a graph to model the course dependencies, where each node represents a course and each edge represents a dependency."
+        },
+        {
+          "title": "Perform Topological Sorting",
+          "detail": "Perform a topological sorting on the graph to find a valid course schedule."
+        },
+        {
+          "title": "Detect Cycles",
+          "detail": "Detect any cycles in the graph, which would indicate an invalid schedule."
+        },
+        {
+          "title": "Return Schedule",
+          "detail": "Return the valid course schedule, or indicate that no valid schedule exists."
+        },
+        {
+          "title": "Optimize Sorting Approach",
+          "detail": "Optimize the topological sorting approach by using a helper function to detect cycles and find a valid schedule."
+        }
+      ],
+      "java_pseudocode": "\npublic class CourseSchedule {\n  public boolean canFinish(int numCourses, int[][] prerequisites) {\n    // Create graph\n    List<List<Integer>> graph = new ArrayList<>();\n    for (int i = 0; i < numCourses; i++) {\n      graph.add(new ArrayList<>());\n    }\n\n    // Add edges to graph\n    for (int[] prerequisite : prerequisites) {\n      graph.get(prerequisite[1]).add(prerequisite[0]);\n    }\n\n    // Perform topological sorting\n    int[] visited = new int[numCourses];\n    for (int i = 0; i < numCourses; i++) {\n      if (visited[i] == 0 && !canFinishHelper(graph, visited, i)) {\n        return false;\n      }\n    }\n\n    return true;\n  }\n\n  private boolean canFinishHelper(List<List<Integer>> graph, int[] visited, int course) {\n    // Detect cycles\n    if (visited[course] == 1) {\n      return false;\n    }\n\n    if (visited[course] == 2) {\n      return true;\n    }\n\n    visited[course] = 1;\n\n    for (int neighbor : graph.get(course)) {\n      if (!canFinishHelper(graph, visited, neighbor)) {\n        return false;\n      }\n    }\n\n    visited[course] = 2;\n    return true;\n  }\n}",
+      "edge_cases": [
+        "The number of courses is 0",
+        "The number of courses is 1",
+        "There are no prerequisites",
+        "There is a cycle in the graph",
+        "The graph is a valid course schedule"
+      ],
+      "alternatives": [
+        {
+          "approach": "Depth-First Search (DFS)",
+          "tradeoff": "This approach is worse because it requires more memory to store the recursion stack, but it can be more efficient for very large graphs."
+        }
+      ],
+      "source": "ai"
+    },
+    "is_custom": true
   }
 ]

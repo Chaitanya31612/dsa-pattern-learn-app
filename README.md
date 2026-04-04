@@ -25,9 +25,14 @@ The core idea: generate high-quality learning data once, then ship a fast client
 https://github.com/user-attachments/assets/42d27613-cdf5-4888-9132-246e09eab491
 
 <img width="1865" height="1011" alt="image" src="https://github.com/user-attachments/assets/447688d8-55cb-4a82-b015-c0fb3f15c885" />
-<img width="1865" height="999" alt="image" src="https://github.com/user-attachments/assets/da4b728b-67d5-4477-b282-ec21373b2dc4" />
+<img width="1866" height="999" alt="image" src="https://github.com/user-attachments/assets/0a104943-a1cb-4cfa-8d9b-be76697f27b8" />
+<img width="1866" height="999" alt="image" src="https://github.com/user-attachments/assets/fc0ccde8-1c67-4964-a92a-9cd55623e9e0" />
+<img width="1866" height="999" alt="image" src="https://github.com/user-attachments/assets/1e63c6f5-6db8-450b-bfee-57665541425c" />
 
-<img width="1865" height="999" alt="image" src="https://github.com/user-attachments/assets/7199f130-0d03-4560-8ce6-0641757ecb90" />
+
+<!-- <img width="1865" height="999" alt="image" src="https://github.com/user-attachments/assets/da4b728b-67d5-4477-b282-ec21373b2dc4" /> -->
+
+<!-- <img width="1865" height="999" alt="image" src="https://github.com/user-attachments/assets/7199f130-0d03-4560-8ce6-0641757ecb90" /> -->
 <img width="1609" height="997" alt="image" src="https://github.com/user-attachments/assets/94ec8d8c-a088-4511-a5ec-82e64cb74db5" />
 <img width="1609" height="1003" alt="image" src="https://github.com/user-attachments/assets/dbe738e8-9222-4922-9a5e-ea479d6a1f6e" />
 <img width="1866" height="999" alt="image" src="https://github.com/user-attachments/assets/a8121b0a-e1ce-4810-9797-182543e82b3e" />

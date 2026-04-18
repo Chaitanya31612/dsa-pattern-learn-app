@@ -80,9 +80,18 @@ async function fetchAnalysis() {
         notes: problemState.value.thoughts,
         chat: problemState.value.chat,
       }),
-    })
+    }).catch(() => null)
 
-    if (!response.ok) throw new Error('Analysis failed')
+    if (!response || !response.ok) {
+      analysisResult.value = {
+        timeComplexity: "O(1) - Demo Mode",
+        spaceComplexity: "O(1) - Demo Mode",
+        improvements: ["This is a frontend-only deployment for demonstration purposes.", "To get actual AI-driven code analysis and recommendations, please run the project locally with the backend server and API keys setup.", "Backend components are disabled in this preview."],
+        strengths: ["You've successfully run the frontend interface!", "The UI components are rendering perfectly."],
+        interview_walkthrough: "This is a **frontend-only deployment** for demonstration purposes.\n\nTo see the real power of this application and get a detailed AI-driven interview walkthrough:\n1. Clone the repository\n2. Set up the Python backend\n3. Provide your API keys in `.env`\n4. Run both frontend and backend locally.\n\nEnjoy exploring the UI!"
+      }
+      return
+    }
     
     const data = await response.json()
     analysisResult.value = data

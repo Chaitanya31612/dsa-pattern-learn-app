@@ -115,10 +115,15 @@ export function useAIChat(contextType: ContextType, contextId: string) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
-      })
+      }).catch(() => null);
 
-      if (!response.ok) {
-        throw new Error(`AI chat API failed with status ${response.status}`)
+      if (!response || !response.ok) {
+        messages.value.push({
+          role: 'assistant',
+          content: '🔒 **Demo Mode**: This is a frontend-only deployment for demonstration purposes. For full AI features, please run the project locally with the backend server and your API keys configured.',
+          timestamp: new Date().toISOString(),
+        });
+        return;
       }
 
       const data = await response.json()
@@ -134,10 +139,9 @@ export function useAIChat(contextType: ContextType, contextId: string) {
         err instanceof Error ? err.message : 'Failed to get AI response'
       error.value = errorMessage
 
-      // Add error as assistant message so user can see what happened
       messages.value.push({
         role: 'assistant',
-        content: `⚠️ ${errorMessage}. Please check that the backend server is running and try again.`,
+        content: '🔒 **Demo Mode**: This is a frontend-only deployment. The backend server could not be reached. Run locally with backend server and API keys setup for full features.',
         timestamp: new Date().toISOString(),
       })
     } finally {

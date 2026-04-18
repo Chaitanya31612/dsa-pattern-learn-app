@@ -33,8 +33,12 @@ function getApiUrl(path: string): string {
 async function loadCustomProblems() {
   loadingList.value = true
   try {
-    const res = await fetch(getApiUrl('/api/custom-problems'))
-    if (!res.ok) throw new Error('Failed to load custom problems')
+    const res = await fetch(getApiUrl('/api/custom-problems')).catch(() => null)
+    if (!res || !res.ok) {
+      // In demo mode, just leave customProblems empty
+      customProblems.value = []
+      return
+    }
     customProblems.value = await res.json()
   } catch (err) {
     console.error(err)
@@ -66,11 +70,10 @@ async function submitUrl() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url })
-    })
+    }).catch(() => null)
 
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}))
-      throw new Error(data.detail || `Failed with status ${res.status}`)
+    if (!res || !res.ok) {
+      throw new Error('This is a frontend-only deploy. For full features (including fetching custom LeetCode problems), run locally with backend server and API keys setup.')
     }
 
     // After success, reload list and clear input

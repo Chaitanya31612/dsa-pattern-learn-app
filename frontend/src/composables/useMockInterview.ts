@@ -372,10 +372,24 @@ async function fetchInterviewerReply(payload: {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
-  })
+  }).catch(() => null);
 
-  if (!response.ok) {
-    throw new Error(`Mock interview API failed with status ${response.status}`)
+  if (!response || !response.ok) {
+    if (payload.mode === 'interview') {
+      throw new Error('Interview backend unavailable, falling back to offline reply.')
+    }
+
+    return {
+      reply: "🔒 **Demo Mode**: This is a frontend-only deployment for demonstration purposes. To use the full AI Interviewer, please run the project locally with the backend server and your API keys configured.",
+      debrief: payload.mode === 'debrief' ? {
+        total_score: 85,
+        per_problem: {},
+        strengths: ["You've successfully completed the demo walkthrough!"],
+        weaknesses: ["AI analysis is disabled in this frontend-only demo."],
+        next_steps: ["Run the project locally with the backend server and API keys setup for full features."],
+        recommended_problems: []
+      } : undefined
+    }
   }
 
   const data = await response.json()

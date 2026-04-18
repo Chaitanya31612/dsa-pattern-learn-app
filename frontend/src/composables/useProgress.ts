@@ -6,25 +6,63 @@ const STORAGE_KEY = 'dsa-pattern-progress'
 function loadFromStorage(): Progress {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) return JSON.parse(raw)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (!parsed.code) parsed.code = {}
+      if (!parsed.notes) parsed.notes = {}
+      if (!parsed.reflections) parsed.reflections = {}
+      if (!parsed.solved) parsed.solved = {}
+      return parsed
+    }
   } catch (e) {
     console.warn('Failed to load progress from localStorage:', e)
   }
-  return { solved: {}, notes: {}, reflections: {} }
+  return { solved: {}, notes: {}, code: {}, reflections: {} }
 }
 
 const state = reactive<Progress>(loadFromStorage())
 
-// Auto-persist on changes
+// Debounce helper — coalesces rapid bursts (e.g. typing) into one write.
+let _persistTimer: ReturnType<typeof setTimeout> | null = null
+function schedulePersist() {
+  if (_persistTimer !== null) clearTimeout(_persistTimer)
+  _persistTimer = setTimeout(() => {
+    _persistTimer = null
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    } catch (e) {
+      console.warn('Failed to persist progress to localStorage:', e)
+    }
+  }, 600)
+}
+
+// Auto-persist on changes — debounced so rapid typing doesn't hammer JSON.stringify
 watch(() => state, () => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+  schedulePersist()
 }, { deep: true })
 
+// Sync state across multiple tabs
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (event) => {
+    if (event.key === STORAGE_KEY && event.newValue) {
+      try {
+        const newData = JSON.parse(event.newValue)
+        Object.assign(state, newData)
+      } catch (e) {
+        console.warn('Failed to sync state from storage event:', e)
+      }
+    }
+  })
+}
+
 export function useProgress() {
-  function markSolved(slug: string, confidence: 1 | 2 | 3) {
+  function markSolved(slug: string, confidence: 1 | 2 | 3, score?: number, reasoning?: string[]) {
+    const existing = state.solved[slug]
     state.solved[slug] = {
       date: new Date().toISOString(),
       confidence,
+      score: score ?? existing?.score,
+      reasoning: reasoning ?? existing?.reasoning,
     }
   }
 
@@ -54,6 +92,14 @@ export function useProgress() {
 
   function getReflection(slug: string) {
     return state.reflections[slug] ?? null
+  }
+
+  function addCode(slug: string, code: string) {
+    state.code[slug] = code
+  }
+
+  function getCode(slug: string): string {
+    return state.code[slug] ?? ''
   }
 
   /** Get problems due for spaced repetition review */
@@ -106,6 +152,8 @@ export function useProgress() {
     getNote,
     addReflection,
     getReflection,
+    addCode,
+    getCode,
     getDueForReview,
     totalSolved,
     patternCompletion,

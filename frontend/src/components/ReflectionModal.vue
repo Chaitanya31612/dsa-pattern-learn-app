@@ -6,21 +6,30 @@ const props = defineProps<{
   slug: string
   patternName: string
   problemTitle: string
+  sessionScore?: number
+  sessionReasoning?: string[]
 }>()
 
 const emit = defineEmits<{
   close: []
 }>()
 
-const { addReflection, markSolved } = useProgress()
+const { addReflection, markSolved, getReflection, getConfidence } = useProgress()
+
+const existingReflection = getReflection(props.slug)
+const existingConfidence = getConfidence(props.slug) || 2
 
 const step = ref(1)
 const answers = ref({
-  pattern: props.patternName,
-  signal: '',
-  deviation: '',
+  pattern: existingReflection?.pattern || props.patternName,
+  signal: existingReflection?.signal || '',
+  deviation: existingReflection?.deviation || '',
 })
-const confidence = ref<1 | 2 | 3>(2)
+
+const computedConfidence = props.sessionScore !== undefined 
+    ? (props.sessionScore >= 80 ? 3 : props.sessionScore >= 50 ? 2 : 1) 
+    : existingConfidence
+const confidence = ref<1 | 2 | 3>(computedConfidence)
 
 const canAdvance = computed(() => {
   if (step.value === 1) return answers.value.pattern.trim().length > 0
@@ -42,7 +51,7 @@ function back() {
 }
 
 function submit() {
-  markSolved(props.slug, confidence.value)
+  markSolved(props.slug, confidence.value, props.sessionScore, props.sessionReasoning)
   addReflection(props.slug, {
     pattern: answers.value.pattern,
     signal: answers.value.signal,

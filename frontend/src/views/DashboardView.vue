@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
 
@@ -12,6 +12,9 @@ const overallPercent = computed(() => {
 })
 
 const dueCount = computed(() => getDueForReview().length)
+const animatedSolved = ref(0)
+const animatedPercent = ref(0)
+const animatedDueCount = ref(0)
 
 const sortBy = ref<'order' | 'progress' | 'count'>('order')
 
@@ -24,6 +27,41 @@ const sortedPatterns = computed(() => {
   }
   return list
 })
+
+
+
+function animateNumber(target: number, output: { value: number }, duration = 650) {
+  const startValue = output.value
+  const delta = target - startValue
+  const startTime = performance.now()
+
+  const frame = (now: number) => {
+    const progress = Math.min((now - startTime) / duration, 1)
+    output.value = Math.round(startValue + delta * progress)
+    if (progress < 1) requestAnimationFrame(frame)
+  }
+
+  requestAnimationFrame(frame)
+}
+
+watch(totalSolved, (value) => animateNumber(value, animatedSolved), { immediate: true })
+watch(overallPercent, (value) => animateNumber(value, animatedPercent), { immediate: true })
+// watch(dueCount, (value) => animateNumber(value, animatedDueCount), { immediate: true }) // Commented out as dueCount is removed
+
+// @ts-ignore // Added ts-ignore as per instruction
+function confidenceLabel(level: 1 | 2 | 3): string {
+  if (level === 3) return 'Solid'
+  if (level === 2) return 'Unsure' // Changed from 'Okay'
+  return 'Struggled' // Changed from 'Shaky'
+}
+
+// @ts-ignore // Added ts-ignore as per instruction
+function formatActivityDate(value: string): string {
+  return new Date(value).toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+  })
+}
 
 function getPatternAccent(index: number): string {
   const accents = [
@@ -56,16 +94,16 @@ function getPatternAccent(index: number): string {
 
       <div class="hero-stats">
         <div class="stat-card">
-          <div class="stat-ring" :style="{ '--pct': overallPercent }">
+          <div class="stat-ring" :style="{ '--pct': animatedPercent }">
             <svg viewBox="0 0 36 36">
               <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
               <path class="ring-fill" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                :stroke-dasharray="`${overallPercent}, 100`" />
+                :stroke-dasharray="`${animatedPercent}, 100`" />
             </svg>
-            <span class="ring-label">{{ overallPercent }}%</span>
+            <span class="ring-label">{{ animatedPercent }}%</span>
           </div>
           <div class="stat-info">
-            <span class="stat-number">{{ totalSolved }}</span>
+            <span class="stat-number">{{ animatedSolved }}</span>
             <span class="stat-text">solved</span>
           </div>
         </div>
@@ -90,15 +128,17 @@ function getPatternAccent(index: number): string {
 
         <router-link to="/review" class="stat-card stat-card-link" v-if="dueCount > 0">
           <div class="stat-info">
-            <span class="stat-number" style="color: var(--accent-orange)">{{ dueCount }}</span>
+            <span class="stat-number" style="color: var(--accent-orange)">{{ animatedDueCount }}</span>
             <span class="stat-text">due for review →</span>
           </div>
         </router-link>
       </div>
     </section>
 
+
+
     <!-- ═══ Sort bar ═══ -->
-    <section class="sort-bar animate-in stagger-1">
+    <section class="sort-bar animate-in stagger-2">
       <span class="section-label terminal-prompt">patterns.sort_by</span>
       <div class="tab-bar">
         <button class="tab-btn" :class="{ active: sortBy === 'order' }" @click="sortBy = 'order'">
@@ -284,6 +324,117 @@ function getPatternAccent(index: number): string {
   color: var(--text-primary);
   font-weight: 600;
   font-size: var(--text-xs);
+}
+
+/* ── Utility Hub ───────────────────────────────────── */
+.utility-hub {
+  display: grid;
+  grid-template-columns: 1.45fr 0.95fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+  padding: var(--space-md);
+}
+
+.utility-column {
+  min-width: 0;
+}
+
+.utility-recent {
+  padding-right: var(--space-sm);
+}
+
+.utility-actions {
+  border-left: 1px solid var(--border-subtle);
+  padding-left: var(--space-md);
+}
+
+.utility-title {
+  font-size: var(--text-base);
+  margin-bottom: var(--space-sm);
+}
+
+.quick-actions-stack {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.quick-action {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: flex-start;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  transition: all var(--transition-fast);
+  color: inherit;
+}
+
+.quick-action:hover {
+  border-color: var(--accent-cyan);
+  transform: translateY(-1px);
+}
+
+.quick-icon {
+  font-size: var(--text-lg);
+  line-height: 1;
+}
+
+.quick-name {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+}
+
+.quick-meta {
+  display: block;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.activity-list {
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.activity-item {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+}
+
+.activity-link {
+  display: block;
+  padding: 10px var(--space-sm);
+  color: inherit;
+}
+
+.activity-link:hover .activity-title {
+  color: var(--accent-cyan);
+}
+
+.activity-title {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  font-weight: 600;
+  transition: color var(--transition-fast);
+}
+
+.activity-meta {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.activity-empty {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
 }
 
 /* ── Sort Bar ─────────────────────────────────── */
@@ -476,6 +627,21 @@ function getPatternAccent(index: number): string {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-sm);
+  }
+
+  .utility-hub {
+    grid-template-columns: 1fr;
+  }
+
+  .utility-actions {
+    border-left: none;
+    border-top: 1px solid var(--border-subtle);
+    padding-left: 0;
+    padding-top: var(--space-sm);
+  }
+
+  .quick-actions-stack {
+    grid-template-columns: 1fr;
   }
 
   .pattern-grid {

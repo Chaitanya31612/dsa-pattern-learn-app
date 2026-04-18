@@ -7,6 +7,9 @@ import ReviewView from '../views/ReviewView.vue'
 import PatternQuizView from '../views/PatternQuizView.vue'
 import SettingsView from '../views/SettingsView.vue'
 import MockInterviewView from '../views/MockInterviewView.vue'
+import SubPatternLearningView from '../views/SubPatternLearningView.vue'
+import DetailedAnalysisView from '../views/DetailedAnalysisView.vue'
+import CustomProblemsView from '../views/CustomProblemsView.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -20,6 +23,12 @@ const routes: RouteRecordRaw[] = [
     name: 'pattern',
     component: PatternView,
     meta: { title: 'Pattern' },
+  },
+  {
+    path: '/learn/:patternSlug/:subPatternSlug',
+    name: 'sub-pattern-learning',
+    component: SubPatternLearningView,
+    meta: { title: 'Pattern Learning' },
   },
   {
     path: '/problem/:slug',
@@ -52,10 +61,22 @@ const routes: RouteRecordRaw[] = [
     meta: { title: 'Mock Interview' },
   },
   {
+    path: '/detailed-analysis/:slug',
+    name: 'detailed-analysis',
+    component: DetailedAnalysisView,
+    meta: { title: 'Detailed Analysis' },
+  },
+  {
     path: '/settings',
     name: 'settings',
     component: SettingsView,
     meta: { title: 'Settings' },
+  },
+  {
+    path: '/custom',
+    name: 'custom-problems',
+    component: CustomProblemsView,
+    meta: { title: 'Custom Problems' },
   },
 ]
 

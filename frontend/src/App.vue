@@ -31,6 +31,9 @@ const { meta } = usePatterns()
           <router-link to="/problems" class="nav-link" active-class="active">
             <span class="nav-icon">▤</span> Problems
           </router-link>
+          <router-link to="/custom" class="nav-link" active-class="active">
+            <span class="nav-icon">⚡</span> Custom
+          </router-link>
           <router-link to="/review" class="nav-link" active-class="active">
             <span class="nav-icon">↻</span> Review
           </router-link>
@@ -43,6 +46,9 @@ const { meta } = usePatterns()
         </nav>
 
         <div class="header-right">
+          <!-- Teleport target for page-specific header badges (like Problem difficulty) -->
+          <div id="header-extra"></div>
+
           <div class="stat-chip">
             <span class="stat-value">{{ totalSolved }}</span>
             <span class="stat-label">/{{ meta.total_problems }}</span>

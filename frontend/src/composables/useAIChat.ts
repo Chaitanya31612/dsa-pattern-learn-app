@@ -1,0 +1,165 @@
+import { ref, watch } from 'vue'
+
+/**
+ * Learning-Mode AI Chat Composable
+ * =================================
+ *
+ * Handles context-aware AI chat for Pattern and Problem views.
+ * Unlike the interview chat (sanitized, no solutions), this is
+ * LEARNING MODE — full explanations, code, and examples are encouraged.
+ *
+ * Usage:
+ *   const { messages, sendMessage, isLoading, clearChat } = useAIChat('pattern', 'sliding-window')
+ *   await sendMessage('Explain this pattern simply')
+ */
+
+export interface AIChatMessage {
+  role: 'user' | 'assistant'
+  content: string
+  timestamp: string
+}
+
+type ContextType = 'pattern' | 'problem' | 'sub-pattern'
+
+const STORAGE_PREFIX = 'dsa-ai-chat-'
+
+function getApiBaseUrl(): string {
+  const base = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() ?? ''
+  return base.endsWith('/') ? base.slice(0, -1) : base
+}
+
+function getApiUrl(path: string): string {
+  const base = getApiBaseUrl()
+  return base ? `${base}${path}` : path
+}
+
+function loadChatHistory(contextType: ContextType, contextId: string): AIChatMessage[] {
+  try {
+    const key = `${STORAGE_PREFIX}${contextType}-${contextId}`
+    const raw = sessionStorage.getItem(key)
+    if (!raw) return []
+    const parsed = JSON.parse(raw)
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
+}
+
+function saveChatHistory(contextType: ContextType, contextId: string, messages: AIChatMessage[]) {
+  const key = `${STORAGE_PREFIX}${contextType}-${contextId}`
+  // Keep only last 30 messages to avoid sessionStorage bloat
+  sessionStorage.setItem(key, JSON.stringify(messages.slice(-30)))
+}
+
+export function useAIChat(contextType: ContextType, contextId: string) {
+  const messages = ref<AIChatMessage[]>(loadChatHistory(contextType, contextId))
+  const isLoading = ref(false)
+  const error = ref<string | null>(null)
+
+  // Persist chat history on changes
+  watch(
+    messages,
+    (newMessages) => {
+      saveChatHistory(contextType, contextId, newMessages)
+    },
+    { deep: true },
+  )
+
+  async function sendMessage(content: string): Promise<void> {
+    const trimmed = content.trim()
+    if (!trimmed || isLoading.value) return
+
+    error.value = null
+
+    // Add user message immediately
+    messages.value.push({
+      role: 'user',
+      content: trimmed,
+      timestamp: new Date().toISOString(),
+    })
+
+    isLoading.value = true
+
+    try {
+      const endpoint =
+        contextType === 'pattern' || contextType === 'sub-pattern' ? '/api/ai/pattern-chat' : '/api/ai/problem-chat'
+
+      const bodyKey = (contextType === 'pattern' || contextType === 'sub-pattern') ? 'pattern_id' : 'problem_slug'
+
+      // Implement a sliding window character limit to prevent 422 payload errors.
+      // We iterate backwards to keep the most recent context.
+      const MAX_CHARS = 12000
+      let charCount = 0
+      const payloadMessages = []
+
+      for (let i = messages.value.length - 1; i >= 0; i--) {
+        const m = messages.value[i]
+        if (!m) continue
+        const len = m.content.length
+        if (charCount + len > MAX_CHARS && payloadMessages.length > 0) {
+          break
+        }
+        payloadMessages.unshift({
+          role: m.role,
+          content: m.content,
+        })
+        charCount += len
+      }
+
+      const body = {
+        [bodyKey]: contextId,
+        messages: payloadMessages,
+      }
+
+      const response = await fetch(getApiUrl(endpoint), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      }).catch(() => null);
+
+      if (!response || !response.ok) {
+        messages.value.push({
+          role: 'assistant',
+          content: '🔒 **Demo Mode**: This is a frontend-only deployment for demonstration purposes. For full AI features, please run the project locally with the backend server and your API keys configured.',
+          timestamp: new Date().toISOString(),
+        });
+        return;
+      }
+
+      const data = await response.json()
+      const reply = String(data.reply ?? 'No response received.')
+
+      messages.value.push({
+        role: 'assistant',
+        content: reply,
+        timestamp: new Date().toISOString(),
+      })
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to get AI response'
+      error.value = errorMessage
+
+      messages.value.push({
+        role: 'assistant',
+        content: '🔒 **Demo Mode**: This is a frontend-only deployment. The backend server could not be reached. Run locally with backend server and API keys setup for full features.',
+        timestamp: new Date().toISOString(),
+      })
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  function clearChat() {
+    messages.value = []
+    const key = `${STORAGE_PREFIX}${contextType}-${contextId}`
+    sessionStorage.removeItem(key)
+  }
+
+  return {
+    messages,
+    isLoading,
+    error,
+    sendMessage,
+    clearChat,
+  }
+}

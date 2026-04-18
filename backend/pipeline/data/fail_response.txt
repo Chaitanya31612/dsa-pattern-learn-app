@@ -1,0 +1,174 @@
+[
+  {
+    "pattern_id": "math-geometry",
+    "sub_pattern_id": "matrix-manipulation",
+    "name": "Matrix Manipulation",
+    "explanation": "This sub-pattern involves problems that require manipulating matrices, such as rotating or setting values to zero. It requires understanding of matrix operations and how to efficiently traverse and modify the matrix.",
+    "mental_model": "Visualize the matrix as a 2D array and think about how to manipulate it in a way that achieves the desired outcome.",
+    "template_code_java": "
+      class Solution {
+        public void rotate(int[][] matrix) {
+          int n = matrix.length;
+          // Transpose the matrix
+          for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+              int temp = matrix[j][i];
+              matrix[j][i] = matrix[i][j];
+              matrix[i][j] = temp;
+            }
+          }
+          // Reverse each row
+          for (int i = 0; i < n; i++) {
+            int left = 0;
+            int right = n - 1;
+            while (left < right) {
+              int temp = matrix[i][left];
+              matrix[i][left] = matrix[i][right];
+              matrix[i][right] = temp;
+              left++;
+              right--;
+            }
+          }
+        }
+
+        public void setZeroes(int[][] matrix) {
+          int m = matrix.length;
+          int n = matrix[0].length;
+          boolean[] rows = new boolean[m];
+          boolean[] cols = new boolean[n];
+          for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+              if (matrix[i][j] == 0) {
+                rows[i] = true;
+                cols[j] = true;
+              }
+            }
+          }
+          for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+              if (rows[i] || cols[j]) {
+                matrix[i][j] = 0;
+              }
+            }
+          }
+        }
+      }
+    ",
+    "trigger_phrases": ["matrix rotation", "set matrix zero", "spiral matrix"]
+  },
+  {
+    "pattern_id": "math-geometry",
+    "sub_pattern_id": "number-theory",
+    "name": "Number Theory",
+    "explanation": "This sub-pattern involves problems that require understanding properties of numbers, such as happy numbers or palindrome numbers. It requires knowledge of number theory concepts and how to apply them to solve problems.",
+    "mental_model": "Think about the properties of numbers and how they can be used to solve the problem.",
+    "template_code_java": "
+      class Solution {
+        public boolean isHappy(int n) {
+          Set<Integer> seen = new HashSet<>();
+          while (n != 1 && !seen.contains(n)) {
+            seen.add(n);
+            n = getDigitsSum(n);
+          }
+          return n == 1;
+        }
+
+        private int getDigitsSum(int n) {
+          int sum = 0;
+          while (n > 0) {
+            int digit = n % 10;
+            sum += digit * digit;
+            n /= 10;
+          }
+          return sum;
+        }
+
+        public boolean isPalindrome(int x) {
+          if (x < 0) return false;
+          int reversed = 0;
+          int original = x;
+          while (x != 0) {
+            reversed = reversed * 10 + x % 10;
+            x /= 10;
+          }
+          return original == reversed;
+        }
+      }
+    ",
+    "trigger_phrases": ["happy number", "palindrome number", "ugly number"]
+  },
+  {
+    "pattern_id": "math-geometry",
+    "sub_pattern_id": "arithmetic-operations",
+    "name": "Arithmetic Operations",
+    "explanation": "This sub-pattern involves problems that require performing arithmetic operations, such as exponentiation or multiplication. It requires understanding of arithmetic concepts and how to apply them to solve problems.",
+    "mental_model": "Think about the arithmetic operations required to solve the problem and how to optimize them.",
+    "template_code_java": "
+      class Solution {
+        public double myPow(double x, int n) {
+          if (n < 0) {
+            x = 1 / x;
+            n = -n;
+          }
+          double result = 1;
+          while (n > 0) {
+            if (n % 2 == 1) {
+              result *= x;
+            }
+            x *= x;
+            n /= 2;
+          }
+          return result;
+        }
+
+        public String multiply(String num1, String num2) {
+          int m = num1.length();
+          int n = num2.length();
+          int[] pos = new int[m + n];
+          for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+              int mul = (num1.charAt(i) - '0') * (num2.charAt(j) - '0');
+              int p1 = i + j;
+              int p2 = i + j + 1;
+              int sum = mul + pos[p2];
+              pos[p1] += sum / 10;
+              pos[p2] = sum % 10;
+            }
+          }
+          StringBuilder sb = new StringBuilder();
+          for (int value : pos) {
+            if (!(sb.length() == 0 && value == 0)) {
+              sb.append(value);
+            }
+          }
+          return sb.length() == 0 ? "0" : sb.toString();
+        }
+      }
+    ",
+    "trigger_phrases": ["exponentiation", "multiplication", "arithmetic operations"]
+  },
+  {
+    "pattern_id": "math-geometry",
+    "sub_pattern_id": "number-conversion",
+    "name": "Number Conversion",
+    "explanation": "This sub-pattern involves problems that require converting between different number representations, such as Roman numerals to integers. It requires understanding of number systems and how to convert between them.",
+    "mental_model": "Think about the number system and how to convert between different representations.",
+    "template_code_java": "
+      class Solution {
+        public int romanToInt(String s) {
+          int[] values = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+          String[] symbols = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+          int result = 0;
+          for (int i = 0; i < values.length; i++) {
+            while (s.startsWith(symbols[i])) {
+              result += values[i];
+              s = s.substring(symbols[i].length());
+            }
+          }
+          return result;
+        }
+      }
+    ",
+    "trigger_phrases": ["roman to integer", "number conversion", "integer conversion"]
+  }
+]

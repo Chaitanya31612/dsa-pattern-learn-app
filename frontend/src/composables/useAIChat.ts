@@ -19,7 +19,7 @@ export interface AIChatMessage {
   timestamp: string
 }
 
-type ContextType = 'pattern' | 'problem'
+type ContextType = 'pattern' | 'problem' | 'sub-pattern'
 
 const STORAGE_PREFIX = 'dsa-ai-chat-'
 
@@ -82,26 +82,48 @@ export function useAIChat(contextType: ContextType, contextId: string) {
 
     try {
       const endpoint =
-        contextType === 'pattern' ? '/api/ai/pattern-chat' : '/api/ai/problem-chat'
+        contextType === 'pattern' || contextType === 'sub-pattern' ? '/api/ai/pattern-chat' : '/api/ai/problem-chat'
 
-      const bodyKey = contextType === 'pattern' ? 'pattern_id' : 'problem_slug'
+      const bodyKey = (contextType === 'pattern' || contextType === 'sub-pattern') ? 'pattern_id' : 'problem_slug'
+
+      // Implement a sliding window character limit to prevent 422 payload errors.
+      // We iterate backwards to keep the most recent context.
+      const MAX_CHARS = 12000
+      let charCount = 0
+      const payloadMessages = []
+
+      for (let i = messages.value.length - 1; i >= 0; i--) {
+        const m = messages.value[i]
+        if (!m) continue
+        const len = m.content.length
+        if (charCount + len > MAX_CHARS && payloadMessages.length > 0) {
+          break
+        }
+        payloadMessages.unshift({
+          role: m.role,
+          content: m.content,
+        })
+        charCount += len
+      }
 
       const body = {
         [bodyKey]: contextId,
-        messages: messages.value.map((m) => ({
-          role: m.role,
-          content: m.content,
-        })),
+        messages: payloadMessages,
       }
 
       const response = await fetch(getApiUrl(endpoint), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
-      })
+      }).catch(() => null);
 
-      if (!response.ok) {
-        throw new Error(`AI chat API failed with status ${response.status}`)
+      if (!response || !response.ok) {
+        messages.value.push({
+          role: 'assistant',
+          content: '🔒 **Demo Mode**: This is a frontend-only deployment for demonstration purposes. For full AI features, please run the project locally with the backend server and your API keys configured.',
+          timestamp: new Date().toISOString(),
+        });
+        return;
       }
 
       const data = await response.json()
@@ -117,10 +139,9 @@ export function useAIChat(contextType: ContextType, contextId: string) {
         err instanceof Error ? err.message : 'Failed to get AI response'
       error.value = errorMessage
 
-      // Add error as assistant message so user can see what happened
       messages.value.push({
         role: 'assistant',
-        content: `⚠️ ${errorMessage}. Please check that the backend server is running and try again.`,
+        content: '🔒 **Demo Mode**: This is a frontend-only deployment. The backend server could not be reached. Run locally with backend server and API keys setup for full features.',
         timestamp: new Date().toISOString(),
       })
     } finally {

@@ -182,6 +182,14 @@ From problem page, interview mode can be launched with query params:
 - starts a fresh interview anchored to that slug,
 - clears query after start to avoid repeat triggers.
 
+## Individual Problem Interview Mode
+
+When an interview is scoped to a single single problem (`isIndividualMode = true`), the flow adapts to feel more like a focused coding session:
+
+- **Persistence**: Code and approach notes are persisted locally on a per-problem basis, preventing progress loss on reloads.
+- **Review Code**: The chat panel includes a manual "Review Code" button, which bundles the current code and context for AI evaluation, rather than continuously polling code on every chat turn.
+- **Detailed Analysis**: After submitting the answer and reviewing the debrief, the user can navigate to a new `DetailedAnalysisView.vue` page. This view provides a deep dive into Time/Space complexity and structured improvement areas generated via `/api/analyze-code`.
+
 ## Persistence Keys
 
 - `dsa-mock-interview-sessions`

@@ -12,7 +12,7 @@ const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
 const { problems, loading, getProblemsForPattern } = usePatterns()
-const { isSolved, markSolved, unmarkSolved, getConfidence, getNote, addNote, getReflection } = useProgress()
+const { state, isSolved, markSolved, unmarkSolved, getConfidence, addNote, getReflection } = useProgress()
 const { navigateSmartRandom } = useSmartRandom()
 
 const problem = computed(() => problems.value[slug.value])
@@ -34,10 +34,10 @@ const interviewRoute = computed(() => ({
   },
 }))
 
-// Load existing note
+// Load existing note and keep it synced
 watchEffect(() => {
   if (slug.value) {
-    noteText.value = getNote(slug.value)
+    noteText.value = state.notes[slug.value] ?? ''
   }
 })
 
@@ -45,9 +45,11 @@ function toggleSolved() {
   if (solved.value) {
     unmarkSolved(slug.value)
   } else {
-    // Open reflection modal instead of directly marking
     showReflection.value = true
   }
+}
+function openReflection() {
+  showReflection.value = true
 }
 
 function setConfidence(level: 1 | 2 | 3) {
@@ -186,7 +188,7 @@ function revealNextStep() {
         <div>
           <h1 class="prob-title">{{ problem.title }}</h1>
           <div class="prob-badges">
-            <span class="badge" :class="getDiffClass(problem.difficulty)">
+            <span v-if="problem" class="badge" :class="getDiffClass(problem.difficulty)">
               {{ problem.difficulty || 'Unknown' }}
             </span>
             <span class="badge" v-if="problem.acceptance_rate">
@@ -206,8 +208,11 @@ function revealNextStep() {
       </div>
 
       <div class="prob-actions">
-        <button class="btn" :class="{ 'btn-primary': solved }" @click="toggleSolved">
-          {{ solved ? '✓ Solved' : '◉ Mark Solved' }}
+        <button class="btn" :class="{ 'btn-primary': solved }" @click="openReflection">
+          {{ solved ? '✎ Edit Reflection' : '◉ Mark Solved' }}
+        </button>
+        <button v-if="solved" class="btn btn-ghost" @click="toggleSolved" title="Unmark problem as solved">
+          ✕ Unmark
         </button>
         <a :href="problem.leetcode_url" target="_blank" rel="noopener" class="btn">
           Open on LeetCode ↗

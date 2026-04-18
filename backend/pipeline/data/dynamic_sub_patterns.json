@@ -1,0 +1,1075 @@
+{
+  "arrays-hashing": [
+    {
+      "sub_pattern_id": "hashing-frequency-count",
+      "name": "Hashing Frequency Count",
+      "description": "This sub-pattern involves using hashing to count the frequency of elements in an array, often to find the most frequent or least frequent elements. It requires understanding how to utilize hash maps to store and retrieve frequency information.",
+      "trigger_phrases": [
+        "frequency",
+        "count",
+        "hash map"
+      ],
+      "problem_slugs": [
+        "top-k-frequent-elements",
+        "contains-duplicate",
+        "valid-anagram",
+        "group-anagrams",
+        "maximum-number-of-balloons",
+        "find-all-anagrams-in-a-string",
+        "unique-email-addresses",
+        "subarray-sum-equals-k"
+      ]
+    },
+    {
+      "sub_pattern_id": "array-manipulation-indexing",
+      "name": "Array Manipulation and Indexing",
+      "description": "This sub-pattern involves manipulating arrays by indexing, sorting, or searching for specific elements. It requires understanding how to work with arrays and their indices to solve problems.",
+      "trigger_phrases": [
+        "array",
+        "index",
+        "sort",
+        "search"
+      ],
+      "problem_slugs": [
+        "two-sum",
+        "next-greater-element-i",
+        "concatenation-of-array",
+        "length-of-last-word",
+        "replace-elements-with-greatest-element-on-right-side",
+        "find-pivot-index",
+        "range-sum-query-immutable",
+        "find-all-numbers-disappeared-in-an-array",
+        "sort-an-array",
+        "non-decreasing-array"
+      ]
+    },
+    {
+      "sub_pattern_id": "string-pattern-matching",
+      "name": "String Pattern Matching",
+      "description": "This sub-pattern involves finding patterns or anagrams in strings, often requiring the use of hashing or sorting. It requires understanding how to work with strings and identify patterns.",
+      "trigger_phrases": [
+        "string",
+        "pattern",
+        "anagram"
+      ],
+      "problem_slugs": [
+        "valid-anagram",
+        "isomorphic-strings",
+        "word-pattern",
+        "find-the-index-of-the-first-occurrence-in-a-string",
+        "encode-and-decode-strings"
+      ]
+    },
+    {
+      "sub_pattern_id": "hash-set-hash-map-design",
+      "name": "Hash Set and Hash Map Design",
+      "description": "This sub-pattern involves designing and implementing hash sets and hash maps, often requiring the use of arrays and hashing. It requires understanding how to design and implement these data structures.",
+      "trigger_phrases": [
+        "hash set",
+        "hash map",
+        "design"
+      ],
+      "problem_slugs": [
+        "design-hashset",
+        "design-hashmap",
+        "insert-delete-getrandom-o1"
+      ]
+    },
+    {
+      "sub_pattern_id": "array-prefix-sum",
+      "name": "Array Prefix Sum",
+      "description": "This sub-pattern involves using prefix sums to solve problems involving arrays and sums. It requires understanding how to calculate and utilize prefix sums.",
+      "trigger_phrases": [
+        "prefix sum",
+        "array sum"
+      ],
+      "problem_slugs": [
+        "longest-common-prefix",
+        "majority-element",
+        "longest-consecutive-sequence",
+        "product-of-array-except-self",
+        "brick-wall"
+      ]
+    },
+    {
+      "sub_pattern_id": "miscellaneous-array-problems",
+      "name": "Miscellaneous Array Problems",
+      "description": "This sub-pattern involves solving various array problems that do not fit into other categories, often requiring the use of sorting, searching, or hashing. It requires understanding how to approach and solve a wide range of array problems.",
+      "trigger_phrases": [
+        "array",
+        "problem"
+      ],
+      "problem_slugs": [
+        "pascals-triangle",
+        "sort-colors",
+        "can-place-flowers",
+        "valid-sudoku",
+        "largest-number",
+        "remove-element",
+        "encode-and-decode-tinyurl",
+        "sign-of-the-product-of-an-array",
+        "minimum-number-of-swaps-to-make-the-string-balanced",
+        "maximum-product-of-the-length-of-two-palindromic-subsequences"
+      ]
+    }
+  ],
+  "two-pointers": [
+    {
+      "sub_pattern_id": "two-pointer-opposite-direction",
+      "name": "Two Pointers Moving in Opposite Directions",
+      "description": "This sub-pattern involves two pointers moving towards each other from opposite ends of a sorted array or string, often used for finding pairs or checking palindromes.",
+      "trigger_phrases": [
+        "two sum",
+        "palindrome",
+        "sorted array"
+      ],
+      "problem_slugs": [
+        "two-sum-ii-input-array-is-sorted",
+        "valid-palindrome",
+        "valid-palindrome-ii",
+        "reverse-string"
+      ]
+    },
+    {
+      "sub_pattern_id": "two-pointer-same-direction",
+      "name": "Two Pointers Moving in the Same Direction",
+      "description": "This sub-pattern involves two pointers moving in the same direction, often used for finding duplicates, merging arrays, or checking for certain conditions in a sorted array.",
+      "trigger_phrases": [
+        "remove duplicates",
+        "merge sorted array",
+        "move zeroes"
+      ],
+      "problem_slugs": [
+        "remove-duplicates-from-sorted-array",
+        "merge-sorted-array",
+        "move-zeroes"
+      ]
+    },
+    {
+      "sub_pattern_id": "two-pointer-array-manipulation",
+      "name": "Two Pointers for Array Manipulation",
+      "description": "This sub-pattern involves using two pointers to manipulate arrays, often used for finding the maximum or minimum of something, or for trapping something between two pointers.",
+      "trigger_phrases": [
+        "container with most water",
+        "trapping rain water",
+        "minimum difference"
+      ],
+      "problem_slugs": [
+        "container-with-most-water",
+        "trapping-rain-water",
+        "minimum-difference-between-highest-and-lowest-of-k-scores"
+      ]
+    },
+    {
+      "sub_pattern_id": "two-pointer-k-sum",
+      "name": "Two Pointers for K-Sum Problems",
+      "description": "This sub-pattern involves using two pointers to solve k-sum problems, often used for finding all unique triplets or quadruplets that sum to a target value.",
+      "trigger_phrases": [
+        "k sum",
+        "3sum",
+        "4sum"
+      ],
+      "problem_slugs": [
+        "3sum",
+        "4sum"
+      ]
+    }
+  ],
+  "sliding-window": [
+    {
+      "sub_pattern_id": "fixed-size-window",
+      "name": "Fixed Size Window",
+      "description": "This sub-pattern involves using a sliding window of fixed size to solve problems, often with a focus on finding a specific arrangement or maximum/minimum value within the window.",
+      "trigger_phrases": [
+        "fixed size",
+        "k-size window",
+        "window of size"
+      ],
+      "problem_slugs": [
+        "contains-duplicate-ii",
+        "best-time-to-buy-and-sell-stock"
+      ]
+    },
+    {
+      "sub_pattern_id": "variable-size-window-with-character-frequencies",
+      "name": "Variable Size Window with Character Frequencies",
+      "description": "This sub-pattern involves using a sliding window of variable size to solve problems, often with a focus on character frequencies and finding the longest/shortest substring that meets certain conditions.",
+      "trigger_phrases": [
+        "character frequencies",
+        "substring",
+        "repeating characters"
+      ],
+      "problem_slugs": [
+        "longest-substring-without-repeating-characters",
+        "longest-repeating-character-replacement",
+        "permutation-in-string"
+      ]
+    },
+    {
+      "sub_pattern_id": "minimum-window-substring",
+      "name": "Minimum Window Substring",
+      "description": "This sub-pattern involves finding the minimum window substring that contains all characters of a given string, often with a focus on optimization and efficiency.",
+      "trigger_phrases": [
+        "minimum window",
+        "substring",
+        "contains all characters"
+      ],
+      "problem_slugs": [
+        "minimum-window-substring",
+        "frequency-of-the-most-frequent-element"
+      ]
+    },
+    {
+      "sub_pattern_id": "sliding-window-maximum",
+      "name": "Sliding Window Maximum",
+      "description": "This sub-pattern involves using a sliding window to find the maximum value within a given array or string, often with a focus on optimization and efficiency.",
+      "trigger_phrases": [
+        "sliding window maximum",
+        "maximum value"
+      ],
+      "problem_slugs": [
+        "sliding-window-maximum"
+      ]
+    }
+  ],
+  "stack": [
+    {
+      "sub_pattern_id": "stack-implementation",
+      "name": "Stack Implementation",
+      "description": "This sub-pattern involves implementing a stack from scratch or using other data structures to mimic stack behavior.",
+      "trigger_phrases": [
+        "implement",
+        "using"
+      ],
+      "problem_slugs": [
+        "min-stack",
+        "implement-stack-using-queues"
+      ]
+    },
+    {
+      "sub_pattern_id": "parentheses-validation",
+      "name": "Parentheses Validation",
+      "description": "This sub-pattern involves validating or generating parentheses sequences.",
+      "trigger_phrases": [
+        "parentheses",
+        "generate"
+      ],
+      "problem_slugs": [
+        "valid-parentheses",
+        "generate-parentheses"
+      ]
+    },
+    {
+      "sub_pattern_id": "monotonic-stack",
+      "name": "Monotonic Stack",
+      "description": "This sub-pattern involves using a stack to keep track of monotonic sequences, such as daily temperatures or stock spans.",
+      "trigger_phrases": [
+        "daily",
+        "stock",
+        "temperature"
+      ],
+      "problem_slugs": [
+        "daily-temperatures",
+        "online-stock-span"
+      ]
+    },
+    {
+      "sub_pattern_id": "stack-based-evaluation",
+      "name": "Stack-Based Evaluation",
+      "description": "This sub-pattern involves using a stack to evaluate expressions or notation.",
+      "trigger_phrases": [
+        "evaluate",
+        "notation"
+      ],
+      "problem_slugs": [
+        "evaluate-reverse-polish-notation"
+      ]
+    },
+    {
+      "sub_pattern_id": "histogram-and-rectangles",
+      "name": "Histogram and Rectangles",
+      "description": "This sub-pattern involves finding the largest rectangle in a histogram.",
+      "trigger_phrases": [
+        "histogram",
+        "rectangle"
+      ],
+      "problem_slugs": [
+        "largest-rectangle-in-histogram"
+      ]
+    },
+    {
+      "sub_pattern_id": "stack-based-simulation",
+      "name": "Stack-Based Simulation",
+      "description": "This sub-pattern involves using a stack to simulate real-world scenarios, such as a baseball game or car fleet.",
+      "trigger_phrases": [
+        "game",
+        "fleet"
+      ],
+      "problem_slugs": [
+        "baseball-game",
+        "car-fleet"
+      ]
+    }
+  ],
+  "binary-search": [
+    {
+      "sub_pattern_id": "standard-binary-search",
+      "name": "Standard Binary Search",
+      "description": "This sub-pattern involves using binary search on a sorted array or matrix to find a specific target or element. It typically involves a straightforward application of the binary search algorithm.",
+      "trigger_phrases": [
+        "sorted array",
+        "search",
+        "find"
+      ],
+      "problem_slugs": [
+        "binary-search",
+        "search-insert-position",
+        "guess-number-higher-or-lower"
+      ]
+    },
+    {
+      "sub_pattern_id": "rotated-sorted-array",
+      "name": "Rotated Sorted Array",
+      "description": "This sub-pattern involves using binary search on a rotated sorted array to find a specific target or the minimum element. It requires modifying the standard binary search algorithm to account for the rotation.",
+      "trigger_phrases": [
+        "rotated",
+        "sorted array"
+      ],
+      "problem_slugs": [
+        "search-in-rotated-sorted-array",
+        "find-minimum-in-rotated-sorted-array"
+      ]
+    },
+    {
+      "sub_pattern_id": "binary-search-variants",
+      "name": "Binary Search Variants",
+      "description": "This sub-pattern involves using binary search on arrays or matrices with additional constraints or requirements, such as finding the median of two sorted arrays or searching a 2D matrix.",
+      "trigger_phrases": [
+        "median",
+        "2D matrix",
+        "sorted arrays"
+      ],
+      "problem_slugs": [
+        "search-a-2d-matrix",
+        "median-of-two-sorted-arrays"
+      ]
+    },
+    {
+      "sub_pattern_id": "modified-binary-search",
+      "name": "Modified Binary Search",
+      "description": "This sub-pattern involves using binary search on arrays with modified requirements, such as finding a single element in a sorted array or determining the minimum number of bananas Koko can eat.",
+      "trigger_phrases": [
+        "single element",
+        "minimum"
+      ],
+      "problem_slugs": [
+        "single-element-in-a-sorted-array",
+        "koko-eating-bananas"
+      ]
+    },
+    {
+      "sub_pattern_id": "unconventional-binary-search",
+      "name": "Unconventional Binary Search",
+      "description": "This sub-pattern involves using binary search in unconventional scenarios, such as populating next right pointers in each node or implementing a time-based key-value store.",
+      "trigger_phrases": [
+        "next right pointers",
+        "time-based key-value store"
+      ],
+      "problem_slugs": [
+        "populating-next-right-pointers-in-each-node",
+        "time-based-key-value-store"
+      ]
+    }
+  ],
+  "linked-list": [
+    {
+      "sub_pattern_id": "linked-list-reversal",
+      "name": "Reversal and Rotation",
+      "description": "This sub-pattern involves reversing or rotating a linked list, which requires updating node pointers to achieve the desired order.",
+      "trigger_phrases": [
+        "reverse",
+        "rotate"
+      ],
+      "problem_slugs": [
+        "reverse-linked-list",
+        "reverse-nodes-in-k-group",
+        "rotate-list",
+        "reorder-list"
+      ]
+    },
+    {
+      "sub_pattern_id": "linked-list-merging",
+      "name": "Merging and Sorting",
+      "description": "This sub-pattern involves merging two or more sorted linked lists into a single sorted list, which requires comparing node values and updating pointers.",
+      "trigger_phrases": [
+        "merge",
+        "sorted"
+      ],
+      "problem_slugs": [
+        "merge-two-sorted-lists",
+        "merge-k-sorted-lists"
+      ]
+    },
+    {
+      "sub_pattern_id": "linked-list-cycles",
+      "name": "Cycles and Intersections",
+      "description": "This sub-pattern involves detecting cycles or intersections in a linked list, which requires tracking node visits and comparing pointers.",
+      "trigger_phrases": [
+        "cycle",
+        "intersection"
+      ],
+      "problem_slugs": [
+        "linked-list-cycle",
+        "intersection-of-two-linked-lists",
+        "find-the-duplicate-number"
+      ]
+    },
+    {
+      "sub_pattern_id": "linked-list-manipulation",
+      "name": "Node Manipulation",
+      "description": "This sub-pattern involves adding, removing, or modifying nodes in a linked list, which requires updating node pointers and handling edge cases.",
+      "trigger_phrases": [
+        "add",
+        "remove",
+        "modify"
+      ],
+      "problem_slugs": [
+        "add-two-numbers",
+        "remove-nth-node-from-end-of-list",
+        "copy-list-with-random-pointer"
+      ]
+    },
+    {
+      "sub_pattern_id": "linked-list-caching",
+      "name": "Caching and Priority",
+      "description": "This sub-pattern involves implementing caching mechanisms or priority queues using linked lists, which requires managing node insertion and removal based on frequency or priority.",
+      "trigger_phrases": [
+        "cache",
+        "priority"
+      ],
+      "problem_slugs": [
+        "lru-cache",
+        "lfu-cache"
+      ]
+    },
+    {
+      "sub_pattern_id": "linked-list-inspection",
+      "name": "Inspection and Validation",
+      "description": "This sub-pattern involves inspecting or validating a linked list, which requires traversing the list and checking node properties or relationships.",
+      "trigger_phrases": [
+        "middle",
+        "palindrome"
+      ],
+      "problem_slugs": [
+        "middle-of-the-linked-list",
+        "palindrome-linked-list"
+      ]
+    }
+  ],
+  "trees": [
+    {
+      "sub_pattern_id": "tree-traversal",
+      "name": "Tree Traversal",
+      "description": "This sub-pattern involves traversing a tree in a specific order, such as inorder, preorder, or postorder, and performing operations on the nodes.",
+      "trigger_phrases": [
+        "traversal",
+        "inorder",
+        "preorder",
+        "postorder"
+      ],
+      "problem_slugs": [
+        "binary-tree-inorder-traversal",
+        "binary-tree-preorder-traversal",
+        "binary-tree-postorder-traversal",
+        "binary-tree-level-order-traversal",
+        "binary-tree-zigzag-level-order-traversal",
+        "binary-tree-right-side-view"
+      ]
+    },
+    {
+      "sub_pattern_id": "tree-construction",
+      "name": "Tree Construction",
+      "description": "This sub-pattern involves constructing a tree from a given set of nodes or traversals, such as constructing a binary tree from preorder and inorder traversals.",
+      "trigger_phrases": [
+        "construct",
+        "build",
+        "create"
+      ],
+      "problem_slugs": [
+        "construct-binary-tree-from-preorder-and-inorder-traversal",
+        "construct-binary-tree-from-inorder-and-postorder-traversal",
+        "convert-sorted-array-to-binary-search-tree"
+      ]
+    },
+    {
+      "sub_pattern_id": "tree-validation",
+      "name": "Tree Validation",
+      "description": "This sub-pattern involves checking if a given tree satisfies certain properties, such as being a valid binary search tree or being balanced.",
+      "trigger_phrases": [
+        "validate",
+        "is valid",
+        "check"
+      ],
+      "problem_slugs": [
+        "validate-binary-search-tree",
+        "balanced-binary-tree",
+        "symmetric-tree"
+      ]
+    },
+    {
+      "sub_pattern_id": "tree-serialization",
+      "name": "Tree Serialization",
+      "description": "This sub-pattern involves converting a tree into a serialized form, such as a string or array, and vice versa.",
+      "trigger_phrases": [
+        "serialize",
+        "deserialize"
+      ],
+      "problem_slugs": [
+        "serialize-and-deserialize-binary-tree"
+      ]
+    },
+    {
+      "sub_pattern_id": "tree-properties",
+      "name": "Tree Properties",
+      "description": "This sub-pattern involves finding properties of a tree, such as its maximum depth, diameter, or width.",
+      "trigger_phrases": [
+        "maximum",
+        "minimum",
+        "depth",
+        "diameter",
+        "width"
+      ],
+      "problem_slugs": [
+        "maximum-depth-of-binary-tree",
+        "diameter-of-binary-tree",
+        "maximum-width-of-binary-tree"
+      ]
+    },
+    {
+      "sub_pattern_id": "tree-manipulation",
+      "name": "Tree Manipulation",
+      "description": "This sub-pattern involves modifying a tree, such as inverting it, finding the lowest common ancestor, or counting good nodes.",
+      "trigger_phrases": [
+        "invert",
+        "lowest common ancestor",
+        "count"
+      ],
+      "problem_slugs": [
+        "invert-binary-tree",
+        "lowest-common-ancestor-of-a-binary-search-tree",
+        "count-good-nodes-in-binary-tree",
+        "same-tree",
+        "subtree-of-another-tree",
+        "kth-smallest-element-in-a-bst",
+        "binary-tree-maximum-path-sum",
+        "binary-search-tree-iterator"
+      ]
+    }
+  ],
+  "tries": [
+    {
+      "sub_pattern_id": "trie-implementation",
+      "name": "Trie Implementation",
+      "description": "This sub-pattern involves creating a Trie data structure from scratch, focusing on the basic operations such as insert, search, and delete. It distinguishes itself by requiring the implementation of the Trie's core functionality.",
+      "trigger_phrases": [
+        "implement",
+        "design",
+        "create"
+      ],
+      "problem_slugs": [
+        "implement-trie-prefix-tree",
+        "design-add-and-search-words-data-structure"
+      ]
+    },
+    {
+      "sub_pattern_id": "trie-application",
+      "name": "Trie Application",
+      "description": "This sub-pattern involves using a Trie to solve a specific problem, often requiring additional data structures or algorithms to achieve the desired outcome. It is characterized by the use of a Trie as a tool to facilitate the solution.",
+      "trigger_phrases": [
+        "search",
+        "find",
+        "word search"
+      ],
+      "problem_slugs": [
+        "word-search-ii"
+      ]
+    }
+  ],
+  "heap-priority-queue": [
+    {
+      "sub_pattern_id": "top-k-elements",
+      "name": "Top K Elements",
+      "description": "This sub-pattern involves finding the kth largest or smallest element in an array or stream, often requiring the use of heaps or priority queues to efficiently solve the problem.",
+      "trigger_phrases": [
+        "kth largest",
+        "kth smallest",
+        "top k"
+      ],
+      "problem_slugs": [
+        "kth-largest-element-in-an-array",
+        "kth-largest-element-in-a-stream",
+        "k-closest-points-to-origin"
+      ]
+    },
+    {
+      "sub_pattern_id": "median-and-streams",
+      "name": "Median and Streams",
+      "description": "This sub-pattern involves maintaining a data structure to efficiently calculate the median of a stream of numbers, often requiring the use of heaps or priority queues to balance the data.",
+      "trigger_phrases": [
+        "median",
+        "data stream"
+      ],
+      "problem_slugs": [
+        "find-median-from-data-stream"
+      ]
+    },
+    {
+      "sub_pattern_id": "scheduling-and-priority",
+      "name": "Scheduling and Priority",
+      "description": "This sub-pattern involves scheduling tasks or prioritizing elements based on certain conditions, often requiring the use of heaps or priority queues to manage the tasks or elements.",
+      "trigger_phrases": [
+        "schedule",
+        "priority"
+      ],
+      "problem_slugs": [
+        "task-scheduler",
+        "last-stone-weight"
+      ]
+    }
+  ],
+  "backtracking": [
+    {
+      "sub_pattern_id": "unrestricted-backtracking",
+      "name": "Unrestricted Backtracking",
+      "description": "This sub-pattern involves generating all possible combinations or permutations of a given set without any restrictions, such as in the case of subsets or permutations. It is characterized by the absence of constraints on the selection process.",
+      "trigger_phrases": [
+        "all possible",
+        "every",
+        "generate all"
+      ],
+      "problem_slugs": [
+        "subsets",
+        "permutations",
+        "letter-combinations-of-a-phone-number"
+      ]
+    },
+    {
+      "sub_pattern_id": "restricted-backtracking",
+      "name": "Restricted Backtracking",
+      "description": "This sub-pattern involves generating combinations or permutations with certain restrictions, such as a target sum or a specific pattern. It requires careful consideration of the constraints to prune the search space.",
+      "trigger_phrases": [
+        "sum",
+        "target",
+        "pattern"
+      ],
+      "problem_slugs": [
+        "combination-sum",
+        "combination-sum-ii",
+        "subsets-ii"
+      ]
+    },
+    {
+      "sub_pattern_id": "spatial-backtracking",
+      "name": "Spatial Backtracking",
+      "description": "This sub-pattern involves searching for a solution in a spatial context, such as a grid or a board, where the goal is to find a specific arrangement or path. It often requires exploring different configurations and backtracking when a dead end is reached.",
+      "trigger_phrases": [
+        "grid",
+        "board",
+        "path"
+      ],
+      "problem_slugs": [
+        "word-search",
+        "n-queens"
+      ]
+    },
+    {
+      "sub_pattern_id": "string-backtracking",
+      "name": "String Backtracking",
+      "description": "This sub-pattern involves generating all possible partitions or combinations of a string, often with specific constraints such as palindrome conditions. It requires careful consideration of the string properties and the constraints.",
+      "trigger_phrases": [
+        "string",
+        "partition",
+        "palindrome"
+      ],
+      "problem_slugs": [
+        "palindrome-partitioning"
+      ]
+    }
+  ],
+  "graphs": [
+    {
+      "sub_pattern_id": "graph-traversal-flood-fill",
+      "name": "Graph Traversal and Flood Fill",
+      "description": "This sub-pattern involves traversing a graph or a grid and using flood fill techniques to solve problems, often involving finding connected components or areas.",
+      "trigger_phrases": [
+        "island",
+        "flood fill",
+        "connected components"
+      ],
+      "problem_slugs": [
+        "number-of-islands",
+        "max-area-of-island",
+        "rotting-oranges",
+        "pacific-atlantic-water-flow",
+        "surrounded-regions"
+      ]
+    },
+    {
+      "sub_pattern_id": "graph-representation-and-cloning",
+      "name": "Graph Representation and Cloning",
+      "description": "This sub-pattern involves representing graphs and cloning or reconstructing them, often requiring understanding of graph data structures and algorithms.",
+      "trigger_phrases": [
+        "clone",
+        "represent",
+        "graph data structure"
+      ],
+      "problem_slugs": [
+        "clone-graph",
+        "reconstruct-itinerary"
+      ]
+    },
+    {
+      "sub_pattern_id": "graph-topological-sorting-and-cycles",
+      "name": "Graph Topological Sorting and Cycles",
+      "description": "This sub-pattern involves detecting cycles, performing topological sorting, and finding redundant connections in graphs, often requiring understanding of graph algorithms and cycle detection.",
+      "trigger_phrases": [
+        "cycle",
+        "topological sort",
+        "redundant connection"
+      ],
+      "problem_slugs": [
+        "course-schedule",
+        "redundant-connection",
+        "min-cost-to-connect-all-points"
+      ]
+    },
+    {
+      "sub_pattern_id": "graph-bipartiteness-and-coloring",
+      "name": "Graph Bipartiteness and Coloring",
+      "description": "This sub-pattern involves checking if a graph is bipartite, coloring graphs, and solving problems related to graph coloring.",
+      "trigger_phrases": [
+        "bipartite",
+        "coloring",
+        "graph coloring"
+      ],
+      "problem_slugs": [
+        "is-graph-bipartite"
+      ]
+    },
+    {
+      "sub_pattern_id": "graph-shortest-paths-and-word-ladders",
+      "name": "Graph Shortest Paths and Word Ladders",
+      "description": "This sub-pattern involves finding shortest paths in graphs, constructing word ladders, and solving problems related to graph traversal and word transformations.",
+      "trigger_phrases": [
+        "shortest path",
+        "word ladder",
+        "transformation"
+      ],
+      "problem_slugs": [
+        "word-ladder",
+        "swim-in-rising-water"
+      ]
+    }
+  ],
+  "1d-dp": [
+    {
+      "sub_pattern_id": "unbounded-knapsack",
+      "name": "Unbounded Knapsack",
+      "description": "This sub-pattern involves finding the optimal solution by considering all possible combinations of elements, often with a constraint on the total weight or cost. Problems in this category typically involve counting or minimizing/maximizing a quantity.",
+      "trigger_phrases": [
+        "coin",
+        "change",
+        "cost",
+        "minimize",
+        "maximize"
+      ],
+      "problem_slugs": [
+        "coin-change",
+        "min-cost-climbing-stairs",
+        "house-robber",
+        "house-robber-ii"
+      ]
+    },
+    {
+      "sub_pattern_id": "longest-increasing-subsequence",
+      "name": "Longest Increasing Subsequence",
+      "description": "This sub-pattern involves finding the longest subsequence that satisfies a specific condition, such as increasing order. Problems in this category typically involve comparing adjacent elements or finding a specific pattern.",
+      "trigger_phrases": [
+        "increasing",
+        "subsequence",
+        "longest"
+      ],
+      "problem_slugs": [
+        "longest-increasing-subsequence"
+      ]
+    },
+    {
+      "sub_pattern_id": "palindromic-substrings",
+      "name": "Palindromic Substrings",
+      "description": "This sub-pattern involves finding palindromic substrings or substrings with specific properties. Problems in this category typically involve checking for symmetry or specific patterns in the input string.",
+      "trigger_phrases": [
+        "palindromic",
+        "substring",
+        "symmetry"
+      ],
+      "problem_slugs": [
+        "longest-palindromic-substring",
+        "palindromic-substrings"
+      ]
+    },
+    {
+      "sub_pattern_id": "single-array-dp",
+      "name": "Single Array DP",
+      "description": "This sub-pattern involves finding the optimal solution by considering a single array and making decisions based on the current state. Problems in this category typically involve finding a maximum or minimum value.",
+      "trigger_phrases": [
+        "array",
+        "maximum",
+        "minimum"
+      ],
+      "problem_slugs": [
+        "maximum-product-subarray",
+        "decode-ways",
+        "climbing-stairs"
+      ]
+    }
+  ],
+  "2d-dp": [
+    {
+      "sub_pattern_id": "grid-walks",
+      "name": "Grid Walks",
+      "description": "This sub-pattern involves finding the number of ways to reach a target position in a grid, often with constraints on movement. Problems in this category typically involve calculating the number of unique paths.",
+      "trigger_phrases": [
+        "grid",
+        "walk",
+        "path",
+        "unique paths"
+      ],
+      "problem_slugs": [
+        "unique-paths",
+        "minimum-path-sum"
+      ]
+    },
+    {
+      "sub_pattern_id": "sequence-alignment",
+      "name": "Sequence Alignment",
+      "description": "This sub-pattern involves finding the longest common subsequence or the edit distance between two sequences. Problems in this category typically involve comparing or aligning strings or arrays.",
+      "trigger_phrases": [
+        "sequence",
+        "subsequence",
+        "edit distance",
+        "alignment"
+      ],
+      "problem_slugs": [
+        "longest-common-subsequence",
+        "edit-distance",
+        "interleaving-string",
+        "regular-expression-matching"
+      ]
+    },
+    {
+      "sub_pattern_id": "coin-change-and-target-sum",
+      "name": "Coin Change and Target Sum",
+      "description": "This sub-pattern involves finding the number of ways to reach a target sum using coins or integers, often with constraints on the number of coins or integers used. Problems in this category typically involve calculating the number of combinations.",
+      "trigger_phrases": [
+        "coin change",
+        "target sum",
+        "combinations"
+      ],
+      "problem_slugs": [
+        "coin-change-ii",
+        "target-sum"
+      ]
+    },
+    {
+      "sub_pattern_id": "state-machine-and-cooldown",
+      "name": "State Machine and Cooldown",
+      "description": "This sub-pattern involves modeling a system with states and cooldown periods, often to find the maximum or minimum value of a metric. Problems in this category typically involve using dynamic programming to track state transitions.",
+      "trigger_phrases": [
+        "state machine",
+        "cooldown",
+        "buy and sell"
+      ],
+      "problem_slugs": [
+        "best-time-to-buy-and-sell-stock-with-cooldown"
+      ]
+    }
+  ],
+  "greedy": [
+    {
+      "sub_pattern_id": "maximum-subarray-variant",
+      "name": "Maximum Subarray Variant",
+      "description": "This sub-pattern involves finding the maximum or minimum subarray or sequence that satisfies certain conditions, often using a single pass through the data.",
+      "trigger_phrases": [
+        "maximum",
+        "minimum",
+        "subarray",
+        "contiguous"
+      ],
+      "problem_slugs": [
+        "maximum-subarray",
+        "merge-triplets-to-form-target-triplet"
+      ]
+    },
+    {
+      "sub_pattern_id": "jump-game-variant",
+      "name": "Jump Game Variant",
+      "description": "This sub-pattern involves determining whether it's possible to reach a certain position or complete a task, often with limited resources or constraints.",
+      "trigger_phrases": [
+        "jump",
+        "reach",
+        "can"
+      ],
+      "problem_slugs": [
+        "jump-game",
+        "jump-game-ii",
+        "gas-station"
+      ]
+    },
+    {
+      "sub_pattern_id": "string-partitioning",
+      "name": "String Partitioning",
+      "description": "This sub-pattern involves dividing a string into partitions or segments based on certain conditions or rules.",
+      "trigger_phrases": [
+        "partition",
+        "divide",
+        "string"
+      ],
+      "problem_slugs": [
+        "partition-labels",
+        "hand-of-straights",
+        "valid-parenthesis-string"
+      ]
+    }
+  ],
+  "intervals": [
+    {
+      "sub_pattern_id": "interval-merging",
+      "name": "Merging Intervals",
+      "description": "This sub-pattern involves combining overlapping intervals into a single interval, often to simplify or optimize a given set of intervals. It requires identifying and merging intervals based on their start and end points.",
+      "trigger_phrases": [
+        "merge",
+        "combine",
+        "overlapping"
+      ],
+      "problem_slugs": [
+        "merge-intervals",
+        "insert-interval"
+      ]
+    },
+    {
+      "sub_pattern_id": "interval-selection",
+      "name": "Selecting Non-Overlapping Intervals",
+      "description": "This sub-pattern focuses on selecting a subset of intervals such that none of them overlap, often to maximize a certain condition like the number of intervals or their total length.",
+      "trigger_phrases": [
+        "non-overlapping",
+        "select",
+        "maximum"
+      ],
+      "problem_slugs": [
+        "non-overlapping-intervals"
+      ]
+    }
+  ],
+  "bit-manipulation": [
+    {
+      "sub_pattern_id": "bit-counting",
+      "name": "Bit Counting",
+      "description": "This sub-pattern involves counting the number of bits in a binary representation, including counting 1-bits, total bits, or missing numbers in a sequence.",
+      "trigger_phrases": [
+        "count",
+        "number of",
+        "missing"
+      ],
+      "problem_slugs": [
+        "number-of-1-bits",
+        "counting-bits",
+        "missing-number"
+      ]
+    },
+    {
+      "sub_pattern_id": "bit-reversal",
+      "name": "Bit Reversal",
+      "description": "This sub-pattern involves reversing the binary representation of a number, either partially or entirely.",
+      "trigger_phrases": [
+        "reverse",
+        "invert"
+      ],
+      "problem_slugs": [
+        "reverse-bits",
+        "reverse-integer"
+      ]
+    },
+    {
+      "sub_pattern_id": "bit-manipulation-operations",
+      "name": "Bit Manipulation Operations",
+      "description": "This sub-pattern involves performing operations using bit manipulation, such as finding a single number or calculating the sum of two integers.",
+      "trigger_phrases": [
+        "single",
+        "sum",
+        "xor"
+      ],
+      "problem_slugs": [
+        "single-number",
+        "sum-of-two-integers"
+      ]
+    }
+  ],
+  "math-geometry": [
+    {
+      "sub_pattern_id": "matrix-manipulation",
+      "name": "Matrix Manipulation",
+      "description": "This sub-pattern involves problems that require manipulating matrices, such as rotating or setting values to zero.",
+      "trigger_phrases": [
+        "matrix",
+        "rotate",
+        "set zero"
+      ],
+      "problem_slugs": [
+        "rotate-image",
+        "set-matrix-zeroes",
+        "spiral-matrix"
+      ]
+    },
+    {
+      "sub_pattern_id": "number-theory",
+      "name": "Number Theory",
+      "description": "This sub-pattern involves problems that require understanding properties of numbers, such as happy numbers or palindrome numbers.",
+      "trigger_phrases": [
+        "happy number",
+        "palindrome number",
+        "ugly number"
+      ],
+      "problem_slugs": [
+        "happy-number",
+        "palindrome-number",
+        "ugly-number"
+      ]
+    },
+    {
+      "sub_pattern_id": "arithmetic-operations",
+      "name": "Arithmetic Operations",
+      "description": "This sub-pattern involves problems that require performing arithmetic operations, such as exponentiation or multiplication.",
+      "trigger_phrases": [
+        "pow",
+        "multiply",
+        "add"
+      ],
+      "problem_slugs": [
+        "powx-n",
+        "multiply-strings",
+        "plus-one"
+      ]
+    },
+    {
+      "sub_pattern_id": "number-conversion",
+      "name": "Number Conversion",
+      "description": "This sub-pattern involves problems that require converting between different number representations, such as Roman numerals to integers.",
+      "trigger_phrases": [
+        "roman to integer"
+      ],
+      "problem_slugs": [
+        "roman-to-integer"
+      ]
+    }
+  ]
+}

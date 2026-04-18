@@ -136,33 +136,34 @@ def normalize_sub_patterns(raw_sub_patterns: Any, pattern_id: str) -> List[dict]
 def classify_sub_pattern(problem: dict, sub_patterns: List[dict]) -> dict:
     """
     Heuristically classify a problem into one sub-pattern.
-
-    We keep this deterministic and lightweight:
-    - title matches are weighted highest
-    - topic tag matches are medium weight
-    - description matches are lowest weight
+    Uses the AI-generated trigger_phrases from the sub-pattern itself.
     """
-    if not sub_patterns:
+    # Filter out parent pattern entries (those without sub_pattern_id)
+    valid_subs = [s for s in sub_patterns if s.get("sub_pattern_id")]
+    
+    if not valid_subs:
         return {"sub_pattern_id": "", "name": ""}
 
     title_text = str(problem.get("title", "")).lower()
     tags_text = " ".join(str(tag).lower() for tag in problem.get("topic_tags", []))
     desc_text = html_to_text(problem.get("description_html", "")).lower()
 
-    best = sub_patterns[0]
+    best = valid_subs[0]
     best_score = -1
-    for sub in sub_patterns:
-        sub_pattern_id = sub.get("sub_pattern_id", "")
-        keywords = SUB_PATTERN_KEYWORDS.get(sub_pattern_id, [])
+    
+    for sub in valid_subs:
+        # Use the AI-generated trigger_phrases
+        keywords = sub.get("trigger_phrases", [])
         score = 0
         for kw in keywords:
             token = kw.lower()
             if token in title_text:
-                score += 3
+                score += 5  # Increased weight for specific AI phrases
             if token in tags_text:
-                score += 2
+                score += 3
             if token in desc_text:
                 score += 1
+        
         if score > best_score:
             best_score = score
             best = sub
@@ -216,12 +217,22 @@ def build_db():
 
     # Normalize pattern-level sub-pattern schemas first so they can be used
     # while building per-problem records.
-    pattern_sub_patterns: Dict[str, List[dict]] = {}
-    for pat in patterns_raw:
-        pattern_id = pat.get("pattern_id", "")
-        sub_patterns = normalize_sub_patterns(pat.get("sub_patterns"), pattern_id)
-        pattern_sub_patterns[pattern_id] = sub_patterns
-        pat["sub_patterns"] = sub_patterns
+    pattern_metadata: Dict[str, dict] = {} # Overarching pattern info
+    pattern_sub_patterns: Dict[str, List[dict]] = {} # Detailed sub-patterns
+    
+    for item in patterns_raw:
+        pid = item.get("pattern_id", "")
+        sid = item.get("sub_pattern_id", "")
+        if not pid: continue
+        
+        if not sid:
+            # This is a parent pattern entry
+            pattern_metadata[pid] = item
+        else:
+            # This is a sub-pattern entry
+            if pid not in pattern_sub_patterns:
+                pattern_sub_patterns[pid] = []
+            pattern_sub_patterns[pid].append(item)
 
     # Build problems dict — merge enriched data + insights
     problems: Dict[str, dict] = {}
@@ -283,9 +294,13 @@ def build_db():
 
     # Build patterns list — attach problem slugs to each pattern
     patterns: List[dict] = []
-    for pat in patterns_raw:
-        pattern_id = pat.get("pattern_id", "")
+
+    # Reverse map ID to Name
+    ID_TO_NAME = {v: k for k, v in PATTERN_NAME_TO_ID.items()}
+
+    for pattern_id in PATTERN_ORDER:
         sub_patterns = pattern_sub_patterns.get(pattern_id, [])
+        pattern_name = ID_TO_NAME.get(pattern_id, pattern_id.replace("-", " ").title())
 
         # Find all problems belonging to this pattern
         problem_slugs = sorted(
@@ -310,6 +325,9 @@ def build_db():
                 "trigger_phrases": sub.get("trigger_phrases", []),
                 "problem_count": len(sub_problem_slugs),
                 "problem_slugs": sub_problem_slugs,
+                "explanation": sub.get("explanation", ""),
+                "mental_model": sub.get("mental_model", ""),
+                "template_code_java": sub.get("template_code_java", "")
             })
 
         company_counter: Dict[str, int] = {}
@@ -321,27 +339,33 @@ def build_db():
             key=lambda row: (-row["count"], row["company"]),
         )[:5]
 
+        # Use the metadata from patterns.json for the parent pattern
+        meta = pattern_metadata.get(pattern_id, {})
+        
         pattern_entry = {
             "pattern_id": pattern_id,
-            "name": pat.get("name", ""),
-            "explanation": pat.get("explanation", ""),
-            "mental_model": pat.get("mental_model", ""),
-            "template_code_python": pat.get("template_code_python", ""),
-            "template_code_javascript": pat.get("template_code_javascript", ""),
-            "template_code_java": pat.get("template_code_java", ""),
-            "trigger_phrases": pat.get("trigger_phrases", []),
-            "when_to_use": pat.get("when_to_use", []),
-            "common_mistakes": pat.get("common_mistakes", []),
-            "time_complexity": pat.get("time_complexity", ""),
-            "space_complexity": pat.get("space_complexity", ""),
-            "related_patterns": pat.get("related_patterns", []),
+            "name": pattern_name,
+            "explanation": meta.get("explanation", f"This is the overarching pattern for {pattern_name}."),
+            "mental_model": meta.get("mental_model", "See sub-patterns for specific mental models."),
+            "template_code_python": meta.get("template_code_python", ""),
+            "template_code_javascript": meta.get("template_code_javascript", ""),
+            "template_code_java": meta.get("template_code_java", ""),
+            "trigger_phrases": meta.get("trigger_phrases", []),
+            "when_to_use": meta.get("when_to_use", []),
+            "common_mistakes": meta.get("common_mistakes", []),
+            "time_complexity": meta.get("time_complexity", ""),
+            "space_complexity": meta.get("space_complexity", ""),
+            "related_patterns": meta.get("related_patterns", []),
             "sub_patterns": sub_pattern_entries,
             "top_companies": top_companies,
-            "sample_walkthrough": pat.get("sample_walkthrough", {}),
+            "sample_walkthrough": meta.get("sample_walkthrough", {}),
             "problem_count": len(problem_slugs),
             "problem_slugs": problem_slugs,
         }
-        patterns.append(pattern_entry)
+
+        # Only add pattern if it has problems
+        if problem_slugs:
+            patterns.append(pattern_entry)
 
     # Sort patterns by recommended learning order
     pattern_id_order = {pid: i for i, pid in enumerate(PATTERN_ORDER)}

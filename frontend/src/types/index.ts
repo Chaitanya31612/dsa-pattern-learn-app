@@ -7,6 +7,9 @@ export interface SubPattern {
   trigger_phrases: string[]
   problem_count: number
   problem_slugs: string[]
+  explanation?: string
+  mental_model?: string
+  template_code_java?: string
 }
 
 export interface Pattern {
@@ -93,8 +96,11 @@ export interface Progress {
   solved: Record<string, {
     date: string
     confidence: 1 | 2 | 3
+    score?: number
+    reasoning?: string[]
   }>
   notes: Record<string, string>
+  code: Record<string, string>
   reflections: Record<string, {
     pattern: string
     signal: string
@@ -122,6 +128,7 @@ export interface MockInterviewConfig {
   totalTimeMinutes: number
   language: 'java'
   allowPause: boolean
+  isIndividualMode?: boolean
 }
 
 export interface MockInterviewChatMessage {

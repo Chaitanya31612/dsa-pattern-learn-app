@@ -14,14 +14,14 @@
   --font-body: 'DM Sans', sans-serif;
 
   /* Base sizes */
-  --text-xs: 0.7rem;
-  --text-sm: 0.8rem;
-  --text-base: 0.9rem;
-  --text-lg: 1.1rem;
-  --text-xl: 1.35rem;
-  --text-2xl: 1.7rem;
-  --text-3xl: 2.2rem;
-  --text-4xl: 3rem;
+  --text-xs: 0.8rem;
+  --text-sm: 0.9rem;
+  --text-base: 1rem;
+  --text-lg: 1.15rem;
+  --text-xl: 1.4rem;
+  --text-2xl: 1.8rem;
+  --text-3xl: 2.4rem;
+  --text-4xl: 3.2rem;
 
   /* Spacing */
   --space-xs: 4px;
@@ -214,7 +214,7 @@ a:hover {
 
 /* ── Utility Classes ───────────────────────────────────── */
 .container {
-  max-width: 1280px;
+  max-width: 1536px;
   margin: 0 auto;
   padding: 0 var(--space-lg);
 }
@@ -566,4 +566,64 @@ a:hover {
     --text-3xl: 1.8rem;
     --text-4xl: 2.2rem;
   }
+}
+
+/* ── Markdown Renderer Styles ──────────────────────────── */
+.markdown-body {
+  color: #e2e8f0;
+  font-size: var(--text-base);
+  line-height: 1.8;
+}
+
+.markdown-body p {
+  margin-bottom: var(--space-md);
+  white-space: pre-wrap;
+}
+
+.markdown-body p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+.markdown-body ul, .markdown-body ol {
+  padding-left: var(--space-xl);
+  margin-bottom: var(--space-md);
+}
+
+.markdown-body li {
+  margin-bottom: var(--space-xs);
+  color: #e2e8f0;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.markdown-body code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+.markdown-body p > code, .markdown-body li > code {
+  color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.1);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.markdown-body pre {
+  margin: var(--space-md) 0;
+  background: var(--bg-code);
+  padding: var(--space-md);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+}
+
+.markdown-body pre code {
+  color: var(--text-primary);
+  background: transparent;
+  padding: 0;
 }

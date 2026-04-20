@@ -1174,3 +1174,193 @@ Return JSON:
     problem_obj["is_custom"] = True
     _save_to_custom_db(problem_obj)
     return problem_obj
+
+
+# ---------------------------------------------------------------------------
+# LLD Interview endpoint
+# ---------------------------------------------------------------------------
+
+
+class LLDContextDigest(BaseModel):
+    """
+    Compact snapshot of what the candidate has produced so far.
+    Frontend diffs its session state and only sends the changed parts,
+    keeping the payload small (typically < 1 kB).
+    """
+    active_phase_title: str = ''
+    note_summary: str = ''
+    filled_phases: list[str] = Field(default_factory=list)
+    code_types: list[str] = Field(default_factory=list)
+    referenced_entities: list[str] = Field(default_factory=list)
+    code_lines: int = 0
+
+
+class LLDProblemMeta(BaseModel):
+    """Problem-specific knowledge injected by the frontend from lld-db.json."""
+    title: str = ''
+    difficulty: str = ''
+    tags: list[str] = Field(default_factory=list)
+    must_have: list[str] = Field(default_factory=list)
+    entities: list[str] = Field(default_factory=list)
+    design_patterns: list[str] = Field(default_factory=list)
+    key_phrases: list[str] = Field(default_factory=list)
+    gotchas: list[str] = Field(default_factory=list)
+    extensibility_test: str = ''
+
+
+class LLDChatMessage(BaseModel):
+    role: Literal['user', 'assistant']
+    content: str
+
+
+class LLDInterviewRequest(BaseModel):
+    """
+    Payload sent by useLLDInterview.sendMessage() on every chat turn.
+
+    Design note:
+    The frontend uses a delta-context strategy — it sends only what changed
+    since the last AI call rather than the full session.  This keeps tokens low
+    and makes responses feel snappier (< 30 s round-trip on Groq).
+    """
+    problem_id: str
+    mode: Literal['guided', 'interview']
+    active_phase: str = 'clarify'
+    hint_count: int = 0
+    context_digest: LLDContextDigest = Field(default_factory=LLDContextDigest)
+    messages: list[LLDChatMessage] = Field(default_factory=list)
+    problem_meta: LLDProblemMeta = Field(default_factory=LLDProblemMeta)
+
+
+class LLDInterviewResponse(BaseModel):
+    reply: str
+    provider: str
+    model: str
+
+
+def _build_lld_system_prompt(mode: str, meta: LLDProblemMeta) -> str:
+    """
+    Build a mode-specific system prompt for the LLD AI session.
+
+    Guided mode  — senior architect coach. Very helpful, pedagogical, explains WHY.
+    Interview mode — real senior engineer interviewer. Probing, limits direct answers.
+    """
+    meta_block = '\n'.join(filter(None, [
+        f'Problem: {meta.title} ({meta.difficulty})' if meta.title else '',
+        f'Tags: {", ".join(meta.tags)}' if meta.tags else '',
+        f'Must-have requirements:\n' + '\n'.join(f'  - {r}' for r in meta.must_have) if meta.must_have else '',
+        f'Core entities: {", ".join(meta.entities)}' if meta.entities else '',
+        f'Relevant design patterns:\n' + '\n'.join(f'  - {p}' for p in meta.design_patterns) if meta.design_patterns else '',
+        f'Key interview phrases:\n' + '\n'.join(f'  - {kp}' for kp in meta.key_phrases) if meta.key_phrases else '',
+        f'Common gotchas:\n' + '\n'.join(f'  - {g}' for g in meta.gotchas) if meta.gotchas else '',
+        f'Extensibility test: {meta.extensibility_test}' if meta.extensibility_test else '',
+    ]))
+
+    five_phase_framework = (
+        'The candidate is following a 5-phase LLD framework:\n'
+        '  1. Clarify (5-8 min)   — requirement buckets, assumptions, out-of-scope\n'
+        '  2. Entity Model (8-10 min) — classes, relationships, invariants, UML sketch\n'
+        '  3. Contracts (5-8 min) — interfaces, enums, design pattern rationale\n'
+        '  4. Implement Core (22-28 min) — enums → models → strategies → orchestrator → demo\n'
+        '  5. Review & Extend (4-6 min) — edge cases, SOLID review, extensibility proof'
+    )
+
+    if mode == 'guided':
+        return (
+            'You are a senior software architect and LLD interview coach.\n'
+            'Your job is to guide the candidate through the 5-phase LLD framework.\n\n'
+            f'{five_phase_framework}\n\n'
+            f'Problem context:\n{meta_block}\n\n'
+            'Rules for Coach mode:\n'
+            '- You CAN and SHOULD show class skeletons, interfaces, and pseudocode when it helps understanding.\n'
+            '- Always explain WHY a design decision matters (e.g. Strategy Pattern → OCP compliance).\n'
+            '- If the candidate is stuck, give a concrete next step, not just "think harder".\n'
+            '- Relate advice back to what the candidate has already written (context_digest).\n'
+            '- Use signal phrases from the problem to prime the candidate for real interview vocabulary.\n'
+            '- Gently flag SOLID violations if you see them in the work context.\n'
+            '- Keep replies under 300 words unless the candidate asks for a full walkthrough.\n'
+            '- Format with short paragraphs or bullet points for readability inside a chat UI.\n'
+        )
+    else:
+        return (
+            'You are a senior software engineer conducting a real LLD machine-coding interview.\n'
+            'Be professional, concise, and technically rigorous.\n\n'
+            f'{five_phase_framework}\n\n'
+            f'Problem context:\n{meta_block}\n\n'
+            'Rules for Interview mode:\n'
+            '- Do NOT give away solution code or full designs. Guide through questions.\n'
+            '- Ask exactly ONE probing follow-up question per response.\n'
+            '- Acknowledge correct design decisions briefly before probing further.\n'
+            '- If you spot a SOLID violation, say "I notice X — can you walk me through the reasoning?"\n'
+            '- When the candidate asks for clarification on requirements, answer concisely.\n'
+            '- Keep replies to 3-5 sentences max unless the candidate asks for elaboration.\n'
+            '- Periodically move the candidate forward if they are spending too long on one phase.\n'
+        )
+
+
+def _build_lld_content(digest: LLDContextDigest, messages: list[LLDChatMessage]) -> str:
+    """
+    Serialize the delta digest + recent chat into the AI content string.
+    Total size is intentionally small (< 2 kB typical) for fast, cheap calls.
+    """
+    parts = []
+
+    # Context digest
+    digest_lines = [f'[Active Phase] {digest.active_phase_title}']
+    if digest.note_summary:
+        digest_lines.append(f'[Candidate Notes Summary] {digest.note_summary}')
+    if digest.filled_phases:
+        digest_lines.append(f'[Phases with notes] {", ".join(digest.filled_phases)}')
+    if digest.code_types:
+        digest_lines.append(f'[Types in code workspace] {", ".join(digest.code_types)}')
+    if digest.referenced_entities:
+        digest_lines.append(f'[Entities referenced] {", ".join(digest.referenced_entities)}')
+    if digest.code_lines > 0:
+        digest_lines.append(f'[Code lines written] {digest.code_lines}')
+    parts.append('=== Candidate Context (delta) ===\n' + '\n'.join(digest_lines))
+
+    # Recent chat (last 8 turns)
+    if messages:
+        chat_lines = []
+        for msg in messages[-8:]:
+            label = 'Candidate' if msg.role == 'user' else 'AI Coach'
+            chat_lines.append(f'{label}: {msg.content}')
+        parts.append('=== Recent Conversation ===\n' + '\n'.join(chat_lines))
+
+    return '\n\n'.join(parts)
+
+
+@app.post('/api/lld-interview/respond', response_model=LLDInterviewResponse)
+def lld_interview_respond(payload: LLDInterviewRequest):
+    """
+    LLD Interview AI endpoint.
+
+    Receives a compact context delta from the frontend's useLLDInterview composable.
+    Builds a mode-specific system prompt (guided coach vs real interviewer)
+    and calls the configured AI provider.
+
+    Demo-mode: frontend falls back to its own heuristic coach when this endpoint
+    is unreachable, so no hard dependency from UI on this service.
+    """
+    system_prompt = _build_lld_system_prompt(payload.mode, payload.problem_meta)
+    content = _build_lld_content(payload.context_digest, payload.messages)
+
+    analyzer = get_analyzer()
+    response = analyzer.analyze(content=content, prompt=system_prompt)
+
+    if not response.success:
+        # Return a graceful fallback — frontend will still show something.
+        fallback = (
+            'I could not reach the AI service right now. '
+            'Keep going — focus on naming your core entities and their relationships first.'
+        )
+        return LLDInterviewResponse(
+            reply=fallback,
+            provider='fallback',
+            model='none',
+        )
+
+    return LLDInterviewResponse(
+        reply=response.content.strip(),
+        provider=response.provider.value,
+        model=response.model,
+    )

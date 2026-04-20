@@ -1,0 +1,441 @@
+{
+  "version": "1.0.0",
+  "problems": [
+    {
+      "id": "parking-lot",
+      "number": 1,
+      "title": "Parking Lot System",
+      "difficulty": "Medium",
+      "tags": ["Strategy", "Singleton", "Factory", "OOP Core"],
+      "duration": { "guided": 60, "interview": 45 },
+      "category": "Allocation Systems",
+      "description": "Design an in-memory multi-floor parking lot that supports typed parking spots (SMALL/MEDIUM/LARGE), vehicle hierarchy (Bike/Car/Truck), ticket-based entry/exit, hourly pricing, and a pluggable allocation strategy. The system must be extensible so that new spot types (EV, handicapped) and new pricing policies (flat-rate, surge) can be added without rewriting core orchestration logic.",
+
+      "framework": {
+        "requirements": {
+          "must_have": [
+            "Multiple floors, each with a typed list of ParkingSpot (SMALL/MEDIUM/LARGE).",
+            "Vehicle hierarchy: Bike → SMALL, Car → MEDIUM, Truck → LARGE.",
+            "park(Vehicle) issues a Ticket; unpark(ticketId) vacates the spot and computes price.",
+            "Availability display grouped by floor and spot type.",
+            "Custom exceptions: ParkingLotFullException, InvalidTicketException."
+          ],
+          "nice_to_have": [
+            "Multiple gates with concurrent access (ReentrantLock or synchronized block).",
+            "EV charging spots (new SpotType + strategy extension).",
+            "Accessible/Handicapped spots with permit-based filtering.",
+            "Flat-rate or surge PricingStrategy implementations.",
+            "SpreadEvenly allocation strategy (maximise floor utilisation)."
+          ],
+          "out_of_scope": [
+            "Persistent storage or database.",
+            "Real-time payment gateway.",
+            "Distributed multi-site coordination.",
+            "Online reservation in advance."
+          ],
+          "clarifying_questions": [
+            "Should one vehicle ever occupy more than one spot? (Assume NO for V1.)",
+            "Nearest-first or first-fit allocation — does it matter to you for V1?",
+            "Is pricing hourly only, or should PricingStrategy be injected from day one?",
+            "Do gates belong in the base design, or can I call park/unpark directly on ParkingLot?",
+            "Should duplicate vehicle (same plate number) prevent re-entry?"
+          ]
+        },
+
+        "entities": {
+          "classes": [
+            {
+              "name": "ParkingLot",
+              "responsibility": "Single orchestrator: own floors, strategies, and the active-ticket registry. Delegates allocation to ParkingStrategy and billing to PricingStrategy. Does NOT calculate pricing or search spots directly.",
+              "fields": [
+                "List<Floor> floors",
+                "ParkingStrategy parkingStrategy",
+                "PricingStrategy pricingStrategy",
+                "Map<String, Ticket> activeTickets",
+                "AtomicInteger ticketCounter"
+              ],
+              "methods": [
+                "park(Vehicle vehicle) : Ticket",
+                "unpark(String ticketId) : double",
+                "displayAvailability() : void"
+              ],
+              "design_notes": "Apply Singleton pattern if the problem implies one shared lot. Use ReentrantLock around spot assignment to prevent concurrent double-booking at multiple gates."
+            },
+            {
+              "name": "Floor",
+              "responsibility": "Maintain an ordered list of ParkingSpot objects for one level. Does NOT contain business rules — it is a structural container.",
+              "fields": [
+                "int floorNumber",
+                "List<ParkingSpot> spots"
+              ],
+              "methods": [
+                "getFloorNumber() : int",
+                "getSpots() : List<ParkingSpot>"
+              ],
+              "design_notes": "Keep Floor dumb. Spot-finding logic belongs in ParkingStrategy, not here."
+            },
+            {
+              "name": "ParkingSpot",
+              "responsibility": "Represent one physical slot. Track type, occupancy, and current vehicle. Expose occupy/vacate with minimal coupling to the lot.",
+              "fields": [
+                "int spotNumber",
+                "SpotType type",
+                "Vehicle parkedVehicle",
+                "boolean isFree"
+              ],
+              "methods": [
+                "isFree() : boolean",
+                "canFit(Vehicle v) : boolean  // optional if type-matching is in strategy",
+                "park(Vehicle v) : void",
+                "vacate() : void"
+              ],
+              "design_notes": "Do NOT put SpotType-to-VehicleType mapping here; it couples the spot to vehicle business rules. Keep it in the strategy."
+            },
+            {
+              "name": "Vehicle",
+              "responsibility": "Abstract base carrying licensePlate and VehicleType. Subclasses (Bike, Car, Truck) exist to model the real world and allow future per-type overrides.",
+              "fields": [
+                "String licensePlate",
+                "VehicleType type"
+              ],
+              "methods": [
+                "getType() : VehicleType",
+                "getLicensePlate() : String"
+              ],
+              "design_notes": "Java: abstract class Vehicle, then class Car extends Vehicle. Ruby: base class with attr_reader. Truck/Bike sub-classes each call super with fixed type."
+            },
+            {
+              "name": "Ticket",
+              "responsibility": "Immutable receipt linking a vehicle, spot, and entry timestamp. Needed by PricingStrategy to compute billing.",
+              "fields": [
+                "String ticketId",
+                "Vehicle vehicle",
+                "ParkingSpot spot",
+                "Instant entryTime"
+              ],
+              "methods": [
+                "getTicketId() : String",
+                "getEntryTime() : Instant",
+                "getSpot() : ParkingSpot"
+              ],
+              "design_notes": "Created inside park(); stored in ParkingLot.activeTickets. Removed on unpark."
+            },
+            {
+              "name": "ParkingStrategy (interface)",
+              "responsibility": "Encapsulate the allocation algorithm. Allows swapping NearestFirst, SpreadEvenly, or any future strategy without changing ParkingLot.",
+              "fields": [],
+              "methods": [
+                "findSpot(VehicleType vehicleType, List<Floor> floors) : ParkingSpot"
+              ],
+              "design_notes": "NearestFirstParkingStrategy: iterate floors and spots in order, return first match by SpotType. Throws ParkingLotFullException if none found."
+            },
+            {
+              "name": "PricingStrategy (interface)",
+              "responsibility": "Encapsulate billing logic. HourlyPricingStrategy computes price from ticket entry time to now. Swap in FlatRatePricingStrategy or SurgePricingStrategy without touching ParkingLot.",
+              "fields": [],
+              "methods": [
+                "calculatePrice(Ticket ticket) : double"
+              ],
+              "design_notes": "HourlyPricing: use Duration.between(entryTime, now()).toHours() × rate. For interview, you can hardcode rate=10.0 and note it is configurable."
+            }
+          ],
+          "relationships": [
+            "ParkingLot 1..* Floor  (composition — floors die with lot)",
+            "Floor 1..* ParkingSpot  (composition)",
+            "ParkingLot depends on ParkingStrategy  (injected, not owned)",
+            "ParkingLot depends on PricingStrategy  (injected, not owned)",
+            "ParkingLot 1..* Ticket  (owns active-ticket registry)",
+            "Ticket 1..1 Vehicle  (association)",
+            "Ticket 1..1 ParkingSpot  (association — spot snapshot at entry)"
+          ]
+        },
+
+        "design_patterns": [
+          {
+            "name": "Strategy",
+            "applied_to": "ParkingStrategy and PricingStrategy",
+            "why": "Both allocation and pricing are volatile policies. Without Strategy, adding a new algorithm forces edits to ParkingLot (OCP violation). With Strategy, you new NearestFirstParkingStrategy() and inject — zero changes to the orchestrator.",
+            "signal_phrase": "I am separating allocation and pricing into strategies so the lot doesn't need to change when we add flat-rate weekends or EV-only spots."
+          },
+          {
+            "name": "Singleton",
+            "applied_to": "ParkingLot instance (optional but common interview shorthand)",
+            "why": "A real parking lot is one physical entity; making the Java class a Singleton mirrors that reality and avoids accidental multi-instance ticket conflicts. Always mention: in production I would use DI instead of static getInstance().",
+            "signal_phrase": "I am using Singleton as an interview shorthand because there is physically one lot. In production I would inject ParkingLot through the DI framework."
+          },
+          {
+            "name": "Factory",
+            "applied_to": "Vehicle creation (optional)",
+            "why": "VehicleFactory.create(type, plate) hides the constructor branching. Useful if the interviewer mentions a factory or you want to show knowledge of the pattern.",
+            "signal_phrase": "I could add a VehicleFactory to centralise subclass construction, but for now new Car(plate) is readable enough."
+          },
+          {
+            "name": "Template Method (implicit)",
+            "applied_to": "Abstract Vehicle base class",
+            "why": "Vehicle defines the shared contract (getType, getLicensePlate) and subclasses supply the fixed VehicleType. This is Template Method in miniature.",
+            "signal_phrase": "Vehicle forces a consistent API — any new vehicle type just supplies its type constant and nothing else."
+          }
+        ],
+
+        "uml_ascii": "┌─────────────────────┐      ┌─────────────────┐      ┌──────────────────┐\n│     ParkingLot      │1───*│      Floor      │1───*│   ParkingSpot    │\n├─────────────────────┤      ├─────────────────┤      ├──────────────────┤\n│ -floors             │      │ -floorNumber    │      │ -spotNumber      │\n│ -parkingStrategy    │      │ -spots          │      │ -type: SpotType  │\n│ -pricingStrategy    │      ├─────────────────┤      │ -isFree          │\n│ -activeTickets      │      │ +getSpots()     │      │ -parkedVehicle   │\n│ -ticketCounter      │      └─────────────────┘      ├──────────────────┤\n├─────────────────────┤                               │ +park(v)         │\n│ +park(v): Ticket    │                               │ +vacate()        │\n│ +unpark(id): double │                               └──────────────────┘\n│ +displayAvail()     │\n└────────┬────────────┘\n         │ depends on (injected)\n         ▼\n┌─────────────────────┐      ┌──────────────────────┐\n│  <<interface>>      │      │   <<interface>>       │\n│  ParkingStrategy    │      │   PricingStrategy     │\n├─────────────────────┤      ├──────────────────────┤\n│+findSpot(...):Spot  │      │+calculatePrice(t):dbl │\n└────────▲────────────┘      └──────────▲────────────┘\n         │                              │\n┌────────┴────────────┐      ┌──────────┴────────────┐\n│NearestFirstParking  │      │  HourlyPricingStrategy │\n│Strategy             │      ├──────────────────────┤\n└─────────────────────┘      │ RATE = 10.0           │\n                              └──────────────────────┘\n\n┌──────────────────┐      ┌──────────────────────┐\n│  Vehicle (abs)   │      │       Ticket          │\n├──────────────────┤      ├──────────────────────┤\n│ -licensePlate    │      │ -ticketId             │\n│ -type: VehicleT  │      │ -vehicle              │\n└────────▲─────────┘      │ -spot                 │\n    ┌────┴──┬────┐         │ -entryTime            │\n  Bike    Car  Truck       └──────────────────────┘",
+
+        "implementation_order": [
+          "1. Enums — VehicleType {BIKE, CAR, TRUCK}, SpotType {SMALL, MEDIUM, LARGE}",
+          "2. Exceptions — ParkingLotFullException, InvalidTicketException",
+          "3. Vehicle abstract class + Bike / Car / Truck subclasses",
+          "4. ParkingSpot — isFree, park, vacate",
+          "5. Floor — container for spots",
+          "6. Ticket — immutable receipt with entryTime",
+          "7. ParkingStrategy interface + NearestFirstParkingStrategy",
+          "8. PricingStrategy interface + HourlyPricingStrategy",
+          "9. ParkingLot — park(), unpark(), displayAvailability() + optional Singleton",
+          "10. Demo driver: init floors → init lot → park bike/car/truck → display → unpark → reprice"
+        ],
+
+        "key_phrases": [
+          "I will keep persistence and payment integration out of scope and focus on an extensible in-memory core.",
+          "ParkingLot should orchestrate — it should not absorb allocation logic, pricing rules, or notification concerns.",
+          "If the interviewer adds EV charging spots later, that change is localised to a new SpotType enum value and a new allocation strategy — ParkingLot itself stays untouched.",
+          "The ReentrantLock around spot assignment prevents two concurrent gate threads from giving the same spot to two vehicles.",
+          "I am using Singleton as an interview shorthand; in production I would inject ParkingLot via a DI container."
+        ],
+
+        "gotchas": [
+          "SOLID violation: Putting vehicle-to-spot mapping inside ParkingSpot or ParkingLot directly (SRP + OCP break). Put it in the strategy.",
+          "SOLID violation: God-class ParkingLot that calculates price, finds spots, manages exceptions AND sends notifications — extract each concern.",
+          "Bug: Forgetting to vacate() the ParkingSpot when unparking — spot stays occupied forever.",
+          "Bug: Not removing the ticket from activeTickets on unpark — ticket remains valid for a second free exit.",
+          "Edge case: Duplicate vehicle (same plate) already inside — check activeTickets by licensePlate before issuing new ticket.",
+          "Edge case: Invalid ticket ID on unpark — always throw InvalidTicketException, never silently ignore.",
+          "Design flaw: Hard-coding SpotType→VehicleType mapping as string comparisons instead of enum relationship.",
+          "Performance note: NearestFirst is O(floors × spots). Mention that a PriorityQueue of available spots per SpotType brings it to O(log n) — but O(n) is fine for the interview."
+        ],
+
+        "extensibility_test": "Interviewer says: 'Add EV charging spots and priority handicapped parking.' Walk through: (1) Add EV and ACCESSIBLE to SpotType enum, (2) Add HANDICAPPED_VEHICLE to VehicleType, (3) Create AccessibleParkingStrategy that checks permit flag on Vehicle before assigning spot, (4) ParkingLot gets new strategy injected — zero change to its core logic. This demonstrates OCP, Strategy, and DIP all in one answer."
+      },
+
+      "guided": {
+        "phase_hints": {
+          "clarify": [
+            "State that persistent storage and payment gateway are out of scope upfront — this saves 5 minutes of dead-end discussion.",
+            "Ask: 'Is first-fit allocation acceptable for V1 or do you want nearest-spot optimisation?' — this positions you as thinking about trade-offs.",
+            "Call out duplicate vehicle and invalid ticket as the two primary error paths you will handle.",
+            "Decide on concurrency stance: 'I will mention thread-safety with a ReentrantLock and note it as a concern without over-engineering it.'"
+          ],
+          "model": [
+            "Start with the noun-from-requirements technique: ParkingLot, Floor, ParkingSpot, Vehicle, Ticket are all nouns in the problem statement.",
+            "Model VehicleType and SpotType as enums immediately — never as raw strings.",
+            "ParkingLot OWNS its floors (composition). Strategy and PricingStrategy are INJECTED (dependency inversion).",
+            "Ticket is the join entity between a Vehicle and a ParkingSpot at a point in time — include entryTime for billing."
+          ],
+          "design": [
+            "Introduce ParkingStrategy and PricingStrategy interfaces BEFORE writing any implementations. Explain WHY (OCP, DIP, replaceability).",
+            "Name your exceptions first: ParkingLotFullException and InvalidTicketException. Custom exceptions are a signal of maturity.",
+            "Explicitly say: 'ParkingLot is an orchestrator, not a pricing engine or a spot-finder. It delegates both concerns.'",
+            "Optional: mention Singleton with the caveat about DI in production."
+          ],
+          "implement": [
+            "Code in this exact order: enums → exceptions → models (Vehicle hierarchy, ParkingSpot, Floor, Ticket) → interfaces (ParkingStrategy, PricingStrategy) → implementations → ParkingLot → Demo.",
+            "NearestFirstParkingStrategy: nested loop over floors then spots. mapVehicleToSpotType() is a private helper inside the strategy — keeps the mapping in one place.",
+            "HourlyPricingStrategy: Duration.between(ticket.getEntryTime(), LocalDateTime.now()).toHours() × HOURLY_RATE.",
+            "In park(): lock → findSpot → spot.park(vehicle) → create Ticket → activeTickets.put → return Ticket.",
+            "In unpark(): get ticket → spot.vacate() → compute price → activeTickets.remove → return price."
+          ],
+          "review": [
+            "Edge case: Duplicate vehicle on entry — check if plate exists in activeTickets values before assigning new spot.",
+            "Concurrency: 'At multi-gate scenarios, two threads could assign the same spot. My ReentrantLock ensures only one thread does spot assignment at a time.'",
+            "Extensibility answer: 'EV spots → add SpotType.EV, add EVParkingStrategy, inject it. Zero change to ParkingLot or Floor.'",
+            "Performance: 'NearestFirst is O(n) where n = total spots. For scale, I would maintain a PriorityQueue<ParkingSpot> per SpotType per floor, making allocation O(log n).'"
+          ]
+        },
+        "starter_code": "// ========== ENUMS ==========\nenum VehicleType { BIKE, CAR, TRUCK }\nenum SpotType { SMALL, MEDIUM, LARGE }\n\n// ========== EXCEPTIONS ==========\nclass ParkingLotFullException extends RuntimeException {\n    ParkingLotFullException(String msg) { super(msg); }\n}\nclass InvalidTicketException extends RuntimeException {\n    InvalidTicketException(String msg) { super(msg); }\n}\n\n// ========== MODELS ==========\nabstract class Vehicle {\n    private final String licensePlate;\n    private final VehicleType type;\n    protected Vehicle(String plate, VehicleType type) {\n        this.licensePlate = plate; this.type = type;\n    }\n    public VehicleType getType() { return type; }\n    public String getLicensePlate() { return licensePlate; }\n}\nclass Bike extends Vehicle { Bike(String p) { super(p, VehicleType.BIKE); } }\nclass Car  extends Vehicle { Car(String p)  { super(p, VehicleType.CAR);  } }\nclass Truck extends Vehicle { Truck(String p) { super(p, VehicleType.TRUCK); } }\n\nclass ParkingSpot {\n    private final int spotNumber;\n    private final SpotType type;\n    private Vehicle parkedVehicle;\n    private boolean isFree = true;\n\n    ParkingSpot(int number, SpotType type) {\n        this.spotNumber = number; this.type = type;\n    }\n    public boolean isFree() { return isFree; }\n    public SpotType getType() { return type; }\n    public void park(Vehicle v)  { parkedVehicle = v; isFree = false; }\n    public void vacate()          { parkedVehicle = null; isFree = true; }\n}\n\nclass Floor {\n    private final int floorNumber;\n    private final List<ParkingSpot> spots;\n    Floor(int n, List<ParkingSpot> spots) { this.floorNumber = n; this.spots = spots; }\n    public List<ParkingSpot> getSpots() { return spots; }\n}\n\nclass Ticket {\n    private final String ticketId;\n    private final Vehicle vehicle;\n    private final ParkingSpot spot;\n    private final LocalDateTime entryTime = LocalDateTime.now();\n    Ticket(String id, Vehicle v, ParkingSpot s) { ticketId=id; vehicle=v; spot=s; }\n    public String getTicketId()     { return ticketId; }\n    public ParkingSpot getSpot()    { return spot; }\n    public LocalDateTime getEntryTime() { return entryTime; }\n}\n\n// ========== STRATEGIES ==========\ninterface ParkingStrategy {\n    ParkingSpot findSpot(VehicleType type, List<Floor> floors);\n}\n\ninterface PricingStrategy {\n    double calculatePrice(Ticket ticket);\n}\n\n// TODO: implement NearestFirstParkingStrategy\n// TODO: implement HourlyPricingStrategy\n\n// ========== PARKING LOT (ORCHESTRATOR) ==========\nclass ParkingLot {\n    private static ParkingLot instance;\n    private List<Floor> floors;\n    private ParkingStrategy strategy;\n    private PricingStrategy pricing;\n    private final Map<String, Ticket> activeTickets = new ConcurrentHashMap<>();\n    private final AtomicInteger counter = new AtomicInteger(1);\n    private final ReentrantLock lock = new ReentrantLock();\n\n    private ParkingLot() {}\n    public static synchronized ParkingLot getInstance() {\n        if (instance == null) instance = new ParkingLot();\n        return instance;\n    }\n\n    public void initialize(List<Floor> floors, ParkingStrategy ps, PricingStrategy pr) {\n        this.floors = floors; this.strategy = ps; this.pricing = pr;\n    }\n\n    public Ticket park(Vehicle v) {\n        lock.lock();\n        try {\n            ParkingSpot spot = strategy.findSpot(v.getType(), floors);\n            spot.park(v);\n            String id = \"TKT-\" + counter.getAndIncrement();\n            Ticket t = new Ticket(id, v, spot);\n            activeTickets.put(id, t);\n            return t;\n        } finally { lock.unlock(); }\n    }\n\n    public double unpark(String ticketId) {\n        Ticket t = activeTickets.get(ticketId);\n        if (t == null) throw new InvalidTicketException(\"Invalid: \" + ticketId);\n        t.getSpot().vacate();\n        double price = pricing.calculatePrice(t);\n        activeTickets.remove(ticketId);\n        return price;\n    }\n}",
+        "checkpoints": [
+          "Must-haves and out-of-scope are explicit before drawing any class.",
+          "Vehicle-to-SpotType mapping is type-safe (no string comparisons).",
+          "ParkingStrategy and PricingStrategy interfaces exist BEFORE their implementations.",
+          "ParkingLot only calls strategy.findSpot() and pricing.calculatePrice() — it does not contain those algorithms.",
+          "park() and unpark() both handle their primary error paths (full lot, invalid ticket).",
+          "Demo driver shows park → display → unpark → reprice as a runnable sequence."
+        ]
+      },
+
+      "interview": {
+        "opening_prompt": "Design a parking lot system that supports multi-floor parking, typed spots for bikes/cars/trucks, ticketing, and pricing. Before you name a single class, tell me what you are leaving out of scope and what the two most important error conditions are.",
+        "evaluation_rubric": [
+          "Requirement scoping: Does the candidate explicitly bucket must-haves and out-of-scope before touching any design?",
+          "Entity modeling clarity: Are Vehicle, ParkingSpot, Floor, and Ticket named with the right ownership boundaries?",
+          "Strategy abstractions: Are ParkingStrategy and PricingStrategy introduced as interfaces before any implementation?",
+          "FIT rules: Is VehicleType→SpotType mapping type-safe and located in the strategy, not scattered?",
+          "Error paths: Are ParkingLotFullException and InvalidTicketException explicit custom exceptions?",
+          "Extensibility proof: Can the candidate add EV spots without touching ParkingLot?"
+        ],
+        "probing_questions": [
+          "Why did you choose to put the vehicle-to-spot mapping inside the strategy instead of inside ParkingSpot?",
+          "What happens if two gate attendants try to park vehicles at the exact same moment?",
+          "How would you change this design if the pricing needed to vary by time of day?",
+          "Walk me through the exact sequence of method calls from a car arriving at the gate to the ticket being issued.",
+          "If I told you we now need 50% priority spots for electric vehicles — what is the minimum code change?"
+        ]
+      },
+
+      "deep_dive": {
+        "concept_map": {
+          "title": "Parking Lot — Full Concept Map",
+          "sections": [
+            {
+              "heading": "Why Strategy Pattern is Non-Negotiable Here",
+              "content": "Without Strategy, every new pricing policy (flat-rate, surge, member discount) requires editing ParkingLot.unpark() — an OCP violation. Without Strategy for allocation, adding EV-only spots requires adding an if-else inside park() — again an OCP violation. Strategy = the interviewer's first check for extensibility reasoning."
+            },
+            {
+              "heading": "The Lock Dilemma",
+              "content": "Two threads (two gates) executing findSpot() concurrently will both see the same free spot. Thread A calls spot.park(vehicle1) first, then Thread B also calls spot.park(vehicle2) — one car has no spot. Fix: ReentrantLock.lock() before findSpot, unlock in finally. Mention ConcurrentHashMap for activeTickets (safe reads at all times). Say: 'I am aware this is a simplification; at scale I would use a distributed lock or a seat-reservation pattern with optimistic locking.'"
+            },
+            {
+              "heading": "The Fit Rule Placement Problem",
+              "content": "Where does Vehicle→SpotType mapping live? BAD: Inside ParkingSpot (spot knows too much about vehicles). BAD: Inside ParkingLot (God class). CORRECT: Inside NearestFirstParkingStrategy, in a private mapVehicleToSpotType() helper. This is the Strategy owning its own logic. When you add EVParkingStrategy, it can have a completely different (or override-based) mapping."
+            },
+            {
+              "heading": "Ticket as the Join Entity",
+              "content": "Ticket is classically a join table in relational design — the bridge between Vehicle (the owner) and ParkingSpot (the resource) at a specific instant. It carries entryTime which is the key piece of data needed by PricingStrategy. Without Ticket, unpark() has no way to know when the vehicle entered."
+            },
+            {
+              "heading": "Singleton — Use Deliberately, Justify It",
+              "content": "Singleton is fine for this problem IF you justify it: 'A real parking lot is one physical entity; I am reflecting that in code.' The red flag is using Singleton everywhere without justification. Always add the caveat: 'In production I would inject this through a DI container instead of getInstance().'"
+            }
+          ]
+        },
+        "common_interview_dialogues": [
+          {
+            "interviewer": "Can you walk me through how a Car parks?",
+            "ideal_response": "Sure. The caller creates new Car('KA-01') and calls parkingLot.park(car). Inside park(), we lock first to prevent concurrent spot conflicts. Then strategy.findSpot(CAR, floors) is called — NearestFirstStrategy maps CAR to MEDIUM spot type and iterates floors floor by floor, spot by spot, returning the first free MEDIUM spot. spot.park(car) marks it occupied. We generate a ticket ID, create Ticket(id, car, spot), store it in activeTickets, unlock, and return the Ticket. The caller keeps the Ticket for exit."
+          },
+          {
+            "interviewer": "What if two cars try to park at the same time?",
+            "ideal_response": "That is the concurrent gate problem. Without a lock, both threads could see Spot 101 as free, both call spot.park(), and one car ends up without a spot. My ReentrantLock around findSpot + park ensures only one thread does this atomic operation at a time. In a distributed environment I would use a distributed lock (Redis SETNX) or an optimistic locking strategy with a version field on ParkingSpot."
+          },
+          {
+            "interviewer": "How do you add EV charging spots?",
+            "ideal_response": "Three localized changes: (1) Add EV to SpotType enum, (2) Add new EVParkingStrategy that maps EVVehicle→SpotType.EV with an additional is-charger-available check, (3) Inject the new strategy into ParkingLot. ParkingLot code, Floor code, ParkingSpot code — none of them change. This is OCP in practice."
+          }
+        ],
+        "complexity_analysis": {
+          "park_time": "O(F × S) where F = floors, S = spots per floor — NearestFirst linear scan. O(log n) with PriorityQueue<ParkingSpot> per type.",
+          "unpark_time": "O(1) — HashMap lookup by ticketId.",
+          "space": "O(F × S) for spot storage + O(T) for active tickets where T = parked vehicles."
+        },
+        "java_full_reference": "The complete annotated Java implementation is in swe-mastery-journal/LLD/code/01-parking-lot/java_demo/ParkingLotDemo.java — use it as the gold-standard reference for interview implementation order and comment quality.",
+        "ruby_reference": "The Ruby implementation is in swe-mastery-journal/LLD/code/01-parking-lot/ruby/parking_lot.rb — shows how Strategy and Singleton translate to Ruby duck-typing and the Singleton module."
+      }
+    },
+    {
+      "id": "snake-and-ladder",
+      "number": 2,
+      "title": "Snake and Ladder",
+      "difficulty": "Easy",
+      "tags": ["Game Loop", "Strategy", "Board Modeling"],
+      "duration": { "guided": 60, "interview": 45 },
+      "category": "Turn-Based Games",
+      "description": "Design the board game engine for Snake and Ladder with players, dice, snakes/ladders as jump mappings, win detection, and clean turn loop."
+    },
+    {
+      "id": "tic-tac-toe",
+      "number": 3,
+      "title": "Tic Tac Toe",
+      "difficulty": "Easy",
+      "tags": ["Board Game", "Strategy", "Validation"],
+      "duration": { "guided": 60, "interview": 45 },
+      "category": "Turn-Based Games",
+      "description": "Design a reusable Tic Tac Toe engine with configurable board size, player strategies, move validation, and efficient win detection anchored on last move."
+    },
+    {
+      "id": "elevator-system",
+      "number": 4,
+      "title": "Elevator System",
+      "difficulty": "Hard",
+      "tags": ["State", "Strategy", "Scheduling"],
+      "duration": { "guided": 60, "interview": 45 },
+      "category": "Controllers & Scheduling",
+      "description": "Design a multi-elevator controller that accepts internal and external requests, assigns cars, and simulates movement through explicit states."
+    },
+    {
+      "id": "splitwise",
+      "number": 5,
+      "title": "Splitwise",
+      "difficulty": "Medium",
+      "tags": ["Strategy", "Balance Sheet", "Validation"],
+      "duration": { "guided": 60, "interview": 45 },
+      "category": "Financial Flows",
+      "description": "Design an expense sharing service with multiple split strategies (equal/exact/percentage), balance tracking, and optional debt simplification."
+    },
+    {
+      "id": "booking-system",
+      "number": 6,
+      "title": "Movie Ticket Booking System",
+      "difficulty": "Hard",
+      "tags": ["State", "Concurrency", "Search"],
+      "duration": { "guided": 60, "interview": 45 },
+      "category": "Reservation Systems",
+      "description": "Design a ticket booking system with theatres, shows, seat maps, search by movie/city, and concurrency-safe seat-locking flow."
+    },
+    {
+      "id": "logging-framework",
+      "number": 7,
+      "title": "Logging Framework",
+      "difficulty": "Easy",
+      "tags": ["Chain of Responsibility", "Decorator", "Singleton"],
+      "duration": { "guided": 60, "interview": 45 },
+      "category": "Infrastructure Components",
+      "description": "Design a configurable logging framework with log levels, handler chains (console/file/db), and extensible formatting."
+    },
+    {
+      "id": "cache-lru",
+      "number": 8,
+      "title": "LRU Cache",
+      "difficulty": "Medium",
+      "tags": ["Data Structures", "O(1)", "Policy"],
+      "duration": { "guided": 60, "interview": 45 },
+      "category": "In-Memory Components",
+      "description": "Design an O(1) LRU cache using a HashMap and doubly-linked list, with room for alternate eviction policies."
+    },
+    {
+      "id": "vending-machine",
+      "number": 9,
+      "title": "Vending Machine",
+      "difficulty": "Easy",
+      "tags": ["State", "Inventory", "Payments"],
+      "duration": { "guided": 60, "interview": 45 },
+      "category": "State Machines",
+      "description": "Design a vending machine with inventory, coin handling, explicit state transitions, product dispensing, and change return."
+    },
+    {
+      "id": "ride-sharing",
+      "number": 10,
+      "title": "Ride Sharing System",
+      "difficulty": "Hard",
+      "tags": ["Strategy", "State", "Matching"],
+      "duration": { "guided": 60, "interview": 45 },
+      "category": "Dispatch Systems",
+      "description": "Design a ride sharing platform with rider requests, driver availability, matching strategy, fare calculation, and ride state transitions."
+    },
+    {
+      "id": "rate-limiter",
+      "number": 11,
+      "title": "Rate Limiter",
+      "difficulty": "Medium",
+      "tags": ["Strategy", "Time Windows", "Concurrency"],
+      "duration": { "guided": 60, "interview": 45 },
+      "category": "Traffic Control",
+      "description": "Design a per-user rate limiter using token bucket as the primary algorithm, with a strategy seam for sliding window alternatives."
+    },
+    {
+      "id": "task-scheduler",
+      "number": 12,
+      "title": "Task Scheduler",
+      "difficulty": "Medium",
+      "tags": ["Command", "Priority Queue", "Observer"],
+      "duration": { "guided": 60, "interview": 45 },
+      "category": "Schedulers",
+      "description": "Design a cron-like task scheduler with one-time and recurring tasks, priority-queue execution, dependencies, and cancellable jobs."
+    }
+  ]
+}

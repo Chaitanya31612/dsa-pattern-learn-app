@@ -196,3 +196,121 @@ export interface MockInterviewFeatureFlags {
   aiEnabled: boolean
   ragEnabled: boolean
 }
+
+export type LLDPhaseId = 'clarify' | 'model' | 'design' | 'implement' | 'review'
+
+export type LLDInterviewMode = 'guided' | 'interview'
+
+export interface LLDFrameworkPhase {
+  id: LLDPhaseId
+  title: string
+  timebox: string
+  focus: string
+  deliverable: string
+  coachingPrompt: string
+}
+
+export interface LLDProblemEntity {
+  name: string
+  responsibility: string
+  fields: string[]
+  methods: string[]
+  design_notes?: string
+}
+
+export interface LLDDesignPattern {
+  name: string
+  applied_to: string
+  why: string
+  signal_phrase?: string
+}
+
+export interface LLDCatalogProblem {
+  id: string
+  number: number
+  title: string
+  difficulty: 'Easy' | 'Medium' | 'Hard'
+  tags: string[]
+  duration: {
+    guided: number
+    interview: number
+  }
+  category: string
+  description: string
+  framework: {
+    requirements: {
+      must_have: string[]
+      nice_to_have: string[]
+      out_of_scope: string[]
+      clarifying_questions: string[]
+    }
+    entities: {
+      classes: LLDProblemEntity[]
+      relationships: string[]
+    }
+    design_patterns: LLDDesignPattern[]
+    uml_ascii: string
+    implementation_order: string[]
+    key_phrases: string[]
+    gotchas: string[]
+    extensibility_test: string
+  }
+  guided: {
+    phase_hints: Record<LLDPhaseId, string[]>
+    starter_code: string
+    checkpoints: string[]
+  }
+  interview: {
+    opening_prompt: string
+    evaluation_rubric: string[]
+    probing_questions?: string[]
+  }
+  deep_dive?: {
+    concept_map?: {
+      title: string
+      sections: Array<{ heading: string; content: string }>
+    }
+    common_interview_dialogues?: Array<{ interviewer: string; ideal_response: string }>
+    complexity_analysis?: Record<string, string>
+    java_full_reference?: string
+    ruby_reference?: string
+  }
+}
+
+export interface LLDChatMessage {
+  role: 'user' | 'assistant'
+  content: string
+  ts: string
+}
+
+export interface LLDPhaseWorkspace {
+  notes: string
+  checkpoints: string[]
+}
+
+export interface LLDInterviewReport {
+  overallScore: number
+  phaseScores: Record<LLDPhaseId, number>
+  strengths: string[]
+  improvements: string[]
+  summary: string
+}
+
+export interface LLDInterviewSession {
+  id: string
+  problemId: string
+  mode: LLDInterviewMode
+  status: 'active' | 'completed' | 'abandoned'
+  createdAt: string
+  updatedAt: string
+  activePhase: LLDPhaseId
+  paused: boolean
+  timeRemainingSec: number
+  lastTickAt: string
+  phaseWork: Record<LLDPhaseId, LLDPhaseWorkspace>
+  code: string
+  savedCodeAt: string | null
+  hintCount: number
+  chat: LLDChatMessage[]
+  report?: LLDInterviewReport
+}

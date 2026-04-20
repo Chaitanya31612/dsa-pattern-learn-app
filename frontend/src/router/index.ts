@@ -10,6 +10,9 @@ import MockInterviewView from '../views/MockInterviewView.vue'
 import SubPatternLearningView from '../views/SubPatternLearningView.vue'
 import DetailedAnalysisView from '../views/DetailedAnalysisView.vue'
 import CustomProblemsView from '../views/CustomProblemsView.vue'
+import SystemDesignView from '../views/SystemDesignView.vue'
+import LLDFrameworkView from '../views/LLDFrameworkView.vue'
+import LLDInterviewView from '../views/LLDInterviewView.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -59,6 +62,28 @@ const routes: RouteRecordRaw[] = [
     name: 'mock-interview',
     component: MockInterviewView,
     meta: { title: 'Mock Interview' },
+  },
+  {
+    path: '/system-design',
+    redirect: '/system-design/lld',
+  },
+  {
+    path: '/system-design/lld',
+    name: 'system-design',
+    component: SystemDesignView,
+    meta: { title: 'System Design' },
+  },
+  {
+    path: '/lld/:id/framework',
+    name: 'lld-framework',
+    component: LLDFrameworkView,
+    meta: { title: 'LLD Framework' },
+  },
+  {
+    path: '/lld/:id/session',
+    name: 'lld-session',
+    component: LLDInterviewView,
+    meta: { title: 'LLD Session' },
   },
   {
     path: '/detailed-analysis/:slug',

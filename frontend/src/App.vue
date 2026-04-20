@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useTheme } from './composables/useTheme'
 import { useProgress } from './composables/useProgress'
 import { usePatterns } from './composables/usePatterns'
@@ -6,6 +8,11 @@ import { usePatterns } from './composables/usePatterns'
 const { theme, toggleTheme } = useTheme()
 const { totalSolved } = useProgress()
 const { meta } = usePatterns()
+const route = useRoute()
+
+const isSystemDesignActive = computed(() => {
+  return route.path.startsWith('/system-design') || route.path.startsWith('/lld/')
+})
 </script>
 
 <template>
@@ -40,6 +47,15 @@ const { meta } = usePatterns()
           <router-link to="/mock-interview" class="nav-link" active-class="active">
             <span class="nav-icon">⧗</span> Interview
           </router-link>
+          <div class="nav-dropdown" :class="{ active: isSystemDesignActive }">
+            <router-link to="/system-design/lld" class="nav-link nav-link-dropdown">
+              <span class="nav-icon">⌘</span> System Design
+              <span class="nav-caret">▾</span>
+            </router-link>
+            <div class="nav-dropdown-menu">
+              <router-link to="/system-design/lld" class="nav-dropdown-item">LLD</router-link>
+            </div>
+          </div>
           <router-link to="/quiz" class="nav-link" active-class="active">
             <span class="nav-icon">?</span> Quiz
           </router-link>
@@ -146,6 +162,7 @@ const { meta } = usePatterns()
   display: flex;
   gap: 2px;
   margin-left: auto;
+  align-items: center;
 }
 
 .nav-link {
@@ -169,6 +186,69 @@ const { meta } = usePatterns()
 .nav-link.active {
   color: var(--accent-cyan);
   background: var(--bg-card);
+}
+
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-link-dropdown {
+  padding-right: 10px;
+}
+
+.nav-dropdown.active .nav-link,
+.nav-dropdown:hover .nav-link,
+.nav-dropdown:focus-within .nav-link {
+  color: var(--accent-cyan);
+  background: var(--bg-card);
+}
+
+.nav-caret {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.nav-dropdown:hover .nav-caret,
+.nav-dropdown:focus-within .nav-caret,
+.nav-dropdown.active .nav-caret {
+  color: var(--accent-cyan);
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 180px;
+  padding: 6px;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--bg-card) 92%, transparent);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.nav-dropdown-item {
+  display: block;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.nav-dropdown-item:hover {
+  color: var(--accent-cyan);
+  background: var(--bg-card-hover);
 }
 
 .nav-icon {

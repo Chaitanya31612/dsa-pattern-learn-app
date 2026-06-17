@@ -55,6 +55,9 @@ https://github.com/user-attachments/assets/42d27613-cdf5-4888-9132-246e09eab491
 
 ## 1. High-Level Overview
 
+**Brief Intro**
+Pattern-first DSA learning platform with AI pipeline that scrapes, deduplicates, and enriches 200+ problems across 17 patterns using a multi-provider LLM factory. Features a context aware AI tutor per pattern and problem, AI mock interviews followed by structured reflection and spaced repetition scheduling – all running on the client with per-user progress persistence
+
 This repo has two major parts:
 
 - `backend/`: a data pipeline that curates problems and generates learning metadata using AI providers.

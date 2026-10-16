@@ -174,7 +174,7 @@ function handleRestart() {
           <span class="timer-mode">{{ activeSession.mode === 'guided' ? 'Guided coaching' : 'Interview coaching' }}</span>
         </div>
         <div class="timer-card card compact-card">
-          <span class="meta-label mono">phase.progress</span>
+          <span class="meta-label mono">phases.with.notes</span>
           <strong>{{ phaseProgress }}%</strong>
           <span class="timer-mode">{{ phaseTitle }}</span>
         </div>
@@ -201,7 +201,8 @@ function handleRestart() {
 
     <section v-if="activeSession.report" class="report-strip animate-in stagger-3">
       <article class="card report-card score-card">
-        <span class="meta-label mono">debrief.score</span>
+        <span class="meta-label mono">practice.estimate</span>
+        <p>This is a local writing/code heuristic, not an AI correctness review. It does not compile or run your code.</p>
         <strong>{{ activeSession.report.overallScore }}/100</strong>
         <p>{{ activeSession.report.summary }}</p>
       </article>

@@ -80,6 +80,18 @@ const routes: RouteRecordRaw[] = [
     meta: { title: 'LLD Framework' },
   },
   {
+    path: '/system-design/hld',
+    name: 'hld-course',
+    component: () => import('../views/HLDCourseView.vue'),
+    meta: { title: 'HLD Architecture Lab' },
+  },
+  {
+    path: '/hld/:id',
+    name: 'hld-module',
+    component: () => import('../views/HLDModuleView.vue'),
+    meta: { title: 'HLD Module' },
+  },
+  {
     path: '/lld/:id/session',
     name: 'lld-session',
     component: LLDInterviewView,

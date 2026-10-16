@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useProgress } from '../composables/useProgress'
+import HLDBackup from '../components/HLDBackup.vue'
 
 const { exportProgress, importProgress, state } = useProgress()
 
@@ -47,16 +48,16 @@ function handleFile(e: Event) {
 }
 
 function clearAll() {
-  if (confirm('Are you sure you want to clear ALL progress? This cannot be undone.')) {
+  if (confirm('Clear DSA solved status, notes, and reflections? Export a DSA backup first if you want to restore them. HLD and LLD data are unaffected.')) {
     Object.keys(state.solved).forEach(k => delete state.solved[k])
     Object.keys(state.notes).forEach(k => delete state.notes[k])
     Object.keys(state.reflections).forEach(k => delete state.reflections[k])
   }
 }
 
-const totalSolved = Object.keys(state.solved).length
-const totalNotes = Object.keys(state.notes).length
-const totalReflections = Object.keys(state.reflections).length
+const totalSolved = computed(() => Object.keys(state.solved).length)
+const totalNotes = computed(() => Object.keys(state.notes).length)
+const totalReflections = computed(() => Object.keys(state.reflections).length)
 </script>
 
 <template>
@@ -68,7 +69,7 @@ const totalReflections = Object.keys(state.reflections).length
 
     <!-- ═══ Progress Stats ═══ -->
     <section class="card card-flat animate-in stagger-1" style="margin-bottom: var(--space-lg)">
-      <h3 class="section-heading">📊 Your Data</h3>
+      <h3 class="section-heading">📊 Your DSA data</h3>
       <div class="data-stats">
         <div class="data-stat">
           <span class="ds-num mono">{{ totalSolved }}</span>
@@ -87,19 +88,19 @@ const totalReflections = Object.keys(state.reflections).length
 
     <!-- ═══ Export/Import ═══ -->
     <section class="card card-flat animate-in stagger-2" style="margin-bottom: var(--space-lg)">
-      <h3 class="section-heading">💾 Backup & Restore</h3>
+      <h3 class="section-heading">💾 DSA backup & restore</h3>
       <p class="setting-desc">Your progress is stored in localStorage. Export to back it up.</p>
 
       <div class="action-row">
         <button class="btn btn-primary" @click="doExport">
-          {{ exportStatus === 'done' ? '✓ Downloaded!' : '↓ Export Progress' }}
+          {{ exportStatus === 'done' ? '✓ Downloaded!' : '↓ Export DSA progress' }}
         </button>
         <button class="btn" @click="showImportDialog = !showImportDialog">
-          ↑ Import Progress
+          ↑ Import DSA progress
         </button>
         <div style="flex:1"></div>
         <button class="btn btn-ghost" style="color: var(--accent-red)" @click="clearAll">
-          ✕ Clear All Data
+          ✕ Clear DSA progress
         </button>
       </div>
 
@@ -131,6 +132,11 @@ const totalReflections = Object.keys(state.reflections).length
       </div>
     </section>
 
+    <section class="card card-flat" style="margin-bottom:24px">
+      <h3>HLD course backup</h3>
+      <p class="setting-desc">Preserve your design snapshots, quiz history, notes, and scheduled recall separately.</p>
+      <HLDBackup />
+    </section>
     <!-- ═══ Smart Features ═══ -->
     <section class="card card-flat animate-in stagger-3" style="margin-bottom: var(--space-lg)">
       <h3 class="section-heading">⚡ Smart Features</h3>

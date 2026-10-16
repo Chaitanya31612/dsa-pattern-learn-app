@@ -3,6 +3,8 @@ import { computed, ref } from 'vue'
 import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
 import type { Problem } from '../types'
+import { useHLD } from '../composables/useHLD'
+const { dueCards: hldDue } = useHLD()
 
 const { problems, loading } = usePatterns()
 const { getDueForReview, getConfidence, getReflection, markSolved, state } = useProgress()
@@ -80,17 +82,22 @@ const avgConfidence = computed(() => {
       </div>
     </header>
 
+    <section class="card" style="padding:20px; margin-bottom:20px">
+      <h3>HLD spaced recall · {{ hldDue.length }} due</h3>
+      <p>Retrieve design decisions and missed quiz concepts before rereading.</p>
+      <router-link class="btn" to="/system-design/hld?tab=review">Open HLD recall queue →</router-link>
+    </section>
     <!-- Empty State -->
     <div v-if="dueProblems.length === 0" class="empty-state animate-in stagger-1">
       <div class="empty-card card card-flat">
         <div class="empty-icon">✅</div>
-        <h3>All caught up!</h3>
+        <h3>Your DSA reviews are clear</h3>
         <p v-if="totalSolved === 0" class="empty-desc">
           Start solving problems and mark them with a confidence level.
           <br/>They'll appear here when due for review.
         </p>
         <p v-else class="empty-desc">
-          No problems due for review right now. Keep solving!
+          No DSA problems due for review right now. Keep solving!
           <br/>Your next review will appear based on your confidence ratings.
         </p>
         <router-link to="/" class="btn btn-primary" style="margin-top: var(--space-md)">

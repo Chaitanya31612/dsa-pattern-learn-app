@@ -9,6 +9,7 @@ let loaded = false
 async function loadDb() {
   if (loaded) return
   loading.value = true
+  error.value = null
   try {
     const resp = await fetch('/db.json')
     if (!resp.ok) throw new Error(`Failed to load db.json: ${resp.status}`)
@@ -59,6 +60,7 @@ export function usePatterns() {
     patternOrder,
     loading,
     error,
+    retry: loadDb,
     meta,
     getPattern,
     getProblemsForPattern,

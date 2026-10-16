@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useTheme } from './composables/useTheme'
 import { useProgress } from './composables/useProgress'
@@ -7,11 +7,18 @@ import { usePatterns } from './composables/usePatterns'
 
 const { theme, toggleTheme } = useTheme()
 const { totalSolved } = useProgress()
-const { meta } = usePatterns()
+const { meta, error: catalogError, retry: retryCatalog } = usePatterns()
 const route = useRoute()
+const headerNav = ref<HTMLElement | null>(null)
+watch(() => route.path, async path => {
+  await nextTick()
+  if (!window.matchMedia('(max-width: 1100px)').matches || !headerNav.value) return
+  const target = headerNav.value.querySelector<HTMLElement>(path.startsWith('/hld/') || path === '/system-design/hld' ? '.hld-direct-link' : 'a.active')
+  if (target) headerNav.value.scrollLeft = Math.max(0, target.offsetLeft - headerNav.value.offsetLeft - 12)
+}, { immediate: true })
 
 const isSystemDesignActive = computed(() => {
-  return route.path.startsWith('/system-design') || route.path.startsWith('/lld/')
+  return route.path.startsWith('/system-design') || route.path.startsWith('/lld/') || route.path.startsWith('/hld/')
 })
 </script>
 
@@ -31,7 +38,7 @@ const isSystemDesignActive = computed(() => {
           <span class="logo-sub terminal-prompt">pattern_mastery</span>
         </router-link>
 
-        <nav class="header-nav">
+        <nav ref="headerNav" class="header-nav" aria-label="Main navigation">
           <router-link to="/" class="nav-link" active-class="active">
             <span class="nav-icon">◈</span> Dashboard
           </router-link>
@@ -54,8 +61,10 @@ const isSystemDesignActive = computed(() => {
             </router-link>
             <div class="nav-dropdown-menu">
               <router-link to="/system-design/lld" class="nav-dropdown-item">LLD</router-link>
+              <router-link to="/system-design/hld" class="nav-dropdown-item">HLD Architecture Lab</router-link>
             </div>
           </div>
+          <router-link to="/system-design/hld" class="nav-link hld-direct-link" :class="{ active: route.path.startsWith('/hld/') }" active-class="active">HLD</router-link>
           <router-link to="/quiz" class="nav-link" active-class="active">
             <span class="nav-icon">?</span> Quiz
           </router-link>
@@ -81,6 +90,7 @@ const isSystemDesignActive = computed(() => {
 
     <!-- ═══ Main Content ═══ -->
     <main class="app-main">
+      <div v-if="catalogError" class="container catalog-load-error" role="alert"><p>The DSA catalog could not load. Check your connection, then retry.</p><button class="btn" @click="retryCatalog">Retry DSA catalog</button></div>
       <router-view v-slot="{ Component }">
         <transition name="page" mode="out-in">
           <component :is="Component" />
@@ -99,6 +109,7 @@ const isSystemDesignActive = computed(() => {
 </template>
 
 <style scoped>
+.catalog-load-error { padding:20px; margin-bottom:20px; border:1px solid var(--accent-red); border-radius:8px; }
 .app-layout {
   display: flex;
   flex-direction: column;
@@ -325,6 +336,15 @@ const isSystemDesignActive = computed(() => {
 }
 
 /* ── Responsive ──────────────────────────────── */
+.hld-direct-link { display: none; }
+@media (max-width: 1100px) {
+  .header-inner { display: grid; grid-template-columns: minmax(0, 1fr) auto; height: auto; padding-top: 10px; padding-bottom: 6px; gap: 8px; }
+  .header-nav { grid-column: 1 / -1; grid-row: 2; margin-left: 0; width: 100%; min-width: 0; overflow-x: auto; padding-bottom: 4px; }
+  .nav-link { white-space: nowrap; flex-shrink: 0; }
+  .nav-dropdown-menu { display: none; }
+  .hld-direct-link { display: flex; }
+  .header-right { grid-column: 2; grid-row: 1; }
+}
 @media (max-width: 768px) {
   .header-inner {
     gap: var(--space-md);

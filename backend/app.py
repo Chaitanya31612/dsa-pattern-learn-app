@@ -34,6 +34,7 @@ from pydantic import BaseModel, HttpUrl, Field
 
 from ai.base import AIProvider
 from ai.factory import AIAnalyzerFactory
+from hld_api import build_hld_router
 
 # Load .env once at import time so provider credentials are available.
 load_dotenv()
@@ -576,6 +577,7 @@ def build_content(payload: MockInterviewRespondRequest, db_problem: Dict[str, An
 # ---------------------------------------------------------------------------
 
 app = FastAPI(title='DSA Pattern Lab API', version='0.1.0')
+app.include_router(build_hld_router(get_analyzer))
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['*'],

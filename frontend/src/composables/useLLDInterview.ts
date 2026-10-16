@@ -7,6 +7,7 @@ import type {
   LLDPhaseId,
   LLDPhaseWorkspace,
 } from '../types'
+import { withoutScaffold } from '../lib/learningEvidence'
 import { LLD_FRAMEWORK_PHASES, LLD_PROBLEMS as HARDCODED_PROBLEMS } from '../data/lldProblems'
 
 const STORAGE_KEY = 'dsa-lld-interview-session-v1'
@@ -114,7 +115,7 @@ function buildContextDigest(problem: LLDCatalogProblem, session: LLDInterviewSes
   const phaseNotes = session.phaseWork[session.activePhase]?.notes ?? ''
   const filledPhases = LLD_FRAMEWORK_PHASES.filter(phase => {
     const notes = session.phaseWork[phase.id]?.notes ?? ''
-    return notes.replace(/[^a-zA-Z0-9]/g, '').length > 18
+    return withoutScaffold(notes, NOTE_TEMPLATES[phase.id]).replace(/[^a-zA-Z0-9]/g, '').length > 18
   }).map(phase => phase.title)
   const codeTypes = extractCodeTypes(session.code)
   const referencedEntities = problem.framework.entities.classes
@@ -250,16 +251,18 @@ function buildAssistantReply(problem: LLDCatalogProblem, session: LLDInterviewSe
 }
 
 function scorePhase(problem: LLDCatalogProblem, session: LLDInterviewSession, phaseId: LLDPhaseId): number {
-  const notes = session.phaseWork[phaseId]?.notes ?? ''
+  const notes = withoutScaffold(session.phaseWork[phaseId]?.notes ?? '', NOTE_TEMPLATES[phaseId])
+  const learnerCode = session.mode === 'guided' ? withoutScaffold(session.code, problem.guided.starter_code) : session.code
+  if (!notes.trim() && !learnerCode.trim()) return 0
   const noteSignal = Math.min(45, Math.round(notes.replace(/\s+/g, '').length / 8))
-  const codeSignal = phaseId === 'implement' ? Math.min(35, meaningfulCodeLines(session.code) * 2) : 0
+  const codeSignal = phaseId === 'implement' ? Math.min(35, meaningfulCodeLines(learnerCode) * 2) : 0
   const keywordPool = [
     ...problem.framework.key_phrases,
     ...problem.framework.entities.classes.map(entity => entity.name),
     ...problem.framework.design_patterns.map(pattern => pattern.name),
   ]
   const keywordHits = keywordPool.reduce((count, keyword) => {
-    return notes.toLowerCase().includes(keyword.toLowerCase()) || session.code.toLowerCase().includes(keyword.toLowerCase())
+    return notes.toLowerCase().includes(keyword.toLowerCase()) || learnerCode.toLowerCase().includes(keyword.toLowerCase())
       ? count + 1
       : count
   }, 0)
@@ -400,7 +403,7 @@ export function useLLDInterview() {
     if (!activeSession.value) return 0
     const completed = LLD_FRAMEWORK_PHASES.filter(phase => {
       const notes = activeSession.value?.phaseWork[phase.id]?.notes ?? ''
-      return notes.replace(/[^a-zA-Z0-9]/g, '').length > 18
+      return withoutScaffold(notes, NOTE_TEMPLATES[phase.id]).replace(/[^a-zA-Z0-9]/g, '').length > 18
     }).length
     return Math.round((completed / LLD_FRAMEWORK_PHASES.length) * 100)
   })

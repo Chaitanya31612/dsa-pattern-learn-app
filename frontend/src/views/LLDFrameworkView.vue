@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useLLDProblems } from '../composables/useLLDProblems'
-import { useLLDInterview } from '../composables/useLLDInterview'
+import { useLLDInterview, registerMergedProblems } from '../composables/useLLDInterview'
 
 const route = useRoute()
 const router = useRouter()
-const { getProblem, frameworkPhases, coachingStrategy } = useLLDProblems()
+const { getProblem, problems, frameworkPhases, coachingStrategy } = useLLDProblems()
 const { startSession } = useLLDInterview()
+watch(problems, registerMergedProblems, { immediate: true })
 
 const problem = computed(() => getProblem(String(route.params.id ?? '')))
 

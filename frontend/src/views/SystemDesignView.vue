@@ -4,7 +4,7 @@ import { useLLDProblems } from '../composables/useLLDProblems'
 
 const { problems, meta, frameworkPhases, coachingStrategy } = useLLDProblems()
 
-const activeTab = ref<'lld' | 'hld'>('lld')
+const activeTab = ref<'lld'>('lld')
 const difficultyFilter = ref<'All' | 'Easy' | 'Medium' | 'Hard'>('All')
 const tagFilter = ref('All')
 const search = ref('')
@@ -40,7 +40,7 @@ const avgGuided = computed(() => {
         </p>
         <div class="hero-actions">
           <button class="btn btn-primary" @click="activeTab = 'lld'">Open LLD Track</button>
-          <span class="hero-note mono">HLD reserved for the next iteration.</span>
+          <router-link class="btn" to="/system-design/hld">Open HLD Architecture Lab</router-link>
         </div>
       </div>
 
@@ -68,9 +68,7 @@ const avgGuided = computed(() => {
         <button class="tab-btn" :class="{ active: activeTab === 'lld' }" @click="activeTab = 'lld'">
           LLD Track
         </button>
-        <button class="tab-btn" :class="{ active: activeTab === 'hld' }" @click="activeTab = 'hld'">
-          HLD Soon
-        </button>
+        <router-link class="tab-btn" to="/system-design/hld">HLD Track →</router-link>
       </div>
     </section>
 
@@ -171,14 +169,7 @@ const avgGuided = computed(() => {
       </section>
     </template>
 
-    <section v-else class="hld-placeholder card animate-in">
-      <p class="terminal-prompt">system_design.next()</p>
-      <h2>HLD track is intentionally not live yet.</h2>
-      <p>
-        The current build focuses on LLD machine rounds and the interview execution framework.
-        HLD can be layered later without changing the top-nav structure.
-      </p>
-    </section>
+
   </div>
 </template>
 

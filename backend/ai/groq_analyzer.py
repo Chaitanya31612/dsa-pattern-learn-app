@@ -8,8 +8,8 @@ class GroqAnalyzer(AIAnalyzerInterface):
     """Groq API implementation."""
 
     MODELS = {
-        "fast": "llama-3.1-8b-instant",
-        "smart": "llama-3.3-70b-versatile",
+        "fast": "openai/gpt-oss-20b",
+        "smart": "openai/gpt-oss-120b",
         "mixtral": "mixtral-8x7b-32768",
     }
 

@@ -12,7 +12,7 @@ const route = useRoute()
 const headerNav = ref<HTMLElement | null>(null)
 watch(() => route.path, async path => {
   await nextTick()
-  if (!window.matchMedia('(max-width: 1100px)').matches || !headerNav.value) return
+  if (!window.matchMedia('(max-width: 1400px)').matches || !headerNav.value) return
   const target = headerNav.value.querySelector<HTMLElement>(path.startsWith('/hld/') || path === '/system-design/hld' ? '.hld-direct-link' : 'a.active')
   if (target) headerNav.value.scrollLeft = Math.max(0, target.offsetLeft - headerNav.value.offsetLeft - 12)
 }, { immediate: true })
@@ -65,6 +65,7 @@ const isSystemDesignActive = computed(() => {
             </div>
           </div>
           <router-link to="/system-design/hld" class="nav-link hld-direct-link" :class="{ active: route.path.startsWith('/hld/') }" active-class="active">HLD</router-link>
+          <router-link to="/software" class="nav-link" :class="{ active: route.path.startsWith('/software') }">Software Learnings</router-link>
           <router-link to="/quiz" class="nav-link" active-class="active">
             <span class="nav-icon">?</span> Quiz
           </router-link>
@@ -337,7 +338,7 @@ const isSystemDesignActive = computed(() => {
 
 /* ── Responsive ──────────────────────────────── */
 .hld-direct-link { display: none; }
-@media (max-width: 1100px) {
+@media (max-width: 1400px) {
   .header-inner { display: grid; grid-template-columns: minmax(0, 1fr) auto; height: auto; padding-top: 10px; padding-bottom: 6px; gap: 8px; }
   .header-nav { grid-column: 1 / -1; grid-row: 2; margin-left: 0; width: 100%; min-width: 0; overflow-x: auto; padding-bottom: 4px; }
   .nav-link { white-space: nowrap; flex-shrink: 0; }

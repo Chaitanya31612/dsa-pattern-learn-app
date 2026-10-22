@@ -33,9 +33,9 @@ async function expand() { await nextTick(); dialog.value?.showModal() }
 </script>
 <template>
   <figure class="hld-diagram">
-    <div class="hld-row"><figcaption><strong>{{ title }}</strong><p v-if="caption" class="hld-muted">{{ caption }}</p></figcaption>
+      <figcaption class="hld-row"><div><strong>{{ title }}</strong><p v-if="caption" class="hld-muted">{{ caption }}</p></div>
       <div class="hld-row"><button class="btn btn-ghost" :disabled="zoom <= .6" aria-label="Zoom diagram out" @click="zoom = Math.max(.6, zoom - .2)">−</button><span class="hld-muted">{{ Math.round(zoom * 100) }}%</span><button class="btn btn-ghost" :disabled="zoom >= 2.4" aria-label="Zoom diagram in" @click="zoom = Math.min(2.4, zoom + .2)">+</button><button class="btn" @click="expand">Expand diagram</button></div>
-    </div>
+      </figcaption>
     <p v-if="problem" role="status">{{ problem }}</p><p v-else-if="!svg" role="status">Rendering diagram…</p>
     <p class="hld-muted">Zoom or expand to read the details. Wide diagrams can scroll sideways.</p>
     <div class="diagram-viewport"><div class="diagram-svg" :style="{ width: `${zoom * 100}%`, minWidth: `${zoom > 1 ? Math.max(260, naturalWidth * .8 * zoom) : 260}px`, maxWidth: `${Math.max(260, naturalWidth * 1.2) * zoom}px` }" role="img" :aria-label="title" v-html="svg"></div></div>
@@ -45,7 +45,7 @@ async function expand() { await nextTick(); dialog.value?.showModal() }
 </template>
 <style scoped>
 .hld-diagram { margin:20px 0; padding:18px; background:var(--bg-secondary); border:1px solid var(--border-default); border-radius:10px; }
-.hld-diagram figcaption { max-width:600px; }.hld-diagram figcaption p { margin:8px 0; }
+.hld-diagram figcaption { display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap; }.hld-diagram figcaption p { margin:8px 0; }
 .diagram-viewport { overflow:auto; margin-top:16px; }.diagram-svg { min-width:260px; }.diagram-svg :deep(svg) { width:100%; height:auto; max-width:none !important; }
 .hld-diagram pre { overflow:auto; font:var(--text-sm) var(--font-mono); white-space:pre; }
 .diagram-dialog { max-width:95vw; width:1200px; max-height:92vh; padding:24px; border:1px solid var(--border-default); border-radius:12px; background:var(--bg-card); color:var(--text-primary); overflow:auto; }

@@ -11,11 +11,12 @@ hljs.registerLanguage('python', python)
 hljs.registerLanguage('javascript', javascript)
 
 const props = defineProps<{
-  contextType: 'pattern' | 'problem' | 'sub-pattern' | 'hld'
+  contextType: 'pattern' | 'problem' | 'sub-pattern' | 'hld' | 'software'
   contextId: string
   contextLabel: string
   quickChips?: string[]
   hldContext?: HLDChatContext
+  learningContext?: HLDChatContext
 }>()
 const emit = defineEmits<{ message: [] }>()
 
@@ -46,7 +47,7 @@ const threadRef = ref<HTMLElement | null>(null)
 const { messages, isLoading, error, sendMessage, clearChat } = useAIChat(
   props.contextType,
   props.contextId,
-  () => props.hldContext,
+  () => props.learningContext ?? props.hldContext,
 )
 
 function toggle() {

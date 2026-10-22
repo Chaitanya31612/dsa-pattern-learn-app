@@ -4,6 +4,8 @@ import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
 import type { Problem } from '../types'
 import { useHLD } from '../composables/useHLD'
+import { useSoftware } from '../composables/useSoftware'
+const { due: softwareDue } = useSoftware()
 const { dueCards: hldDue } = useHLD()
 
 const { problems, loading } = usePatterns()
@@ -87,6 +89,7 @@ const avgConfidence = computed(() => {
       <p>Retrieve design decisions and missed quiz concepts before rereading.</p>
       <router-link class="btn" to="/system-design/hld?tab=review">Open HLD recall queue →</router-link>
     </section>
+    <section class="card" style="padding:20px; margin-bottom:20px"><h3>Software Learnings · {{ softwareDue.length }} recall cards due</h3><p>Recall Ruby, Rails, Spring, Git, and frontend ideas before rereading.</p><router-link class="btn" to="/software?tab=review">Open software recall →</router-link></section>
     <!-- Empty State -->
     <div v-if="dueProblems.length === 0" class="empty-state animate-in stagger-1">
       <div class="empty-card card card-flat">

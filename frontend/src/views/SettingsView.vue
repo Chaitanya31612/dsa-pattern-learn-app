@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useProgress } from '../composables/useProgress'
 import HLDBackup from '../components/HLDBackup.vue'
+import SoftwareBackup from '../components/SoftwareBackup.vue'
 
 const { exportProgress, importProgress, state } = useProgress()
 
@@ -136,6 +137,7 @@ const totalReflections = computed(() => Object.keys(state.reflections).length)
       <h3>HLD course backup</h3>
       <p class="setting-desc">Preserve your design snapshots, quiz history, notes, and scheduled recall separately.</p>
       <HLDBackup />
+      <SoftwareBackup />
     </section>
     <!-- ═══ Smart Features ═══ -->
     <section class="card card-flat animate-in stagger-3" style="margin-bottom: var(--space-lg)">

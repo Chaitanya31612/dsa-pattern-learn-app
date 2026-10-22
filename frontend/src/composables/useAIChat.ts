@@ -19,10 +19,11 @@ export interface AIChatMessage {
   timestamp: string
 }
 
-type ContextType = 'pattern' | 'problem' | 'sub-pattern' | 'hld'
+type ContextType = 'pattern' | 'problem' | 'sub-pattern' | 'hld' | 'software'
 export interface HLDChatContext {
   mode: 'learn' | 'practice' | 'review'
   exercise_id?: string
+  file_path?: string
   section_id?: string
   example_id?: string
   attempt?: { phases: Record<string, string>; diagram: string; assisted: boolean }
@@ -60,7 +61,8 @@ function saveChatHistory(contextType: ContextType, contextId: string, messages: 
 
 export function useAIChat(contextType: ContextType, contextId: string, getHLDContext?: () => HLDChatContext | undefined) {
   const initialContext = getHLDContext?.()
-  const historyId = contextType === 'hld' ? `${contextId}-${initialContext?.mode}-${initialContext?.exercise_id ?? 'lesson'}` : contextId
+  const learning = contextType === 'hld' || contextType === 'software'
+  const historyId = learning ? `${contextId}-${initialContext?.mode}-${initialContext?.exercise_id ?? 'lesson'}` : contextId
   const messages = ref<AIChatMessage[]>(loadChatHistory(contextType, historyId))
   const isLoading = ref(false)
   const error = ref<string | null>(null)
@@ -91,9 +93,9 @@ export function useAIChat(contextType: ContextType, contextId: string, getHLDCon
 
     try {
       const endpoint =
-        contextType === 'hld' ? '/api/ai/hld-chat' : contextType === 'pattern' || contextType === 'sub-pattern' ? '/api/ai/pattern-chat' : '/api/ai/problem-chat'
+        contextType === 'software' ? '/api/ai/software-chat' : contextType === 'hld' ? '/api/ai/hld-chat' : contextType === 'pattern' || contextType === 'sub-pattern' ? '/api/ai/pattern-chat' : '/api/ai/problem-chat'
 
-      const bodyKey = contextType === 'hld' ? 'module_id' : (contextType === 'pattern' || contextType === 'sub-pattern') ? 'pattern_id' : 'problem_slug'
+      const bodyKey = learning ? 'module_id' : (contextType === 'pattern' || contextType === 'sub-pattern') ? 'pattern_id' : 'problem_slug'
 
       // Implement a sliding window character limit to prevent 422 payload errors.
       // We iterate backwards to keep the most recent context.
@@ -119,7 +121,7 @@ export function useAIChat(contextType: ContextType, contextId: string, getHLDCon
       const body = {
         [bodyKey]: contextId,
         messages: payloadMessages,
-        ...(contextType === 'hld' ? getHLDContext?.() : {}),
+        ...(learning ? getHLDContext?.() : {}),
       }
 
       const response = await fetch(getApiUrl(endpoint), {
@@ -129,7 +131,7 @@ export function useAIChat(contextType: ContextType, contextId: string, getHLDCon
       }).catch(() => null);
 
       if (!response || !response.ok) {
-        if (contextType === 'hld') {
+        if (learning) {
           const data = await response?.json().catch(() => null)
           throw new Error(typeof data?.detail === 'string' ? data.detail : 'AI coach is unavailable. Your design is saved. Check the backend/provider or continue with self-review.')
         }
@@ -153,7 +155,7 @@ export function useAIChat(contextType: ContextType, contextId: string, getHLDCon
       const errorMessage =
         err instanceof Error ? err.message : 'Failed to get AI response'
       error.value = errorMessage
-      if (contextType === 'hld') return
+      if (learning) return
 
       messages.value.push({
         role: 'assistant',

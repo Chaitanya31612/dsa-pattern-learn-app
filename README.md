@@ -168,6 +168,32 @@ Frontend already has a comprehensive technical README:
 
 ## 7. Quick Start
 
+To start the frontend and the AI backend together, run this from the repository root:
+
+```bash
+./run.sh
+```
+
+Open `http://127.0.0.1:5173`. Keep the terminal open. **Ctrl+C stops both servers**, including the backend reloader.
+
+The launcher uses `backend/venv` with Python 3.11+ and selects a compatible installed Node version (20.19+, 22.12+, or a newer major). It does not change your global Python or Node settings. It can find local asdf/mise Node installs and the bundled Codex Node runtime. It installs missing API dependencies into the virtual environment, and frontend dependencies if needed.
+
+Put your Groq/Gemini key in `backend/.env`. Existing keys are preserved. The launcher never prints them. Lessons and quizzes work without a provider; live AI calls need a configured provider and available quota.
+
+- `./run.sh --check` checks runtimes, installs missing dependencies, and imports the API without starting servers.
+- Logs are in `.run/backend.log` and `.run/frontend.log`.
+- If a port is busy, stop the old server in its terminal and run the launcher again.
+- Optional overrides: `LEARNING_NODE=/path/to/node` and `LEARNING_PYTHON=/path/to/python`. The Python override is used when creating a new virtual environment; an existing compatible environment is reused.
+
+Avoid a bare `uvicorn` command when your shell defaults to Python 3.9. For a backend-only start, use:
+
+```bash
+cd backend
+./venv/bin/python -m uvicorn app:app --reload --port 8000
+```
+
+The scraping/data pipeline is separate from the app server. To run it:
+
 Backend pipeline:
 
 ```bash

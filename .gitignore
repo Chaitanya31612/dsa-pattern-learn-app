@@ -4,3 +4,4 @@ venv/
 .env
 development.md
 /project-markdowns
+/.run/

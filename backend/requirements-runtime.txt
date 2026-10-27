@@ -1,0 +1,7 @@
+# Only the local AI API. Scraping/pipeline dependencies are in requirements.txt.
+fastapi
+uvicorn[standard]
+python-dotenv
+groq
+google-genai
+ollama

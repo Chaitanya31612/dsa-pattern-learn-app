@@ -1,6 +1,6 @@
 # Backend - DSA Pattern Lab
 
-Backend in this repo is a data-generation pipeline, not a web server.
+This folder contains the data-generation pipeline and the optional FastAPI server for live AI features.
 
 It ingests curated coding problem sources, enriches them with LeetCode metadata, generates AI learning content, and outputs a single `db.json` consumed by the Vue frontend.
 
@@ -107,11 +107,13 @@ cp pipeline/data/db.json ../frontend/public/db.json
 
 ## Runtime API (V2 Mock Interview)
 
-Run from `backend/`:
+The easiest start is `./run.sh` from the repository root. It starts both servers with compatible runtimes. For the API alone, run from `backend/` using its Python 3.11+ virtual environment:
 
 ```bash
-uvicorn app:app --reload --port 8000
+./venv/bin/python -m uvicorn app:app --reload --port 8000
 ```
+
+Use `requirements-runtime.txt` for just this API. `requirements.txt` also installs scraping and content-generation dependencies. A global Python 3.9 `uvicorn` cannot import the current course APIs.
 
 Endpoints:
 

@@ -25,13 +25,24 @@ The core idea: generate high-quality learning data once, then ship a fast client
 https://github.com/user-attachments/assets/42d27613-cdf5-4888-9132-246e09eab491
 
 <img width="1865" height="1011" alt="image" src="https://github.com/user-attachments/assets/447688d8-55cb-4a82-b015-c0fb3f15c885" />
-<img width="1865" height="999" alt="image" src="https://github.com/user-attachments/assets/da4b728b-67d5-4477-b282-ec21373b2dc4" />
+<img width="1866" height="999" alt="image" src="https://github.com/user-attachments/assets/0a104943-a1cb-4cfa-8d9b-be76697f27b8" />
+<img width="1866" height="999" alt="image" src="https://github.com/user-attachments/assets/fc0ccde8-1c67-4964-a92a-9cd55623e9e0" />
+<img width="1866" height="999" alt="image" src="https://github.com/user-attachments/assets/1e63c6f5-6db8-450b-bfee-57665541425c" />
 
-<img width="1865" height="999" alt="image" src="https://github.com/user-attachments/assets/7199f130-0d03-4560-8ce6-0641757ecb90" />
+
+<!-- <img width="1865" height="999" alt="image" src="https://github.com/user-attachments/assets/da4b728b-67d5-4477-b282-ec21373b2dc4" /> -->
+
+<!-- <img width="1865" height="999" alt="image" src="https://github.com/user-attachments/assets/7199f130-0d03-4560-8ce6-0641757ecb90" /> -->
 <img width="1609" height="997" alt="image" src="https://github.com/user-attachments/assets/94ec8d8c-a088-4511-a5ec-82e64cb74db5" />
 <img width="1609" height="1003" alt="image" src="https://github.com/user-attachments/assets/dbe738e8-9222-4922-9a5e-ea479d6a1f6e" />
-<img width="1609" height="1003" alt="image" src="https://github.com/user-attachments/assets/62cd08b5-944c-4dcf-a5d9-344ab3aad24d" />
-<img width="1609" height="1003" alt="image" src="https://github.com/user-attachments/assets/562d34c2-b3bb-4cc9-9add-4b58e54cfa5c" />
+<img width="1866" height="999" alt="image" src="https://github.com/user-attachments/assets/a8121b0a-e1ce-4810-9797-182543e82b3e" />
+
+<!-- <img width="1609" height="1003" alt="image" src="https://github.com/user-attachments/assets/62cd08b5-944c-4dcf-a5d9-344ab3aad24d" /> -->
+<!-- <img width="1609" height="1003" alt="image" src="https://github.com/user-attachments/assets/562d34c2-b3bb-4cc9-9add-4b58e54cfa5c" /> -->
+<img width="1866" height="970" alt="image" src="https://github.com/user-attachments/assets/5ab52288-c7d3-420e-8b19-ce0c79aa2153" />
+
+<img width="1866" height="998" alt="image" src="https://github.com/user-attachments/assets/688b823c-c026-4b2f-a830-14d42009dadc" />
+
 <img width="1609" height="1003" alt="image" src="https://github.com/user-attachments/assets/4ea70def-d064-41a0-9ddb-6ab396e9f125" />
 <img width="1609" height="1003" alt="image" src="https://github.com/user-attachments/assets/75f34647-18c0-479e-bccc-073504eb7de3" />
 
@@ -43,6 +54,9 @@ https://github.com/user-attachments/assets/42d27613-cdf5-4888-9132-246e09eab491
 
 
 ## 1. High-Level Overview
+
+**Brief Intro**
+Pattern-first DSA learning platform with AI pipeline that scrapes, deduplicates, and enriches 200+ problems across 17 patterns using a multi-provider LLM factory. Features a context aware AI tutor per pattern and problem, AI mock interviews followed by structured reflection and spaced repetition scheduling – all running on the client with per-user progress persistence
 
 This repo has two major parts:
 

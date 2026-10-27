@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import HLDMarkdown from '../components/HLDMarkdown.vue'
+import LearningText from '../components/LearningText.vue'
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { usePatterns } from '../composables/usePatterns'
@@ -119,7 +121,7 @@ const patternChatChips = computed(() => {
           <h3 class="section-heading">
             <span class="heading-icon">💡</span> Mental Model
           </h3>
-          <p class="mental-model-text">{{ subPattern.mental_model || subPattern.description }}</p>
+          <LearningText class="mental-model-text" :text="subPattern.mental_model || subPattern.description"/>
         </section>
 
         <section class="card card-flat">
@@ -136,9 +138,9 @@ const patternChatChips = computed(() => {
 
       <section class="card card-flat" style="margin-top: var(--space-md)" v-if="subPattern.explanation">
         <h3 class="section-heading">
-          <span class="heading-icon">📖</span> Deep Dive Explanation
+          <span class="heading-icon">📖</span> See it with an example
         </h3>
-        <div class="explanation-text" v-html="subPattern.explanation.replace(/\n/g, '<br/>')"></div>
+        <HLDMarkdown class="explanation-text" :content="subPattern.explanation"/>
       </section>
     </div>
 

@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useSoftware, useAILearnings } from '../composables/useSoftware'
 import { softwareEvidence, validateSoftwareReport } from '../lib/softwareLearning'
 import { WORK_FIELDS, type SoftwareAttempt } from '../types/software'
+import LearningText from '../components/LearningText.vue'
 import HLDMarkdown from '../components/HLDMarkdown.vue'
 import HLDDiagram from '../components/HLDDiagram.vue'
 import AIChatPanel from '../components/AIChatPanel.vue'
@@ -42,7 +43,7 @@ const nextModule = computed(() => {
 })
 const section = computed(() => module.value?.sections[step.value])
 const lessonVisuals = computed(() => module.value?.visuals.filter(v=>v.placement===(step.value===module.value!.sections.length-1?'recap':'overview')) ?? [])
-const coaching = computed(() => ({mode: (showReference.value ? 'review' : tab.value==='practice' ? 'practice' : 'learn') as 'learn'|'practice'|'review',exercise_id:exercise.value?.id,section_id:section.value?.id,file_path:tab.value==='lab'?labFile.value?.path:undefined,attempt:draft.value ?? undefined}))
+const coaching = computed(() => ({mode: (showReference.value ? 'review' : tab.value==='practice' ? 'practice' : 'learn') as 'learn'|'practice'|'review',exercise_id:exercise.value?.id,section_id:tab.value==='trace'?'trace':section.value?.id,file_path:tab.value==='lab'?labFile.value?.path:undefined,attempt:draft.value ?? undefined}))
 watch(() => [route.params.id, exerciseId.value], () => { step.value=0;traceStep.value=0;quizIndex.value=0;selectedFile.value='README.md';showReference.value=false;selectedAttempt.value='';message.value='';predictionChoice.value=null;predictionReveal.value=false })
 function switchTab(value: string) { showReference.value=false; message.value=''; router.replace({query:{...route.query,tab:value}}) }
 function saveAttempt() { try { if (!module.value || !exercise.value) return; const a=submit(module.value,exercise.value.id);selectedAttempt.value=a.id;message.value='Attempt saved. You can now compare the reference or request feedback.' } catch(e) {message.value=(e as Error).message} }
@@ -79,7 +80,7 @@ function cleanLinks(content:string) { return content.replace(/\[([^\]]+)\]\((?!h
       <p v-if="message" class="sw-alert" role="status">{{ message }}</p>
       <template v-if="tab==='learn' && section">
         <nav class="sw-steps" aria-label="Lesson steps"><button v-for="(s,i) in module.sections" :key="s.id" :class="{selected:step===i}" @click="step=i">{{ mp.completed.includes(s.id)?'✓':i+1 }} · {{ s.title }}</button></nav>
-        <div class="sw-learning-grid"><article class="sw-card"><p class="sw-eyebrow">Step {{ step+1 }} of {{ module.sections.length }}</p><HLDMarkdown :content="section.content"/><div class="sw-row"><button class="btn btn-ghost" :disabled="step===0" @click="step--">Previous</button><button class="btn" @click="lessonNext">{{ step===module.sections.length-1?'Mark read · try a prediction':'Mark read · next step' }}</button></div></article><aside class="sw-aside"><HLDDiagram v-for="v in lessonVisuals" :key="v.placement" :title="v.title" :code="v.code"/><div class="sw-cue"><strong>Remember this</strong><p>{{ module.cue }}</p></div></aside></div>
+        <div class="sw-learning-grid"><article class="sw-card"><p class="sw-eyebrow">Step {{ step+1 }} of {{ module.sections.length }}</p><div v-if="step===0" class="sw-lesson-hook"><span>The idea to keep</span><LearningText :text="module.cue"/></div><HLDMarkdown :content="section.content"/><div class="sw-row"><button class="btn btn-ghost" :disabled="step===0" @click="step--">Previous</button><button class="btn" @click="lessonNext">{{ step===module.sections.length-1?'Mark read · try a prediction':'Mark read · next step' }}</button></div></article><aside class="sw-aside"><HLDDiagram v-for="v in lessonVisuals" :key="v.placement" :title="v.title" :code="v.code"/><div class="sw-cue"><strong>Remember this</strong><p>{{ module.cue }}</p></div></aside></div>
       </template>
       <section v-else-if="tab==='trace'" class="sw-card">
         <h2>Predict, then follow the path</h2><p>This is a guided trace. It does not execute your code. Run the sandbox when you want to check real behavior.</p><div class="sw-steps"><button v-for="(t,i) in module.trace" :key="i" :class="{selected:traceStep===i}" @click="traceStep=i">{{ i+1 }} · {{ t.title }}</button></div><HLDMarkdown :content="module.trace[traceStep]!.detail"/><div class="sw-row"><button class="btn" :disabled="traceStep===0" @click="traceStep--">Back</button><button class="btn" :disabled="traceStep===(module?.trace.length ?? 0)-1" @click="traceStep++">Next trace step</button></div>

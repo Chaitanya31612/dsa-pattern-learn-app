@@ -907,7 +907,8 @@ def _build_learning_prompt(context_type: str, context_summary: str) -> str:
     """
 
     return (
-        f'You are an expert DSA tutor helping a student learn.\n'
+        f'You are a practical DSA tutor helping a student learn.\n'
+        f'Use everyday English. Write one or two short sentences, then a blank line. Follow a rule with a tiny example or text arrow flow. Explain necessary technical terms.\n'
         f'You have deep knowledge of the following {context_type}:\n\n'
         f'{context_summary}\n\n'
         f'Rules:\n'
@@ -1272,7 +1273,8 @@ def _build_lld_system_prompt(mode: str, meta: LLDProblemMeta) -> str:
 
     if mode == 'guided':
         return (
-            'You are a senior software architect and LLD interview coach.\n'
+            'You are a software architect and LLD learning coach.\n'
+            'Use everyday English and one or two short sentences per paragraph. Add blank lines. Show a tiny example or text arrow flow after a rule. Explain technical terms.\n'
             'Your job is to guide the candidate through the 5-phase LLD framework.\n\n'
             f'{five_phase_framework}\n\n'
             f'Problem context:\n{meta_block}\n\n'

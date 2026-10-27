@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LearningText from '../components/LearningText.vue'
 import { computed, ref } from 'vue'
 import { useLLDProblems } from '../composables/useLLDProblems'
 
@@ -33,11 +34,7 @@ const avgGuided = computed(() => {
       <div class="hero-copy">
         <p class="terminal-prompt hero-kicker">./grind --mode=system-design</p>
         <h1 class="hero-title">System Design Track</h1>
-        <p class="hero-description">
-          Build one repeatable LLD interview operating system, then plug new problems into it.
-          The goal here is not just solving Parking Lot or Splitwise once. It is reducing every
-          future machine round to the same five moves: clarify, model, design, implement, review.
-        </p>
+        <LearningText class="hero-description" text="Learn one way to approach an LLD problem. Use it for Parking Lot, Splitwise, and new questions. Follow five steps: clarify, model, design, implement, and review."/>
         <div class="hero-actions">
           <button class="btn btn-primary" @click="activeTab = 'lld'">Open LLD Track</button>
           <router-link class="btn" to="/system-design/hld">Open HLD Architecture Lab</router-link>
@@ -84,7 +81,7 @@ const avgGuided = computed(() => {
             <div v-for="phase in frameworkPhases" :key="phase.id" class="phase-pill">
               <span class="phase-index mono">{{ phase.timebox }}</span>
               <strong>{{ phase.title }}</strong>
-              <p>{{ phase.focus }}</p>
+              <LearningText :text="phase.focus"/>
             </div>
           </div>
         </article>
@@ -148,7 +145,7 @@ const avgGuided = computed(() => {
 
           <div class="problem-card-body">
             <h3>{{ problem.title }}</h3>
-            <p>{{ problem.description }}</p>
+            <LearningText :text="problem.description"/>
           </div>
 
           <div class="tag-row">

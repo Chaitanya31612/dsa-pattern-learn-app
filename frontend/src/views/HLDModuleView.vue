@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useHLD } from '../composables/useHLD'
 import { HLD_PHASES, type HLDPhase, type HLDQuizAttempt } from '../types/hld'
 import { DAY, newDraft, remainingSeconds } from '../lib/hldLearning'
+import LearningText from '../components/LearningText.vue'
 import HLDMarkdown from '../components/HLDMarkdown.vue'
 import HLDDiagram from '../components/HLDDiagram.vue'
 import HLDReviewQueue from '../components/HLDReviewQueue.vue'
@@ -131,7 +132,7 @@ function saveDecision() {
     <div v-else-if="error" role="alert"><p>{{ error }}</p><button class="btn" @click="loadCourse">Retry</button></div>
     <div v-else-if="!module"><h1>Module not found</h1><router-link to="/system-design/hld">Choose a course module</router-link></div>
     <template v-else>
-      <header class="hld-module-heading"><span class="hld-eyebrow">{{ module.track === 'volume-2' ? 'VOLUME 2' : 'VOLUME 1' }} / MODULE {{ String(module.number).padStart(2,'0') }} · {{ module.hours }} HOURS</span><h1>{{ module.title }}</h1><p>{{ module.outcome }}</p><details><summary>Book connection and prerequisites</summary><p>{{ module.book }}</p><p>Prerequisites: {{ module.prerequisites }}</p></details></header>
+      <header class="hld-module-heading"><span class="hld-eyebrow">{{ module.track === 'volume-2' ? 'VOLUME 2' : 'VOLUME 1' }} / MODULE {{ String(module.number).padStart(2,'0') }} · {{ module.hours }} HOURS</span><h1>{{ module.title }}</h1><LearningText :text="module.outcome"/><details><summary>Book connection and prerequisites</summary><p>{{ module.book }}</p><p>Prerequisites: {{ module.prerequisites }}</p></details></header>
       <p v-if="storageError" class="hld-error" role="alert">{{ storageError }}</p>
       <HLDHowTo /><HLDEvidence :module="module" />
       <nav class="hld-tabs" aria-label="Module activities"><button v-for="t in tabs" :key="t" :class="{ selected: tab === t }" :aria-pressed="tab === t" @click="tab = t">{{ t === 'learn' ? 'Learn' : t === 'examples' ? 'Worked examples' : t === 'lab' ? 'Visual lab' : t === 'practice' ? 'Design & repair' : t === 'quiz' ? 'Quiz' : 'Spaced recall' }}</button></nav>
@@ -139,7 +140,7 @@ function saveDecision() {
       <div v-if="tab === 'learn' && section" class="hld-learning-layout">
         <aside class="hld-lesson-nav"><p class="hld-eyebrow">One small idea at a time</p><label class="hld-mobile-step-selector">Choose a step<select v-model.number="sectionIndex" class="hld-input"><option v-for="(s, i) in module.sections" :key="s.id" :value="i">{{ i + 1 }}. {{ s.quick?.title ?? s.title }}</option></select></label><button v-for="(s, i) in module.sections" :key="s.id" :class="{ selected: sectionIndex === i }" @click="sectionIndex = i"><span>{{ moduleProgress?.completedSections.includes(s.id) ? '✓' : String(i + 1).padStart(2,'0') }}</span>{{ s.quick?.title ?? s.title }}</button></aside>
         <article class="hld-content-pane"><span class="hld-muted">Step {{ sectionIndex + 1 }} of {{ module.sections.length }}</span><h2>{{ section.quick?.title ?? section.title }}</h2>
-          <template v-if="section.quick"><p class="hld-simple-explanation">{{ section.quick.explanation }}</p><div class="hld-example"><strong>A small example</strong><p>{{ section.quick.example }}</p></div><p class="hld-memory-tip"><strong>Remember:</strong> {{ section.quick.tip }}</p><details><summary>Go deeper · optional technical explanation</summary><HLDMarkdown :content="section.content" /></details></template>
+          <template v-if="section.quick"><LearningText class="hld-simple-explanation" :text="section.quick.explanation"/><div class="hld-example"><strong>A small example</strong><LearningText :text="section.quick.example"/></div><p class="hld-memory-tip"><strong>Remember:</strong> {{ section.quick.tip }}</p><details><summary>Go deeper · optional technical explanation</summary><HLDMarkdown :content="section.content" /></details></template>
           <HLDMarkdown v-else :content="section.content" />
           <template v-if="sectionIndex === 0"><HLDDiagram v-for="v in module.visuals.filter(v => v.placement === 'overview')" :key="v.id" :title="v.title" :caption="v.caption" :code="v.code" /></template>
           <template v-if="sectionIndex === module.sections.length - 1"><HLDDiagram v-for="v in module.visuals.filter(v => v.placement === 'recap')" :key="v.id" :title="v.title" :caption="v.caption" :code="v.code" /></template>

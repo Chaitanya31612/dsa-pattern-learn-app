@@ -5,41 +5,41 @@ export const LLD_FRAMEWORK_PHASES: LLDFrameworkPhase[] = [
     id: 'clarify',
     title: 'Clarify',
     timebox: '05-08 min',
-    focus: 'Separate must-haves, assumptions, and interview boundaries before touching classes.',
-    deliverable: 'Requirement buckets + explicit out-of-scope note',
-    coachingPrompt: 'Lead with constraints, concurrency assumptions, and what you will not build in the round.',
+    focus: 'Agree on the core features before choosing classes.',
+    deliverable: 'Core features, assumptions, and what you will leave out',
+    coachingPrompt: 'Ask what must work, what may happen at the same time, and what is outside this round.',
   },
   {
     id: 'model',
-    title: 'Entity Model',
+    title: 'Model',
     timebox: '08-10 min',
-    focus: 'Convert nouns into classes and verbs into responsibilities and relationships.',
-    deliverable: 'Core entities, invariants, and UML sketch',
-    coachingPrompt: 'Name the aggregates first, then explain ownership and lifecycle boundaries.',
+    focus: 'Choose the objects. Give each one a clear job.',
+    deliverable: 'Objects, rules that must hold, and a small diagram',
+    coachingPrompt: 'Say who owns each object, how it is created, and when it stops being used.',
   },
   {
     id: 'design',
-    title: 'Contracts',
+    title: 'Design',
     timebox: '05-08 min',
-    focus: 'Choose interfaces, state transitions, and the patterns that buy extensibility.',
-    deliverable: 'Interfaces, enums, and pattern rationale',
-    coachingPrompt: 'Tell the interviewer which policies are swappable and why they are abstractions.',
+    focus: 'Define allowed actions and state changes. Separate the rules that may need to change.',
+    deliverable: 'Interfaces, states, and why a pattern helps',
+    coachingPrompt: 'Show which rule you can replace without changing the main flow.',
   },
   {
     id: 'implement',
-    title: 'Implement Core',
+    title: 'Implement',
     timebox: '22-28 min',
-    focus: 'Code the happy path in a deliberate order: enums, models, services, driver.',
-    deliverable: 'Runnable skeleton with one demonstrable flow',
-    coachingPrompt: 'Keep the code path demoable; mention future scale verbally instead of over-building.',
+    focus: 'Build one working path: states, objects, services, then a small demo.',
+    deliverable: 'A runnable version of one complete flow',
+    coachingPrompt: 'Make the core path run. Explain a possible scale change after that path works.',
   },
   {
     id: 'review',
-    title: 'Review & Extend',
+    title: 'Review',
     timebox: '04-06 min',
-    focus: 'Call out edge cases, SOLID trade-offs, and the smallest change for a new requirement.',
-    deliverable: 'Risk review + extensibility answer',
-    coachingPrompt: 'Finish by proving your design can absorb one realistic follow-up with localized change.',
+    focus: 'Try an edge case. Explain one design choice and one new requirement.',
+    deliverable: 'Failure cases and a small change for a follow-up',
+    coachingPrompt: 'Show exactly which files or objects change for one realistic follow-up.',
   },
 ]
 
@@ -48,8 +48,8 @@ const DEFAULT_DURATION = { guided: 50, interview: 45 }
 export const LLD_COACHING_STRATEGY = [
   'Reuse one fixed interview sequence every time: clarify, model, design, implement, review.',
   'Say your assumptions out loud early so the interviewer evaluates design thinking instead of guessing intent.',
-  'Prefer one clean in-memory design with extensibility seams over a half-built production architecture.',
-  'Use UML and interface boundaries to reduce refactoring pressure before coding starts.',
+  'Finish a small in-memory design. Show where a new rule can be added.',
+  'Draw objects and their connections before coding. Use the picture to catch a wrong responsibility early.',
   'Reserve the last five minutes for edge cases, scale notes, and one follow-up requirement.',
 ]
 
@@ -62,7 +62,7 @@ export const LLD_PROBLEMS: LLDCatalogProblem[] = [
     tags: ['Strategy', 'Singleton', 'Inventory'],
     duration: DEFAULT_DURATION,
     category: 'Allocation Systems',
-    description: 'Design an in-memory parking lot with floors, spot categories, ticketing, and pluggable parking and pricing strategies.',
+    description: "Build an in-memory parking lot with several floors. Bikes, cars, and trucks need different spot sizes. Issue a ticket on entry and charge for time on exit. Make it possible to add spot types and pricing rules without rewriting the whole parking flow.",
     framework: {
       requirements: {
         must_have: [
@@ -144,7 +144,7 @@ export const LLD_PROBLEMS: LLDCatalogProblem[] = [
     tags: ['Game Loop', 'Strategy', 'Board Modeling'],
     duration: DEFAULT_DURATION,
     category: 'Turn-Based Games',
-    description: 'Design the board game engine for Snake and Ladder with players, dice, jumps, win conditions, and a clean turn loop.',
+    description: "Build a turn-based board game. Players roll a die and move across the board. Snakes move them back; ladders move them forward. Define the order of turns and the rule for winning.",
     framework: {
       requirements: {
         must_have: ['Configurable board size.', 'Multiple players taking turns.', 'Dice-driven movement with snakes and ladders.', 'Exact-win or clearly defined overshoot behavior.'],
@@ -195,7 +195,7 @@ export const LLD_PROBLEMS: LLDCatalogProblem[] = [
     tags: ['Board Game', 'Strategy', 'Validation'],
     duration: DEFAULT_DURATION,
     category: 'Turn-Based Games',
-    description: 'Design a reusable Tic Tac Toe engine with configurable board size, player strategies, move validation, and efficient win detection.',
+    description: "Build a game for two players. Accept a move only in an empty cell and on the correct turn. Check for a winner or draw after each move. Keep the rules clear enough to support a different board size if required.",
     framework: {
       requirements: {
         must_have: ['N x N board with two players.', 'Move validation and alternating turns.', 'Win and draw detection.', 'Distinct player symbols and a runnable game loop.'],
@@ -244,7 +244,7 @@ export const LLD_PROBLEMS: LLDCatalogProblem[] = [
     tags: ['State', 'Strategy', 'Scheduling'],
     duration: DEFAULT_DURATION,
     category: 'Controllers & Scheduling',
-    description: 'Design a multi-elevator controller that accepts internal and external requests, assigns cars, and simulates movement through states.',
+    description: "Manage several elevators and their requests. Choose which elevator should handle a call. Track its floor, direction, and pending stops. Keep the choice of scheduling rule separate from moving an elevator.",
     framework: {
       requirements: {
         must_have: ['Multiple elevators and floors.', 'External UP/DOWN requests and internal floor requests.', 'Explicit elevator states and direction.', 'Scheduling policy for assigning requests.'],
@@ -295,7 +295,7 @@ export const LLD_PROBLEMS: LLDCatalogProblem[] = [
     tags: ['Strategy', 'Balance Sheet', 'Validation'],
     duration: DEFAULT_DURATION,
     category: 'Financial Flows',
-    description: 'Design an expense sharing service with multiple split strategies, balance tracking, and debt simplification.',
+    description: "Track shared expenses and what each person owes. Support equal, exact, and percentage splits as required. Check that shares add up to the expense. Keep balances and settlements consistent.",
     framework: {
       requirements: {
         must_have: ['Add expenses with payer, amount, and participants.', 'Support equal, exact, and percentage splits.', 'Track balances between users.', 'Show simplified settlements or net balances.'],
@@ -346,7 +346,7 @@ export const LLD_PROBLEMS: LLDCatalogProblem[] = [
     tags: ['State', 'Concurrency', 'Search'],
     duration: DEFAULT_DURATION,
     category: 'Reservation Systems',
-    description: 'Design a ticket booking system with theatres, shows, seat maps, search, and concurrency-safe booking flow.',
+    description: "Build a movie ticket booking flow. Users find a show, choose seats, and try to reserve them. Two users must not receive the same seat. Define what happens when a reservation expires or payment fails.",
     framework: {
       requirements: {
         must_have: ['Multiple theatres, screens, shows, and seat categories.', 'Search shows by movie or city.', 'Select seats and create bookings.', 'Prevent double booking under concurrent requests.'],
@@ -398,7 +398,7 @@ export const LLD_PROBLEMS: LLDCatalogProblem[] = [
     tags: ['Chain of Responsibility', 'Decorator', 'Singleton'],
     duration: DEFAULT_DURATION,
     category: 'Infrastructure Components',
-    description: 'Design a configurable logging framework with log levels, handler chains, and extensible formatting.',
+    description: "Send log messages to the right destinations. Support log levels and different output formats. Allow a new destination or formatter without changing every caller. Decide how handlers pass a message along.",
     framework: {
       requirements: {
         must_have: ['Multiple log levels.', 'Multiple handlers with minimum thresholds.', 'Chain-based message flow.', 'Structured log message with timestamp, level, and content.'],
@@ -449,7 +449,7 @@ export const LLD_PROBLEMS: LLDCatalogProblem[] = [
     tags: ['Data Structures', 'O(1)', 'Policy'],
     duration: DEFAULT_DURATION,
     category: 'In-Memory Components',
-    description: 'Design an O(1) LRU cache using a hash map and doubly linked list, with room for alternate eviction policies later.',
+    description: "Build a cache with a fixed capacity. Reads and updates should take O(1) time. When the cache is full, remove the least recently used entry. Keep the lookup map and usage order in sync.",
     framework: {
       requirements: {
         must_have: ['Fixed capacity.', 'O(1) get and put.', 'Evict least recently used entry on overflow.', 'Mark accessed keys as most recently used.'],
@@ -498,7 +498,7 @@ export const LLD_PROBLEMS: LLDCatalogProblem[] = [
     tags: ['State', 'Inventory', 'Payments'],
     duration: DEFAULT_DURATION,
     category: 'State Machines',
-    description: 'Design a vending machine with inventory, coin handling, state transitions, product dispensing, and change return.',
+    description: "Build a machine that accepts coins and dispenses a selected product. Track stock, the current payment, and the machine\u2019s state. Return change or reject an invalid action. Define what happens when a product is sold out.",
     framework: {
       requirements: {
         must_have: ['Inventory with products, quantities, and prices.', 'Accept supported coin denominations.', 'Insert coin, select product, dispense, and return change.', 'Explicit machine states.'],
@@ -547,7 +547,7 @@ export const LLD_PROBLEMS: LLDCatalogProblem[] = [
     tags: ['Strategy', 'State', 'Matching'],
     duration: DEFAULT_DURATION,
     category: 'Dispatch Systems',
-    description: 'Design a ride sharing platform with rider requests, driver availability, matching, fare calculation, and ride state transitions.',
+    description: "Match a rider\u2019s request with an available driver. Track the trip from request to completion. Calculate the fare using a replaceable pricing rule. Reject actions that do not fit the current trip state.",
     framework: {
       requirements: {
         must_have: ['Riders request rides with pickup and drop.', 'Drivers go online/offline.', 'Matching chooses an available driver.', 'Ride state transitions from requested to completed.', 'Fare depends on distance or pricing policy.'],
@@ -598,7 +598,7 @@ export const LLD_PROBLEMS: LLDCatalogProblem[] = [
     tags: ['Strategy', 'Time Windows', 'Concurrency'],
     duration: DEFAULT_DURATION,
     category: 'Traffic Control',
-    description: 'Design a per-user rate limiter using token bucket as the primary algorithm, with room to swap in sliding window alternatives.',
+    description: "Limit how many requests a user may make. Start with a token bucket and define how time refills it. Handle requests arriving at the same time. Keep the algorithm replaceable if the requirements change.",
     framework: {
       requirements: {
         must_have: ['Per-user request limiting.', 'Configurable capacity and refill rate.', 'allowRequest(userId) boolean API.', 'Token bucket as the primary algorithm.'],
@@ -648,7 +648,7 @@ export const LLD_PROBLEMS: LLDCatalogProblem[] = [
     tags: ['Command', 'Priority Queue', 'Observer'],
     duration: DEFAULT_DURATION,
     category: 'Schedulers',
-    description: 'Design a cron-like task scheduler with one-time and recurring tasks, priorities, dependencies, and cancellable execution.',
+    description: "Schedule work for a later time. Support one-time and repeated tasks, priorities, and dependencies as required. Allow cancellation with clear rules. Decide who owns task state and how the next ready task is selected.",
     framework: {
       requirements: {
         must_have: ['Schedule one-time and recurring tasks.', 'Execute by time and priority.', 'Support cancel and update.', 'Handle simple dependencies between tasks.'],

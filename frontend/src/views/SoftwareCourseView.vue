@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useSoftware, useAILearnings } from '../composables/useSoftware'
 import { softwareEvidence } from '../lib/softwareLearning'
+import LearningText from '../components/LearningText.vue'
 import HLDMarkdown from '../components/HLDMarkdown.vue'
 import SoftwareBackup from '../components/SoftwareBackup.vue'
 import '../styles/software.css'
@@ -34,7 +35,7 @@ function evidence(id: string) {
 </script>
 <template>
   <div class="container sw-page">
-    <header class="sw-hero"><div><p class="sw-eyebrow">Learn by following what runs</p><h1>{{ title }}</h1><p class="sw-lead">Small steps. Real examples. Recall that lasts beyond today.</p><p v-if="isAI">From the first token to a reliable Rails integration. Follow the eight stages in order. Each stage adds one new responsibility. You do not need to remember ML maths to start.</p><div v-if="isAI && course" class="sw-row"><router-link class="btn" to="/ai/ai-boundary">Start with chapter 1 →</router-link><button class="btn btn-ghost" @click="changeTab('guide')">Your four-week starting plan</button><span class="sw-muted">56 chapters · ~115 hours with practice</span></div><p v-else-if="!isAI">Beginner builds the model. Intermediate connects it to work. Start with frontend and UX for your current work, then follow one main track at a time.</p></div><div class="sw-hero-note"><strong>See → Predict → Do → Explain</strong><p>About 7 hours a week.<br>One honest attempt beats another reread.</p><button class="btn" @click="changeTab('review')">Recall · {{ due.length }} due</button></div></header>
+    <header class="sw-hero"><div><p class="sw-eyebrow">Learn by following what runs</p><h1>{{ title }}</h1><p class="sw-lead">Small steps. Real examples. Recall that lasts beyond today.</p><LearningText v-if="isAI" text="Start with how a model works. Then build a Rails AI feature. Follow the eight stages in order. You can start without remembering ML maths."/><div v-if="isAI && course" class="sw-row"><router-link class="btn" to="/ai/ai-boundary">Start with chapter 1 →</router-link><button class="btn btn-ghost" @click="changeTab('guide')">Your four-week starting plan</button><span class="sw-muted">56 chapters · ~115 hours with practice</span></div><LearningText v-else-if="!isAI" text="Beginner chapters build the basics. Intermediate chapters connect them to real work. Start with frontend and UX if that helps your current work. Then follow one track at a time."/></div><div class="sw-hero-note"><strong>See → Predict → Do → Explain</strong><p>About 7 hours a week.<br>One honest attempt beats another reread.</p><button class="btn" @click="changeTab('review')">Recall · {{ due.length }} due</button></div></header>
     <p v-if="storageError" class="sw-alert" role="alert">{{ storageError }}</p>
     <nav class="sw-tabs" :aria-label="`${title} area`"><button v-for="item in ['course','review','guide','backup']" :key="item" class="btn" :class="{selected:tab===item}" @click="changeTab(item)">{{ {course:'Your tracks',review:'Spaced recall',guide:'How to learn',backup:'Backup'}[item] }}</button></nav>
     <div v-if="error" class="sw-card" role="alert">{{ error }} <button class="btn" @click="load">Retry</button></div><p v-else-if="!course" role="status">Loading your learning space…</p>

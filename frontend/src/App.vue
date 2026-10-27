@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue'
+import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useTheme } from './composables/useTheme'
 import { useProgress } from './composables/useProgress'
@@ -10,16 +10,18 @@ const { totalSolved } = useProgress()
 const { meta, error: catalogError, retry: retryCatalog } = usePatterns()
 const route = useRoute()
 const headerNav = ref<HTMLElement | null>(null)
-watch(() => route.path, async path => {
-  await nextTick()
-  if (!window.matchMedia('(max-width: 1400px)').matches || !headerNav.value) return
-  const target = headerNav.value.querySelector<HTMLElement>(path.startsWith('/hld/') || path === '/system-design/hld' ? '.hld-direct-link' : 'a.active')
-  if (target) headerNav.value.scrollLeft = Math.max(0, target.offsetLeft - headerNav.value.offsetLeft - 12)
-}, { immediate: true })
+function revealCurrentLink() {
+  if (!window.matchMedia('(max-width: 1439px)').matches || !headerNav.value) return
+  const path=route.path
+  const target=headerNav.value.querySelector<HTMLElement>(path.startsWith('/hld/') || path === '/system-design/hld' ? '.hld-direct-link' : 'a.active')
+  if(target)headerNav.value.scrollLeft=Math.max(0,target.offsetLeft-headerNav.value.offsetLeft-12)
+}
+watch(()=>route.path,async()=>{await nextTick();revealCurrentLink()},{immediate:true})
+onMounted(()=>window.addEventListener('resize',revealCurrentLink))
+onUnmounted(()=>window.removeEventListener('resize',revealCurrentLink))
 
-const isSystemDesignActive = computed(() => {
-  return route.path.startsWith('/system-design') || route.path.startsWith('/lld/') || route.path.startsWith('/hld/')
-})
+
+
 </script>
 
 <template>
@@ -54,17 +56,8 @@ const isSystemDesignActive = computed(() => {
           <router-link to="/mock-interview" class="nav-link" active-class="active">
             <span class="nav-icon">⧗</span> Interview
           </router-link>
-          <div class="nav-dropdown" :class="{ active: isSystemDesignActive }">
-            <router-link to="/system-design/lld" class="nav-link nav-link-dropdown">
-              <span class="nav-icon">⌘</span> System Design
-              <span class="nav-caret">▾</span>
-            </router-link>
-            <div class="nav-dropdown-menu">
-              <router-link to="/system-design/lld" class="nav-dropdown-item">LLD</router-link>
-              <router-link to="/system-design/hld" class="nav-dropdown-item">HLD Architecture Lab</router-link>
-            </div>
-          </div>
-          <router-link to="/system-design/hld" class="nav-link hld-direct-link" :class="{ active: route.path.startsWith('/hld/') }" active-class="active">HLD</router-link>
+          <router-link to="/system-design/lld" class="nav-link" :class="{ active: route.path.startsWith('/lld/') || route.path.startsWith('/system-design/lld') }">LLD</router-link>
+          <router-link to="/system-design/hld" class="nav-link hld-direct-link" :class="{ active: route.path.startsWith('/hld/') || route.path.startsWith('/system-design/hld') }">HLD</router-link>
           <router-link to="/ai" class="nav-link" :class="{ active: route.path === '/ai' || route.path.startsWith('/ai/') }" active-class="active">AI Learnings</router-link>
           <router-link to="/software" class="nav-link" :class="{ active: route.path.startsWith('/software') }">Software Learnings</router-link>
           <router-link to="/quiz" class="nav-link" active-class="active">
@@ -132,13 +125,17 @@ const isSystemDesignActive = computed(() => {
 .header-inner {
   display: flex;
   align-items: center;
-  gap: var(--space-xl);
-  height: 56px;
+  gap: 20px;
+  min-height: 64px;
+  height: auto;
+  max-width: 1600px;
 }
 
 .logo-link {
   display: flex;
   align-items: baseline;
+  flex: 0 0 auto;
+  white-space: nowrap;
   gap: var(--space-sm);
   text-decoration: none;
 }
@@ -168,13 +165,14 @@ const isSystemDesignActive = computed(() => {
 
 .logo-sub {
   font-size: var(--text-xs);
-  opacity: 0.5;
+  display: none;
 }
 
 .header-nav {
   display: flex;
   gap: 2px;
   margin-left: auto;
+  min-width: 0;
   align-items: center;
 }
 
@@ -182,7 +180,10 @@ const isSystemDesignActive = computed(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
+  padding: 8px 10px;
+  min-height: 40px;
+  flex: 0 0 auto;
+  white-space: nowrap;
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
   font-size: var(--text-sm);
@@ -201,69 +202,6 @@ const isSystemDesignActive = computed(() => {
   background: var(--bg-card);
 }
 
-.nav-dropdown {
-  position: relative;
-}
-
-.nav-link-dropdown {
-  padding-right: 10px;
-}
-
-.nav-dropdown.active .nav-link,
-.nav-dropdown:hover .nav-link,
-.nav-dropdown:focus-within .nav-link {
-  color: var(--accent-cyan);
-  background: var(--bg-card);
-}
-
-.nav-caret {
-  font-size: 10px;
-  color: var(--text-muted);
-}
-
-.nav-dropdown:hover .nav-caret,
-.nav-dropdown:focus-within .nav-caret,
-.nav-dropdown.active .nav-caret {
-  color: var(--accent-cyan);
-}
-
-.nav-dropdown-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  min-width: 180px;
-  padding: 6px;
-  border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--bg-card) 92%, transparent);
-  border: 1px solid var(--border-default);
-  box-shadow: var(--shadow-lg);
-  opacity: 0;
-  transform: translateY(-4px);
-  pointer-events: none;
-  transition: opacity var(--transition-fast), transform var(--transition-fast);
-}
-
-.nav-dropdown:hover .nav-dropdown-menu,
-.nav-dropdown:focus-within .nav-dropdown-menu {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.nav-dropdown-item {
-  display: block;
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-}
-
-.nav-dropdown-item:hover {
-  color: var(--accent-cyan);
-  background: var(--bg-card-hover);
-}
-
 .nav-icon {
   font-size: 11px;
 }
@@ -272,6 +210,7 @@ const isSystemDesignActive = computed(() => {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
+  flex: 0 0 auto;
 }
 
 .stat-chip {
@@ -338,13 +277,10 @@ const isSystemDesignActive = computed(() => {
 }
 
 /* ── Responsive ──────────────────────────────── */
-.hld-direct-link { display: none; }
-@media (max-width: 1400px) {
+@media (max-width: 1439px) {
   .header-inner { display: grid; grid-template-columns: minmax(0, 1fr) auto; height: auto; padding-top: 10px; padding-bottom: 6px; gap: 8px; }
   .header-nav { grid-column: 1 / -1; grid-row: 2; margin-left: 0; width: 100%; min-width: 0; overflow-x: auto; padding-bottom: 4px; }
   .nav-link { white-space: nowrap; flex-shrink: 0; }
-  .nav-dropdown-menu { display: none; }
-  .hld-direct-link { display: flex; }
   .header-right { grid-column: 2; grid-row: 1; }
 }
 @media (max-width: 768px) {
@@ -355,6 +291,8 @@ const isSystemDesignActive = computed(() => {
   .logo-sub {
     display: none;
   }
+
+  .nav-link { min-height:44px; }
 
   .nav-link span:not(.nav-icon) {
     display: none;

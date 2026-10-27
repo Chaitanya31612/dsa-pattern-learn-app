@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import HLDMarkdown from '../components/HLDMarkdown.vue'
+import LearningText from '../components/LearningText.vue'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useLLDInterview, registerMergedProblems } from '../composables/useLLDInterview'
@@ -164,7 +166,7 @@ function handleRestart() {
         </router-link>
         <p class="terminal-prompt">lld.session / {{ currentProblem.id }}</p>
         <h1>{{ currentProblem.title }}</h1>
-        <p class="session-description">{{ currentProblem.description }}</p>
+        <LearningText class="session-description" :text="currentProblem.description"/>
       </div>
 
       <div class="header-actions">
@@ -253,7 +255,7 @@ function handleRestart() {
           <div class="section-head">
             <span class="section-label terminal-prompt">problem.brief</span>
           </div>
-          <p class="problem-summary">{{ currentProblem.description }}</p>
+          <LearningText class="problem-summary" :text="currentProblem.description"/>
           <div class="rail-block">
             <strong>Must have</strong>
             <ul>
@@ -372,7 +374,7 @@ function handleRestart() {
               :class="message.role"
             >
               <span class="chat-role mono">{{ message.role === 'assistant' ? 'coach' : 'you' }}</span>
-              <p>{{ message.content }}</p>
+              <HLDMarkdown v-if="message.role==='assistant'" :content="message.content"/><LearningText v-else :text="message.content"/>
             </div>
             <div v-if="isResponding" class="chat-bubble assistant typing-state">
               <span class="chat-role mono">coach</span>

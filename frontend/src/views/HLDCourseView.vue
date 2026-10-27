@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LearningText from '../components/LearningText.vue'
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useHLD } from '../composables/useHLD'
@@ -60,7 +61,7 @@ function remember(question: string, answer: string) {
   <div class="container hld-page">
     <div class="hld-row"><router-link to="/system-design/lld">← LLD track</router-link><span class="hld-eyebrow">SYSTEM DESIGN / HLD</span></div>
     <header class="hld-hero">
-      <div><p class="hld-eyebrow">Your architecture practice space</p><h1>Build designs you can explain.</h1><p>Two volumes. One steady framework. Learn with short examples and pictures. Try a design, get feedback, then explain it again after a delay.</p>
+      <div><p class="hld-eyebrow">Your architecture practice space</p><h1>Build designs you can explain.</h1><LearningText text="Use one framework across both volumes. Learn with small examples and pictures. Try a design, compare feedback, and explain it again later."/>
         <div class="hld-row"><router-link v-if="nextAction" class="btn btn-primary" :to="nextAction.to">{{ nextAction.label }} →</router-link><button class="btn" @click="active = 'review'">Review {{ dueCards.length }} due</button></div><p v-if="resume" class="hld-muted">Next in {{ track === 'volume-1' ? 'Volume 1' : 'Volume 2' }}: {{ resume.title }}</p></div>
       <div class="hld-hero-aside"><span class="hld-eyebrow">The structure to remember</span><p class="hld-framework">Contract → Size → Model → Flow → Stress → Operate → Explain</p><p class="hld-muted">{{ modules.length }} modules · {{ modules.reduce((n,m) => n + m.questions.length,0) }} questions · {{ modules.reduce((n,m) => n + m.hours,0) }} planned hours</p></div>
     </header>
@@ -76,7 +77,7 @@ function remember(question: string, answer: string) {
         <div class="hld-track-evidence"><strong>Your evidence in this volume</strong><p>{{ practiced }}/{{ trackModules.length }} modules: all three practice types tried · {{ independent }}: unaided design reviewed · {{ delayed }}: delayed design recall.</p><p class="hld-muted">Reading alone does not finish a module. Open “Your learning evidence” inside a module to see the checks. Scores and self-rated recall are provisional.</p></div>
         <div class="hld-row"><h2>{{ track === 'volume-1' ? 'Build the foundations' : 'Apply the ideas to deeper systems' }}</h2><label class="hld-search">Find a module<input v-model="filter" class="hld-input" placeholder="caching, payments, maps…" /></label></div>
         <div class="hld-module-grid"><router-link v-for="m in filtered" :key="m.id" :to="`/hld/${m.id}`" class="hld-module-card">
-          <div class="hld-row"><span class="hld-eyebrow">{{ String(m.number).padStart(2,'0') }} / {{ m.hours }}h</span><span class="hld-status">{{ status(m) }}</span></div><h3>{{ m.title }}</h3><p>{{ m.outcome }}</p>
+          <div class="hld-row"><span class="hld-eyebrow">{{ String(m.number).padStart(2,'0') }} / {{ m.hours }}h</span><span class="hld-status">{{ status(m) }}</span></div><h3>{{ m.title }}</h3><LearningText :text="m.outcome"/>
           <div class="hld-progress" role="progressbar" :aria-label="`${m.title} lesson progress`" :aria-valuenow="state.modules[m.id]?.completedSections.length ?? 0" :aria-valuemin="0" :aria-valuemax="m.sections.length"><span :style="{ width: `${100 * (state.modules[m.id]?.completedSections.length ?? 0) / m.sections.length}%` }"></span></div>
           <span class="hld-muted">{{ m.sections.length }} short steps · {{ m.exercises.length }} exercises · {{ m.questions.length }} questions · evidence {{ evidence(m).count }}/7</span>
         </router-link></div><p v-if="!filtered.length">No modules match that search in this volume.</p>

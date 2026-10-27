@@ -5,7 +5,8 @@ import { usePatterns } from '../composables/usePatterns'
 import { useProgress } from '../composables/useProgress'
 import CodeHighlight from '../components/CodeHighlight.vue'
 import AIChatPanel from '../components/AIChatPanel.vue'
-import { marked } from 'marked'
+import HLDMarkdown from '../components/HLDMarkdown.vue'
+import LearningText from '../components/LearningText.vue'
 
 const route = useRoute()
 const patternId = computed(() => route.params.id as string)
@@ -246,7 +247,7 @@ const patternChatChips = computed(() => {
           <summary class="subpattern-summary">
             <div class="subpattern-summary-main">
               <strong class="subpattern-name">{{ subPattern.name }}</strong>
-              <p class="subpattern-description">{{ subPattern.description }}</p>
+              <LearningText class="subpattern-description" :text="subPattern.description"/>
             </div>
             <span class="badge">{{ subPattern.problem_count }} problems</span>
           </summary>
@@ -303,7 +304,7 @@ const patternChatChips = computed(() => {
           <h3 class="section-heading">
             <span class="heading-icon">💡</span> Mental Model
           </h3>
-          <p class="mental-model-text">{{ pattern.mental_model }}</p>
+          <LearningText class="mental-model-text" :text="pattern.mental_model"/>
         </section>
 
         <section class="card card-flat">
@@ -322,7 +323,7 @@ const patternChatChips = computed(() => {
         <h3 class="section-heading">
           <span class="heading-icon">📖</span> Explanation
         </h3>
-        <div class="explanation-text" v-html="pattern.explanation.replace(/\n/g, '<br/>')"></div>
+        <HLDMarkdown class="explanation-text" :content="pattern.explanation"/>
       </section>
 
       <div class="pv-grid" style="margin-top: var(--space-md)">
@@ -331,7 +332,7 @@ const patternChatChips = computed(() => {
             <span class="heading-icon">✅</span> When to Use
           </h3>
           <ul class="use-list">
-            <li v-for="item in pattern.when_to_use" :key="item">{{ item }}</li>
+            <li v-for="item in pattern.when_to_use" :key="item"><LearningText :text="item"/></li>
           </ul>
         </section>
 
@@ -340,7 +341,7 @@ const patternChatChips = computed(() => {
             <span class="heading-icon">⚠️</span> Common Mistakes
           </h3>
           <ul class="mistake-list">
-            <li v-for="item in pattern.common_mistakes" :key="item">{{ item }}</li>
+            <li v-for="item in pattern.common_mistakes" :key="item"><LearningText :text="item"/></li>
           </ul>
         </section>
       </div>
@@ -349,7 +350,7 @@ const patternChatChips = computed(() => {
         <h3 class="section-heading">
           <span class="heading-icon">🚶</span> Walkthrough: {{ pattern.sample_walkthrough.problem }}
         </h3>
-        <div class="walkthrough-text markdown-body" v-html="marked.parse(pattern.sample_walkthrough.approach || '', { async: false, breaks: true, gfm: true })"></div>
+        <HLDMarkdown class="walkthrough-text" :content="pattern.sample_walkthrough.approach || ''"/>
       </section>
 
       <section class="card card-flat" style="margin-top: var(--space-md)" v-if="pattern.related_patterns.length">

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LearningText from '../components/LearningText.vue'
 import { computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useLLDProblems } from '../composables/useLLDProblems'
@@ -26,7 +27,7 @@ function handleStart(mode: 'guided' | 'interview') {
         <router-link to="/system-design/lld" class="crumb mono">← system-design / lld</router-link>
         <p class="terminal-prompt hero-kicker">problem.{{ String(problem.number).padStart(2, '0') }}</p>
         <h1>{{ problem.title }}</h1>
-        <p class="hero-description">{{ problem.description }}</p>
+        <LearningText class="hero-description" :text="problem.description"/>
       </div>
 
       <div class="hero-meta card">
@@ -57,7 +58,7 @@ function handleStart(mode: 'guided' | 'interview') {
       <aside class="framework-side">
         <article class="card sticky-card">
           <div class="section-head">
-            <span class="section-label terminal-prompt">repeatable SOP</span>
+            <span class="section-label terminal-prompt">Your five steps</span>
           </div>
           <div class="phase-stack">
             <div v-for="phase in frameworkPhases" :key="phase.id" class="phase-card">
@@ -65,7 +66,7 @@ function handleStart(mode: 'guided' | 'interview') {
                 <strong>{{ phase.title }}</strong>
                 <span class="mono">{{ phase.timebox }}</span>
               </div>
-              <p>{{ phase.focus }}</p>
+              <LearningText :text="phase.focus"/>
               <small>{{ phase.coachingPrompt }}</small>
             </div>
           </div>
@@ -73,7 +74,7 @@ function handleStart(mode: 'guided' | 'interview') {
 
         <article class="card strategy-card">
           <div class="section-head">
-            <span class="section-label terminal-prompt">mastery loop</span>
+            <span class="section-label terminal-prompt">Practice loop</span>
           </div>
           <ol class="strategy-list">
             <li v-for="item in coachingStrategy" :key="item">{{ item }}</li>
@@ -88,19 +89,19 @@ function handleStart(mode: 'guided' | 'interview') {
           </div>
           <div class="detail-grid three-col">
             <div>
-              <h3>Must Have</h3>
+              <h3>Core features</h3>
               <ul>
                 <li v-for="item in problem.framework.requirements.must_have" :key="item">{{ item }}</li>
               </ul>
             </div>
             <div>
-              <h3>Nice to Have</h3>
+              <h3>Optional extras</h3>
               <ul>
                 <li v-for="item in problem.framework.requirements.nice_to_have" :key="item">{{ item }}</li>
               </ul>
             </div>
             <div>
-              <h3>Out of Scope</h3>
+              <h3>Leave out for this round</h3>
               <ul>
                 <li v-for="item in problem.framework.requirements.out_of_scope" :key="item">{{ item }}</li>
               </ul>
@@ -116,12 +117,12 @@ function handleStart(mode: 'guided' | 'interview') {
 
         <article class="card detail-card">
           <div class="section-head">
-            <span class="section-label terminal-prompt">model + contracts</span>
+            <span class="section-label terminal-prompt">Objects and rules</span>
           </div>
           <div class="entity-grid">
             <div v-for="entity in problem.framework.entities.classes" :key="entity.name" class="entity-card">
               <h3>{{ entity.name }}</h3>
-              <p>{{ entity.responsibility }}</p>
+              <LearningText :text="entity.responsibility"/>
               <div>
                 <strong>Fields</strong>
                 <ul>
@@ -161,7 +162,7 @@ function handleStart(mode: 'guided' | 'interview') {
 
         <article class="card detail-card">
           <div class="section-head">
-            <span class="section-label terminal-prompt">implementation + review</span>
+            <span class="section-label terminal-prompt">Build and check</span>
           </div>
           <div class="detail-grid two-col">
             <div class="prompt-box">
@@ -186,7 +187,7 @@ function handleStart(mode: 'guided' | 'interview') {
             </div>
             <div class="prompt-box success-box">
               <h3>Extensibility follow-up</h3>
-              <p>{{ problem.framework.extensibility_test }}</p>
+              <LearningText :text="problem.framework.extensibility_test"/>
             </div>
           </div>
         </article>

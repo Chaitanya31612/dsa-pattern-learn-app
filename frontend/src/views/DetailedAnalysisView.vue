@@ -5,7 +5,7 @@ import { useMockInterview } from '../composables/useMockInterview'
 import CodeHighlight from '../components/CodeHighlight.vue'
 import AIChatPanel from '../components/AIChatPanel.vue'
 import { usePatterns } from '../composables/usePatterns'
-import { marked } from 'marked'
+import HLDMarkdown from '../components/HLDMarkdown.vue'
 
 const route = useRoute()
 const slug = computed(() => typeof route.params.slug === 'string' ? route.params.slug : '')
@@ -114,7 +114,7 @@ const formattedWalkthrough = computed(() => {
   if (!analysisResult.value?.interview_walkthrough) return ''
   // Replace the literal string "\n" with actual double newlines for paragraph spacing
   const cleanedText = analysisResult.value.interview_walkthrough.replace(/\\n/g, '\n\n')
-  return marked.parse(cleanedText, { async: false, breaks: true, gfm: true })
+  return cleanedText
 })
 
 onMounted(() => {
@@ -263,7 +263,7 @@ onMounted(() => {
                     <div class="timeline-nodes">
                       <div class="timeline-node">
                         <div class="node-bullet"></div>
-                        <div class="node-content markdown-body" v-html="formattedWalkthrough"></div>
+                        <HLDMarkdown class="node-content" :content="formattedWalkthrough"/>
                       </div>
                     </div>
                   </div>

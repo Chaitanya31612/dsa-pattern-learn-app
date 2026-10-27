@@ -17,12 +17,12 @@
         "interview": 45
       },
       "category": "Allocation Systems",
-      "description": "Design an in-memory multi-floor parking lot that supports typed parking spots (SMALL/MEDIUM/LARGE), vehicle hierarchy (Bike/Car/Truck), ticket-based entry/exit, hourly pricing, and a pluggable allocation strategy. The system must be extensible so that new spot types (EV, handicapped) and new pricing policies (flat-rate, surge) can be added without rewriting core orchestration logic.",
+      "description": "Build an in-memory parking lot with several floors. Bikes, cars, and trucks need different spot sizes. Issue a ticket on entry and charge for time on exit. Make it possible to add spot types and pricing rules without rewriting the whole parking flow.",
       "framework": {
         "requirements": {
           "must_have": [
             "Multiple floors, each with a typed list of ParkingSpot (SMALL/MEDIUM/LARGE).",
-            "Vehicle hierarchy: Bike \u2192 SMALL, Car \u2192 MEDIUM, Truck \u2192 LARGE.",
+            "Vehicle hierarchy: Bike → SMALL, Car → MEDIUM, Truck → LARGE.",
             "park(Vehicle) issues a Ticket; unpark(ticketId) vacates the spot and computes price.",
             "Availability display grouped by floor and spot type.",
             "Custom exceptions: ParkingLotFullException, InvalidTicketException."
@@ -42,7 +42,7 @@
           ],
           "clarifying_questions": [
             "Should one vehicle ever occupy more than one spot? (Assume NO for V1.)",
-            "Nearest-first or first-fit allocation \u2014 does it matter to you for V1?",
+            "Nearest-first or first-fit allocation — does it matter to you for V1?",
             "Is pricing hourly only, or should PricingStrategy be injected from day one?",
             "Do gates belong in the base design, or can I call park/unpark directly on ParkingLot?",
             "Should duplicate vehicle (same plate number) prevent re-entry?"
@@ -52,7 +52,7 @@
           "classes": [
             {
               "name": "ParkingLot",
-              "responsibility": "Single orchestrator: own floors, strategies, and the active-ticket registry. Delegates allocation to ParkingStrategy and billing to PricingStrategy. Does NOT calculate pricing or search spots directly.",
+              "responsibility": "Single orchestrator: own floors, strategies, and the active-ticket registry. Delegates allocation to ParkingStrategy and billing to PricingStrategy.\n\nDoes NOT calculate pricing or search spots directly.",
               "fields": [
                 "List<Floor> floors",
                 "ParkingStrategy parkingStrategy",
@@ -69,7 +69,7 @@
             },
             {
               "name": "Floor",
-              "responsibility": "Maintain an ordered list of ParkingSpot objects for one level. Does NOT contain business rules \u2014 it is a structural container.",
+              "responsibility": "Maintain an ordered list of ParkingSpot objects for one level. Does NOT contain business rules — it is a structural container.",
               "fields": [
                 "int floorNumber",
                 "List<ParkingSpot> spots"
@@ -82,7 +82,7 @@
             },
             {
               "name": "ParkingSpot",
-              "responsibility": "Represent one physical slot. Track type, occupancy, and current vehicle. Expose occupy/vacate with minimal coupling to the lot.",
+              "responsibility": "Represent one physical slot. Track type, occupancy, and current vehicle.\n\nExpose occupy/vacate with minimal coupling to the lot.",
               "fields": [
                 "int spotNumber",
                 "SpotType type",
@@ -137,35 +137,35 @@
             },
             {
               "name": "PricingStrategy (interface)",
-              "responsibility": "Encapsulate billing logic. HourlyPricingStrategy computes price from ticket entry time to now. Swap in FlatRatePricingStrategy or SurgePricingStrategy without touching ParkingLot.",
+              "responsibility": "Encapsulate billing logic. HourlyPricingStrategy computes price from ticket entry time to now.\n\nSwap in FlatRatePricingStrategy or SurgePricingStrategy without touching ParkingLot.",
               "fields": [],
               "methods": [
                 "calculatePrice(Ticket ticket) : double"
               ],
-              "design_notes": "HourlyPricing: use Duration.between(entryTime, now()).toHours() \u00d7 rate. For interview, you can hardcode rate=10.0 and note it is configurable."
+              "design_notes": "HourlyPricing: use Duration.between(entryTime, now()).toHours() × rate. For interview, you can hardcode rate=10.0 and note it is configurable."
             }
           ],
           "relationships": [
-            "ParkingLot 1..* Floor  (composition \u2014 floors die with lot)",
+            "ParkingLot 1..* Floor  (composition — floors die with lot)",
             "Floor 1..* ParkingSpot  (composition)",
             "ParkingLot depends on ParkingStrategy  (injected, not owned)",
             "ParkingLot depends on PricingStrategy  (injected, not owned)",
             "ParkingLot 1..* Ticket  (owns active-ticket registry)",
             "Ticket 1..1 Vehicle  (association)",
-            "Ticket 1..1 ParkingSpot  (association \u2014 spot snapshot at entry)"
+            "Ticket 1..1 ParkingSpot  (association — spot snapshot at entry)"
           ]
         },
         "design_patterns": [
           {
             "name": "Strategy",
             "applied_to": "ParkingStrategy and PricingStrategy",
-            "why": "Both allocation and pricing are volatile policies. Without Strategy, adding a new algorithm forces edits to ParkingLot (OCP violation). With Strategy, you new NearestFirstParkingStrategy() and inject \u2014 zero changes to the orchestrator.",
+            "why": "Both allocation and pricing are volatile policies. Without Strategy, adding a new algorithm forces edits to ParkingLot (OCP violation).\n\nWith Strategy, you new NearestFirstParkingStrategy() and inject — zero changes to the orchestrator.",
             "signal_phrase": "I am separating allocation and pricing into strategies so the lot doesn't need to change when we add flat-rate weekends or EV-only spots."
           },
           {
             "name": "Singleton",
             "applied_to": "ParkingLot instance (optional but common interview shorthand)",
-            "why": "A real parking lot is one physical entity; making the Java class a Singleton mirrors that reality and avoids accidental multi-instance ticket conflicts. Always mention: in production I would use DI instead of static getInstance().",
+            "why": "A real parking lot is one physical entity; making the Java class a Singleton mirrors that reality and avoids accidental multi-instance ticket conflicts.\n\nAlways mention: in production I would use DI instead of static getInstance().",
             "signal_phrase": "I am using Singleton as an interview shorthand because there is physically one lot. In production I would inject ParkingLot through the DI framework."
           },
           {
@@ -178,54 +178,54 @@
             "name": "Template Method (implicit)",
             "applied_to": "Abstract Vehicle base class",
             "why": "Vehicle defines the shared contract (getType, getLicensePlate) and subclasses supply the fixed VehicleType. This is Template Method in miniature.",
-            "signal_phrase": "Vehicle forces a consistent API \u2014 any new vehicle type just supplies its type constant and nothing else."
+            "signal_phrase": "Vehicle forces a consistent API — any new vehicle type just supplies its type constant and nothing else."
           }
         ],
-        "uml_ascii": "\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510      \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510      \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502     ParkingLot      \u25021\u2500\u2500\u2500*\u2502      Floor      \u25021\u2500\u2500\u2500*\u2502   ParkingSpot    \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524      \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524      \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 -floors             \u2502      \u2502 -floorNumber    \u2502      \u2502 -spotNumber      \u2502\n\u2502 -parkingStrategy    \u2502      \u2502 -spots          \u2502      \u2502 -type: SpotType  \u2502\n\u2502 -pricingStrategy    \u2502      \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524      \u2502 -isFree          \u2502\n\u2502 -activeTickets      \u2502      \u2502 +getSpots()     \u2502      \u2502 -parkedVehicle   \u2502\n\u2502 -ticketCounter      \u2502      \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518      \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524                               \u2502 +park(v)         \u2502\n\u2502 +park(v): Ticket    \u2502                               \u2502 +vacate()        \u2502\n\u2502 +unpark(id): double \u2502                               \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n\u2502 +displayAvail()     \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n         \u2502 depends on (injected)\n         \u25bc\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510      \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502  <<interface>>      \u2502      \u2502   <<interface>>       \u2502\n\u2502  ParkingStrategy    \u2502      \u2502   PricingStrategy     \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524      \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502+findSpot(...):Spot  \u2502      \u2502+calculatePrice(t):dbl \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25b2\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518      \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25b2\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n         \u2502                              \u2502\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510      \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502NearestFirstParking  \u2502      \u2502  HourlyPricingStrategy \u2502\n\u2502Strategy             \u2502      \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518      \u2502 RATE = 10.0           \u2502\n                              \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510      \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502  Vehicle (abs)   \u2502      \u2502       Ticket          \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524      \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 -licensePlate    \u2502      \u2502 -ticketId             \u2502\n\u2502 -type: VehicleT  \u2502      \u2502 -vehicle              \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25b2\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518      \u2502 -spot                 \u2502\n    \u250c\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2510         \u2502 -entryTime            \u2502\n  Bike    Car  Truck       \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518",
+        "uml_ascii": "┌─────────────────────┐      ┌─────────────────┐      ┌──────────────────┐\n│     ParkingLot      │1───*│      Floor      │1───*│   ParkingSpot    │\n├─────────────────────┤      ├─────────────────┤      ├──────────────────┤\n│ -floors             │      │ -floorNumber    │      │ -spotNumber      │\n│ -parkingStrategy    │      │ -spots          │      │ -type: SpotType  │\n│ -pricingStrategy    │      ├─────────────────┤      │ -isFree          │\n│ -activeTickets      │      │ +getSpots()     │      │ -parkedVehicle   │\n│ -ticketCounter      │      └─────────────────┘      ├──────────────────┤\n├─────────────────────┤                               │ +park(v)         │\n│ +park(v): Ticket    │                               │ +vacate()        │\n│ +unpark(id): double │                               └──────────────────┘\n│ +displayAvail()     │\n└────────┬────────────┘\n         │ depends on (injected)\n         ▼\n┌─────────────────────┐      ┌──────────────────────┐\n│  <<interface>>      │      │   <<interface>>       │\n│  ParkingStrategy    │      │   PricingStrategy     │\n├─────────────────────┤      ├──────────────────────┤\n│+findSpot(...):Spot  │      │+calculatePrice(t):dbl │\n└────────▲────────────┘      └──────────▲────────────┘\n         │                              │\n┌────────┴────────────┐      ┌──────────┴────────────┐\n│NearestFirstParking  │      │  HourlyPricingStrategy │\n│Strategy             │      ├──────────────────────┤\n└─────────────────────┘      │ RATE = 10.0           │\n                              └──────────────────────┘\n\n┌──────────────────┐      ┌──────────────────────┐\n│  Vehicle (abs)   │      │       Ticket          │\n├──────────────────┤      ├──────────────────────┤\n│ -licensePlate    │      │ -ticketId             │\n│ -type: VehicleT  │      │ -vehicle              │\n└────────▲─────────┘      │ -spot                 │\n    ┌────┴──┬────┐         │ -entryTime            │\n  Bike    Car  Truck       └──────────────────────┘",
         "implementation_order": [
-          "1. Enums \u2014 VehicleType {BIKE, CAR, TRUCK}, SpotType {SMALL, MEDIUM, LARGE}",
-          "2. Exceptions \u2014 ParkingLotFullException, InvalidTicketException",
+          "1. Enums — VehicleType {BIKE, CAR, TRUCK}, SpotType {SMALL, MEDIUM, LARGE}",
+          "2. Exceptions — ParkingLotFullException, InvalidTicketException",
           "3. Vehicle abstract class + Bike / Car / Truck subclasses",
-          "4. ParkingSpot \u2014 isFree, park, vacate",
-          "5. Floor \u2014 container for spots",
-          "6. Ticket \u2014 immutable receipt with entryTime",
+          "4. ParkingSpot — isFree, park, vacate",
+          "5. Floor — container for spots",
+          "6. Ticket — immutable receipt with entryTime",
           "7. ParkingStrategy interface + NearestFirstParkingStrategy",
           "8. PricingStrategy interface + HourlyPricingStrategy",
-          "9. ParkingLot \u2014 park(), unpark(), displayAvailability() + optional Singleton",
-          "10. Demo driver: init floors \u2192 init lot \u2192 park bike/car/truck \u2192 display \u2192 unpark \u2192 reprice"
+          "9. ParkingLot — park(), unpark(), displayAvailability() + optional Singleton",
+          "10. Demo driver: init floors → init lot → park bike/car/truck → display → unpark → reprice"
         ],
         "key_phrases": [
           "I will keep persistence and payment integration out of scope and focus on an extensible in-memory core.",
-          "ParkingLot should orchestrate \u2014 it should not absorb allocation logic, pricing rules, or notification concerns.",
-          "If the interviewer adds EV charging spots later, that change is localised to a new SpotType enum value and a new allocation strategy \u2014 ParkingLot itself stays untouched.",
+          "ParkingLot should orchestrate — it should not absorb allocation logic, pricing rules, or notification concerns.",
+          "If the interviewer adds EV charging spots later, that change is localised to a new SpotType enum value and a new allocation strategy — ParkingLot itself stays untouched.",
           "The ReentrantLock around spot assignment prevents two concurrent gate threads from giving the same spot to two vehicles.",
           "I am using Singleton as an interview shorthand; in production I would inject ParkingLot via a DI container."
         ],
         "gotchas": [
           "SOLID violation: Putting vehicle-to-spot mapping inside ParkingSpot or ParkingLot directly (SRP + OCP break). Put it in the strategy.",
-          "SOLID violation: God-class ParkingLot that calculates price, finds spots, manages exceptions AND sends notifications \u2014 extract each concern.",
-          "Bug: Forgetting to vacate() the ParkingSpot when unparking \u2014 spot stays occupied forever.",
-          "Bug: Not removing the ticket from activeTickets on unpark \u2014 ticket remains valid for a second free exit.",
-          "Edge case: Duplicate vehicle (same plate) already inside \u2014 check activeTickets by licensePlate before issuing new ticket.",
-          "Edge case: Invalid ticket ID on unpark \u2014 always throw InvalidTicketException, never silently ignore.",
-          "Design flaw: Hard-coding SpotType\u2192VehicleType mapping as string comparisons instead of enum relationship.",
-          "Performance note: NearestFirst is O(floors \u00d7 spots). Mention that a PriorityQueue of available spots per SpotType brings it to O(log n) \u2014 but O(n) is fine for the interview."
+          "SOLID violation: God-class ParkingLot that calculates price, finds spots, manages exceptions AND sends notifications — extract each concern.",
+          "Bug: Forgetting to vacate() the ParkingSpot when unparking — spot stays occupied forever.",
+          "Bug: Not removing the ticket from activeTickets on unpark — ticket remains valid for a second free exit.",
+          "Edge case: Duplicate vehicle (same plate) already inside — check activeTickets by licensePlate before issuing new ticket.",
+          "Edge case: Invalid ticket ID on unpark — always throw InvalidTicketException, never silently ignore.",
+          "Design flaw: Hard-coding SpotType→VehicleType mapping as string comparisons instead of enum relationship.",
+          "Performance note: NearestFirst is O(floors × spots). Mention that a PriorityQueue of available spots per SpotType brings it to O(log n) — but O(n) is fine for the interview."
         ],
-        "extensibility_test": "Interviewer says: 'Add EV charging spots and priority handicapped parking.' Walk through: (1) Add EV and ACCESSIBLE to SpotType enum, (2) Add HANDICAPPED_VEHICLE to VehicleType, (3) Create AccessibleParkingStrategy that checks permit flag on Vehicle before assigning spot, (4) ParkingLot gets new strategy injected \u2014 zero change to its core logic. This demonstrates OCP, Strategy, and DIP all in one answer."
+        "extensibility_test": "Interviewer says: 'Add EV charging spots and priority handicapped parking.' Walk through: (1) Add EV and ACCESSIBLE to SpotType enum, (2) Add HANDICAPPED_VEHICLE to VehicleType, (3) Create AccessibleParkingStrategy that checks permit flag on Vehicle before assigning spot, (4) ParkingLot gets new strategy injected — zero change to its core logic.\n\nThis demonstrates OCP, Strategy, and DIP all in one answer."
       },
       "guided": {
         "phase_hints": {
           "clarify": [
-            "State that persistent storage and payment gateway are out of scope upfront \u2014 this saves 5 minutes of dead-end discussion.",
-            "Ask: 'Is first-fit allocation acceptable for V1 or do you want nearest-spot optimisation?' \u2014 this positions you as thinking about trade-offs.",
+            "State that persistent storage and payment gateway are out of scope upfront — this saves 5 minutes of dead-end discussion.",
+            "Ask: 'Is first-fit allocation acceptable for V1 or do you want nearest-spot optimisation?' — this positions you as thinking about trade-offs.",
             "Call out duplicate vehicle and invalid ticket as the two primary error paths you will handle.",
             "Decide on concurrency stance: 'I will mention thread-safety with a ReentrantLock and note it as a concern without over-engineering it.'"
           ],
           "model": [
             "Start with the noun-from-requirements technique: ParkingLot, Floor, ParkingSpot, Vehicle, Ticket are all nouns in the problem statement.",
-            "Model VehicleType and SpotType as enums immediately \u2014 never as raw strings.",
+            "Model VehicleType and SpotType as enums immediately — never as raw strings.",
             "ParkingLot OWNS its floors (composition). Strategy and PricingStrategy are INJECTED (dependency inversion).",
-            "Ticket is the join entity between a Vehicle and a ParkingSpot at a point in time \u2014 include entryTime for billing."
+            "Ticket is the join entity between a Vehicle and a ParkingSpot at a point in time — include entryTime for billing."
           ],
           "design": [
             "Introduce ParkingStrategy and PricingStrategy interfaces BEFORE writing any implementations. Explain WHY (OCP, DIP, replaceability).",
@@ -234,16 +234,16 @@
             "Optional: mention Singleton with the caveat about DI in production."
           ],
           "implement": [
-            "Code in this exact order: enums \u2192 exceptions \u2192 models (Vehicle hierarchy, ParkingSpot, Floor, Ticket) \u2192 interfaces (ParkingStrategy, PricingStrategy) \u2192 implementations \u2192 ParkingLot \u2192 Demo.",
-            "NearestFirstParkingStrategy: nested loop over floors then spots. mapVehicleToSpotType() is a private helper inside the strategy \u2014 keeps the mapping in one place.",
-            "HourlyPricingStrategy: Duration.between(ticket.getEntryTime(), LocalDateTime.now()).toHours() \u00d7 HOURLY_RATE.",
-            "In park(): lock \u2192 findSpot \u2192 spot.park(vehicle) \u2192 create Ticket \u2192 activeTickets.put \u2192 return Ticket.",
-            "In unpark(): get ticket \u2192 spot.vacate() \u2192 compute price \u2192 activeTickets.remove \u2192 return price."
+            "Code in this exact order: enums → exceptions → models (Vehicle hierarchy, ParkingSpot, Floor, Ticket) → interfaces (ParkingStrategy, PricingStrategy) → implementations → ParkingLot → Demo.",
+            "NearestFirstParkingStrategy: nested loop over floors then spots. mapVehicleToSpotType() is a private helper inside the strategy — keeps the mapping in one place.",
+            "HourlyPricingStrategy: Duration.between(ticket.getEntryTime(), LocalDateTime.now()).toHours() × HOURLY_RATE.",
+            "In park(): lock → findSpot → spot.park(vehicle) → create Ticket → activeTickets.put → return Ticket.",
+            "In unpark(): get ticket → spot.vacate() → compute price → activeTickets.remove → return price."
           ],
           "review": [
-            "Edge case: Duplicate vehicle on entry \u2014 check if plate exists in activeTickets values before assigning new spot.",
+            "Edge case: Duplicate vehicle on entry — check if plate exists in activeTickets values before assigning new spot.",
             "Concurrency: 'At multi-gate scenarios, two threads could assign the same spot. My ReentrantLock ensures only one thread does spot assignment at a time.'",
-            "Extensibility answer: 'EV spots \u2192 add SpotType.EV, add EVParkingStrategy, inject it. Zero change to ParkingLot or Floor.'",
+            "Extensibility answer: 'EV spots → add SpotType.EV, add EVParkingStrategy, inject it. Zero change to ParkingLot or Floor.'",
             "Performance: 'NearestFirst is O(n) where n = total spots. For scale, I would maintain a PriorityQueue<ParkingSpot> per SpotType per floor, making allocation O(log n).'"
           ]
         },
@@ -252,9 +252,9 @@
           "Must-haves and out-of-scope are explicit before drawing any class.",
           "Vehicle-to-SpotType mapping is type-safe (no string comparisons).",
           "ParkingStrategy and PricingStrategy interfaces exist BEFORE their implementations.",
-          "ParkingLot only calls strategy.findSpot() and pricing.calculatePrice() \u2014 it does not contain those algorithms.",
+          "ParkingLot only calls strategy.findSpot() and pricing.calculatePrice() — it does not contain those algorithms.",
           "park() and unpark() both handle their primary error paths (full lot, invalid ticket).",
-          "Demo driver shows park \u2192 display \u2192 unpark \u2192 reprice as a runnable sequence."
+          "Demo driver shows park → display → unpark → reprice as a runnable sequence."
         ]
       },
       "interview": {
@@ -263,7 +263,7 @@
           "Requirement scoping: Does the candidate explicitly bucket must-haves and out-of-scope before touching any design?",
           "Entity modeling clarity: Are Vehicle, ParkingSpot, Floor, and Ticket named with the right ownership boundaries?",
           "Strategy abstractions: Are ParkingStrategy and PricingStrategy introduced as interfaces before any implementation?",
-          "FIT rules: Is VehicleType\u2192SpotType mapping type-safe and located in the strategy, not scattered?",
+          "FIT rules: Is VehicleType→SpotType mapping type-safe and located in the strategy, not scattered?",
           "Error paths: Are ParkingLotFullException and InvalidTicketException explicit custom exceptions?",
           "Extensibility proof: Can the candidate add EV spots without touching ParkingLot?"
         ],
@@ -272,39 +272,39 @@
           "What happens if two gate attendants try to park vehicles at the exact same moment?",
           "How would you change this design if the pricing needed to vary by time of day?",
           "Walk me through the exact sequence of method calls from a car arriving at the gate to the ticket being issued.",
-          "If I told you we now need 50% priority spots for electric vehicles \u2014 what is the minimum code change?"
+          "If I told you we now need 50% priority spots for electric vehicles — what is the minimum code change?"
         ]
       },
       "deep_dive": {
         "concept_map": {
-          "title": "Parking Lot \u2014 Full Concept Map",
+          "title": "Parking Lot — Full Concept Map",
           "sections": [
             {
               "heading": "Why Strategy Pattern is Non-Negotiable Here",
-              "content": "Without Strategy, every new pricing policy (flat-rate, surge, member discount) requires editing ParkingLot.unpark() \u2014 an OCP violation. Without Strategy for allocation, adding EV-only spots requires adding an if-else inside park() \u2014 again an OCP violation. Strategy = the interviewer's first check for extensibility reasoning."
+              "content": "Without Strategy, every new pricing policy (flat-rate, surge, member discount) requires editing ParkingLot.unpark() — an OCP violation.\n\nWithout Strategy for allocation, adding EV-only spots requires adding an if-else inside park() — again an OCP violation. Strategy = the interviewer's first check for extensibility reasoning."
             },
             {
               "heading": "The Lock Dilemma",
-              "content": "Two threads (two gates) executing findSpot() concurrently will both see the same free spot. Thread A calls spot.park(vehicle1) first, then Thread B also calls spot.park(vehicle2) \u2014 one car has no spot. Fix: ReentrantLock.lock() before findSpot, unlock in finally. Mention ConcurrentHashMap for activeTickets (safe reads at all times). Say: 'I am aware this is a simplification; at scale I would use a distributed lock or a seat-reservation pattern with optimistic locking.'"
+              "content": "Two threads (two gates) executing findSpot() concurrently will both see the same free spot. Thread A calls spot.park(vehicle1) first, then Thread B also calls spot.park(vehicle2) — one car has no spot.\n\nFix: ReentrantLock.lock() before findSpot, unlock in finally. Mention ConcurrentHashMap for activeTickets (safe reads at all times).\n\nSay: 'I am aware this is a simplification; at scale I would use a distributed lock or a seat-reservation pattern with optimistic locking.'"
             },
             {
               "heading": "The Fit Rule Placement Problem",
-              "content": "Where does Vehicle\u2192SpotType mapping live? BAD: Inside ParkingSpot (spot knows too much about vehicles). BAD: Inside ParkingLot (God class). CORRECT: Inside NearestFirstParkingStrategy, in a private mapVehicleToSpotType() helper. This is the Strategy owning its own logic. When you add EVParkingStrategy, it can have a completely different (or override-based) mapping."
+              "content": "Where does Vehicle→SpotType mapping live? BAD: Inside ParkingSpot (spot knows too much about vehicles).\n\nBAD: Inside ParkingLot (God class). CORRECT: Inside NearestFirstParkingStrategy, in a private mapVehicleToSpotType() helper.\n\nThis is the Strategy owning its own logic. When you add EVParkingStrategy, it can have a completely different (or override-based) mapping."
             },
             {
               "heading": "Ticket as the Join Entity",
-              "content": "Ticket is classically a join table in relational design \u2014 the bridge between Vehicle (the owner) and ParkingSpot (the resource) at a specific instant. It carries entryTime which is the key piece of data needed by PricingStrategy. Without Ticket, unpark() has no way to know when the vehicle entered."
+              "content": "Ticket is classically a join table in relational design — the bridge between Vehicle (the owner) and ParkingSpot (the resource) at a specific instant.\n\nIt carries entryTime which is the key piece of data needed by PricingStrategy. Without Ticket, unpark() has no way to know when the vehicle entered."
             },
             {
-              "heading": "Singleton \u2014 Use Deliberately, Justify It",
-              "content": "Singleton is fine for this problem IF you justify it: 'A real parking lot is one physical entity; I am reflecting that in code.' The red flag is using Singleton everywhere without justification. Always add the caveat: 'In production I would inject this through a DI container instead of getInstance().'"
+              "heading": "Singleton — Use Deliberately, Justify It",
+              "content": "Singleton is fine for this problem IF you justify it: 'A real parking lot is one physical entity; I am reflecting that in code.' The red flag is using Singleton everywhere without justification.\n\nAlways add the caveat: 'In production I would inject this through a DI container instead of getInstance().'"
             }
           ]
         },
         "common_interview_dialogues": [
           {
             "interviewer": "Can you walk me through how a Car parks?",
-            "ideal_response": "Sure. The caller creates new Car('KA-01') and calls parkingLot.park(car). Inside park(), we lock first to prevent concurrent spot conflicts. Then strategy.findSpot(CAR, floors) is called \u2014 NearestFirstStrategy maps CAR to MEDIUM spot type and iterates floors floor by floor, spot by spot, returning the first free MEDIUM spot. spot.park(car) marks it occupied. We generate a ticket ID, create Ticket(id, car, spot), store it in activeTickets, unlock, and return the Ticket. The caller keeps the Ticket for exit."
+            "ideal_response": "Sure. The caller creates new Car('KA-01') and calls parkingLot.park(car). Inside park(), we lock first to prevent concurrent spot conflicts. Then strategy.findSpot(CAR, floors) is called — NearestFirstStrategy maps CAR to MEDIUM spot type and iterates floors floor by floor, spot by spot, returning the first free MEDIUM spot. spot.park(car) marks it occupied. We generate a ticket ID, create Ticket(id, car, spot), store it in activeTickets, unlock, and return the Ticket. The caller keeps the Ticket for exit."
           },
           {
             "interviewer": "What if two cars try to park at the same time?",
@@ -312,16 +312,16 @@
           },
           {
             "interviewer": "How do you add EV charging spots?",
-            "ideal_response": "Three localized changes: (1) Add EV to SpotType enum, (2) Add new EVParkingStrategy that maps EVVehicle\u2192SpotType.EV with an additional is-charger-available check, (3) Inject the new strategy into ParkingLot. ParkingLot code, Floor code, ParkingSpot code \u2014 none of them change. This is OCP in practice."
+            "ideal_response": "Three localized changes: (1) Add EV to SpotType enum, (2) Add new EVParkingStrategy that maps EVVehicle→SpotType.EV with an additional is-charger-available check, (3) Inject the new strategy into ParkingLot. ParkingLot code, Floor code, ParkingSpot code — none of them change. This is OCP in practice."
           }
         ],
         "complexity_analysis": {
-          "park_time": "O(F \u00d7 S) where F = floors, S = spots per floor \u2014 NearestFirst linear scan. O(log n) with PriorityQueue<ParkingSpot> per type.",
-          "unpark_time": "O(1) \u2014 HashMap lookup by ticketId.",
-          "space": "O(F \u00d7 S) for spot storage + O(T) for active tickets where T = parked vehicles."
+          "park_time": "O(F × S) where F = floors, S = spots per floor — NearestFirst linear scan. O(log n) with PriorityQueue<ParkingSpot> per type.",
+          "unpark_time": "O(1) — HashMap lookup by ticketId.",
+          "space": "O(F × S) for spot storage + O(T) for active tickets where T = parked vehicles."
         },
-        "java_full_reference": "The complete annotated Java implementation is in swe-mastery-journal/LLD/code/01-parking-lot/java_demo/ParkingLotDemo.java \u2014 use it as the gold-standard reference for interview implementation order and comment quality.",
-        "ruby_reference": "The Ruby implementation is in swe-mastery-journal/LLD/code/01-parking-lot/ruby/parking_lot.rb \u2014 shows how Strategy and Singleton translate to Ruby duck-typing and the Singleton module."
+        "java_full_reference": "The complete annotated Java implementation is in swe-mastery-journal/LLD/code/01-parking-lot/java_demo/ParkingLotDemo.java — use it as the gold-standard reference for interview implementation order and comment quality.",
+        "ruby_reference": "The Ruby implementation is in swe-mastery-journal/LLD/code/01-parking-lot/ruby/parking_lot.rb — shows how Strategy and Singleton translate to Ruby duck-typing and the Singleton module."
       }
     },
     {
@@ -339,21 +339,21 @@
         "interview": 45
       },
       "category": "Turn-Based Games",
-      "description": "Design the board game engine for Snake and Ladder with players, dice, snakes/ladders as jump mappings, win detection, and clean turn loop.",
+      "description": "Build a turn-based board game. Players roll a die and move across the board. Snakes move them back; ladders move them forward. Define the order of turns and the rule for winning.",
       "framework": {
         "requirements": {
           "must_have": [
             "Board of size N x N (typically 10x10 = 100 cells)",
             "Multiple players take turns",
             "Dice roll determines movement (1-6)",
-            "Snakes move player DOWN (head \u2192 tail)",
-            "Ladders move player UP (bottom \u2192 top)",
+            "Snakes move player DOWN (head → tail)",
+            "Ladders move player UP (bottom → top)",
             "Player must land exactly on 100 to win (or overshoot handling)",
             "Game ends when a player reaches the last cell"
           ],
           "nice_to_have": [
             "Multiple dice",
-            "Crooked dice (always returns even number \u2014 for testing)",
+            "Crooked dice (always returns even number — for testing)",
             "Multiple snakes/ladders with no overlap",
             "Undo last move"
           ],
@@ -437,7 +437,7 @@
             "signal_phrase": "I'll make Dice an interface to implement the Strategy pattern. This allows us to inject a deterministic CrookedDice later for testing without mocking."
           }
         ],
-        "uml_ascii": "\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510     \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502    Game     \u25021\u2500\u2500\u25001\u2502   Board   \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524     \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 -board      \u2502     \u2502 -size     \u2502\n\u2502 -players    \u2502     \u2502 -jumpMap  \u2502\n\u2502 -dice       \u2502     \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524     \u2502+getNewPos()\u2502\n\u2502 +play()     \u2502     \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n       \u2502 depends on (inject)\n       \u25bc\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510     \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502 <<interface>>\u2502    \u2502  Player   \u2502\n\u2502    Dice     \u2502     \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524     \u2502 -name     \u2502\n\u2502 +roll()     \u2502     \u2502 -position \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u25b2\u2500\u2500\u2500\u2500\u2500\u2500\u2518     \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n       \u2502\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502 NormalDice  \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518",
+        "uml_ascii": "┌─────────────┐     ┌───────────┐\n│    Game     │1───1│   Board   │\n├─────────────┤     ├───────────┤\n│ -board      │     │ -size     │\n│ -players    │     │ -jumpMap  │\n│ -dice       │     ├───────────┤\n├─────────────┤     │+getNewPos()│\n│ +play()     │     └───────────┘\n└──────┬──────┘\n       │ depends on (inject)\n       ▼\n┌─────────────┐     ┌───────────┐\n│ <<interface>>│    │  Player   │\n│    Dice     │     ├───────────┤\n├─────────────┤     │ -name     │\n│ +roll()     │     │ -position │\n└──────▲──────┘     └───────────┘\n       │\n┌──────┴──────┐\n│ NormalDice  │\n└─────────────┘",
         "implementation_order": [
           "1. Player class (simple POJO)",
           "2. Dice interface + NormalDice (Random 1-6)",
@@ -452,10 +452,10 @@
         ],
         "gotchas": [
           "SOLID violation: Adding `rollDice()` inside `Player`. Player shouldn't hold the random generator logic.",
-          "Bug: Unbounded jumps \u2014 what if a ladder leads to a snake? Make sure jumps are computed correctly without infinite loops.",
+          "Bug: Unbounded jumps — what if a ladder leads to a snake? Make sure jumps are computed correctly without infinite loops.",
           "Edge case: Dice rolls 5 when player is at 98 (needs 2 to win). Ensure logic clearly skips or handles overshoot safely."
         ],
-        "extensibility_test": "Interviewer says: 'We want multiple dice'. Candidate: 'Since Dice is an interface, I can create a MultipleDiceStrategy that rolls N times and sums the result. Game doesn't change.'"
+        "extensibility_test": "Interviewer says: 'We want multiple dice'. Candidate: 'Since Dice is an interface, I can create a MultipleDiceStrategy that rolls N times and sums the result.\n\nGame doesn't change.'"
       },
       "guided": {
         "phase_hints": {
@@ -507,15 +507,15 @@
           "sections": [
             {
               "heading": "Why Jump Maps?",
-              "content": "Beginners often create `Snake` and `Ladder` classes. While purely OOP, traversing a List<Snake> to check if a cell has a snake is O(S). A simple `Map<Integer, Integer>` where key is start cell (head of snake or bottom of ladder) and value is end cell, handles both instantly in O(1) and simplifies `Board`."
+              "content": "Beginners often create `Snake` and `Ladder` classes. While purely OOP, traversing a List<Snake> to check if a cell has a snake is O(S).\n\nA simple `Map<Integer, Integer>` where key is start cell (head of snake or bottom of ladder) and value is end cell, handles both instantly in O(1) and simplifies `Board`."
             },
             {
               "heading": "Queue for Turns",
-              "content": "Managing turns with `currentPlayerIndex = (currentPlayerIndex + 1) % players.size()` works but is brittle if players are removed. Using a `Queue` where you `poll()` the current player and `offer()` them back at the end of their turn is much cleaner."
+              "content": "Managing turns with `currentPlayerIndex = (currentPlayerIndex + 1) % players.size()` works but is brittle if players are removed.\n\nUsing a `Queue` where you `poll()` the current player and `offer()` them back at the end of their turn is much cleaner."
             },
             {
               "heading": "Testability with Dice Strategy",
-              "content": "Testing games of chance is notoriously hard. If `Dice` is hardcoded to `Math.random()`, you can't assert a win sequence reliably. Extracting `Dice` interface allows injecting a `CrookedDice` or `MockDice` that returns exact sequences [4, 6, 2] in tests."
+              "content": "Testing games of chance is notoriously hard. If `Dice` is hardcoded to `Math.random()`, you can't assert a win sequence reliably.\n\nExtracting `Dice` interface allows injecting a `CrookedDice` or `MockDice` that returns exact sequences [4, 6, 2] in tests."
             }
           ]
         },
@@ -546,16 +546,16 @@
         "interview": 45
       },
       "category": "Turn-Based Games",
-      "description": "Design a reusable Tic Tac Toe engine with configurable board size, player strategies, move validation, and efficient win detection anchored on last move.",
+      "description": "Build a game for two players. Accept a move only in an empty cell and on the correct turn. Check for a winner or draw after each move. Keep the rules clear enough to support a different board size if required.",
       "framework": {
         "requirements": {
           "must_have": [
             "N x N board (default 3x3)",
             "Two players with distinct symbols (X and O)",
             "Players take turns placing symbols",
-            "Win detection \u2014 row, column, or diagonal filled by same symbol",
-            "Draw detection \u2014 board full with no winner",
-            "Input validation \u2014 cell must be empty and within bounds"
+            "Win detection — row, column, or diagonal filled by same symbol",
+            "Draw detection — board full with no winner",
+            "Input validation — cell must be empty and within bounds"
           ],
           "nice_to_have": [
             "N x N board with configurable win condition",
@@ -640,7 +640,7 @@
             "signal_phrase": "I will extract move generation into a PlayerStrategy interface so the Game doesn't need 'if bot then... else...' logic."
           }
         ],
-        "uml_ascii": "\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510     \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502    Game     \u25021\u2500\u2500\u25001\u2502   Board   \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524     \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 -board      \u2502     \u2502 -grid[][] \u2502\n\u2502 -players    \u2502     \u2502 -size     \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524     \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 +play()     \u2502     \u2502+place()   \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2518     \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n       \u2502\n       \u25bc\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510     \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502   Player    \u25021\u2500\u2500\u25001\u2502 <<interface>>  \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524     \u2502 PlayerStrategy \u2502\n\u2502 -name       \u2502     \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 -symbol     \u2502     \u2502 +getMove()     \u2502\n\u2502 -strategy   \u2502     \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25b2\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518             \u2502\n                    \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n                    \u2502 HumanStrategy\u2502\n                    \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518",
+        "uml_ascii": "┌─────────────┐     ┌───────────┐\n│    Game     │1───1│   Board   │\n├─────────────┤     ├───────────┤\n│ -board      │     │ -grid[][] │\n│ -players    │     │ -size     │\n├─────────────┤     ├───────────┤\n│ +play()     │     │+place()   │\n└──────┬──────┘     └───────────┘\n       │\n       ▼\n┌─────────────┐     ┌────────────────┐\n│   Player    │1───1│ <<interface>>  │\n├─────────────┤     │ PlayerStrategy │\n│ -name       │     ├────────────────┤\n│ -symbol     │     │ +getMove()     │\n│ -strategy   │     └───────▲────────┘\n└─────────────┘             │\n                    ┌───────┴──────┐\n                    │ HumanStrategy│\n                    └──────────────┘",
         "implementation_order": [
           "1. Enums: Symbol (X, O, EMPTY)",
           "2. Board: setup grid, print method, boundary checks",
@@ -657,7 +657,7 @@
           "Bug: Not checking if a cell is already occupied before placing.",
           "SOLID Violation: Putting `Scanner` or `System.in` directly inside `Player` or `Game`."
         ],
-        "extensibility_test": "Interviewer says: 'Add a computer player.' Candidate: 'I implement a BotStrategy (perhaps picking random empty cells or Minimax). I initialize a Player with BotStrategy. Game loop just calls `player.makeMove(board)` \u2014 it works automatically.'"
+        "extensibility_test": "Interviewer says: 'Add a computer player.' Candidate: 'I implement a BotStrategy (perhaps picking random empty cells or Minimax). I initialize a Player with BotStrategy.\n\nGame loop just calls `player.makeMove(board)` — it works automatically.'"
       },
       "guided": {
         "phase_hints": {
@@ -706,11 +706,11 @@
           "sections": [
             {
               "heading": "Optimizing Win Detection",
-              "content": "A naive win check scans the entire board. But a win can only happen if the *last placed symbol* completes a line. By passing `lastRow` and `lastCol` to `checkWin`, we only check `board[lastRow][...]`, `board[...][lastCol]`, and the two diagonals if the piece is on them. This reduces validation from O(N^2) to O(N)."
+              "content": "A naive win check scans the entire board. But a win can only happen if the *last placed symbol* completes a line.\n\nBy passing `lastRow` and `lastCol` to `checkWin`, we only check `board[lastRow][...]`, `board[...][lastCol]`, and the two diagonals if the piece is on them. This reduces validation from O(N^2) to O(N)."
             },
             {
               "heading": "Strategy for Moves",
-              "content": "Using a `PlayerStrategy` for move fetching allows us to completely decouple the game rules from the I/O. `HumanStrategy` reads from standard input. `BotStrategy` runs minimax. `NetworkStrategy` waits for JSON socket data. The `Game` loop remains `player.makeMove()`."
+              "content": "Using a `PlayerStrategy` for move fetching allows us to completely decouple the game rules from the I/O. `HumanStrategy` reads from standard input.\n\n`BotStrategy` runs minimax. `NetworkStrategy` waits for JSON socket data.\n\nThe `Game` loop remains `player.makeMove()`."
             }
           ]
         },
@@ -741,7 +741,7 @@
         "interview": 45
       },
       "category": "Controllers & Scheduling",
-      "description": "Design a multi-elevator controller that accepts internal and external requests, assigns cars, and simulates movement through explicit states."
+      "description": "Manage several elevators and their requests. Choose which elevator should handle a call. Track its floor, direction, and pending stops. Keep the choice of scheduling rule separate from moving an elevator."
     },
     {
       "id": "splitwise",
@@ -758,7 +758,7 @@
         "interview": 45
       },
       "category": "Financial Flows",
-      "description": "Design an expense sharing service with multiple split strategies (equal/exact/percentage), balance tracking, and optional debt simplification."
+      "description": "Track shared expenses and what each person owes. Support equal, exact, and percentage splits as required. Check that shares add up to the expense. Keep balances and settlements consistent."
     },
     {
       "id": "booking-system",
@@ -775,7 +775,7 @@
         "interview": 45
       },
       "category": "Reservation Systems",
-      "description": "Design a ticket booking system with theatres, shows, seat maps, search by movie/city, and concurrency-safe seat-locking flow."
+      "description": "Build a movie ticket booking flow. Users find a show, choose seats, and try to reserve them. Two users must not receive the same seat. Define what happens when a reservation expires or payment fails."
     },
     {
       "id": "logging-framework",
@@ -792,7 +792,7 @@
         "interview": 45
       },
       "category": "Infrastructure Components",
-      "description": "Design a configurable logging framework with log levels, handler chains (console/file/db), and extensible formatting."
+      "description": "Send log messages to the right destinations. Support log levels and different output formats. Allow a new destination or formatter without changing every caller. Decide how handlers pass a message along."
     },
     {
       "id": "cache-lru",
@@ -809,7 +809,7 @@
         "interview": 45
       },
       "category": "In-Memory Components",
-      "description": "Design an O(1) LRU cache using a HashMap and doubly-linked list, with room for alternate eviction policies."
+      "description": "Build a cache with a fixed capacity. Reads and updates should take O(1) time. When the cache is full, remove the least recently used entry. Keep the lookup map and usage order in sync."
     },
     {
       "id": "vending-machine",
@@ -826,7 +826,7 @@
         "interview": 45
       },
       "category": "State Machines",
-      "description": "Design a vending machine with inventory, coin handling, explicit state transitions, product dispensing, and change return."
+      "description": "Build a machine that accepts coins and dispenses a selected product. Track stock, the current payment, and the machine’s state. Return change or reject an invalid action. Define what happens when a product is sold out."
     },
     {
       "id": "ride-sharing",
@@ -843,7 +843,7 @@
         "interview": 45
       },
       "category": "Dispatch Systems",
-      "description": "Design a ride sharing platform with rider requests, driver availability, matching strategy, fare calculation, and ride state transitions."
+      "description": "Match a rider’s request with an available driver. Track the trip from request to completion. Calculate the fare using a replaceable pricing rule. Reject actions that do not fit the current trip state."
     },
     {
       "id": "rate-limiter",
@@ -860,7 +860,7 @@
         "interview": 45
       },
       "category": "Traffic Control",
-      "description": "Design a per-user rate limiter using token bucket as the primary algorithm, with a strategy seam for sliding window alternatives."
+      "description": "Limit how many requests a user may make. Start with a token bucket and define how time refills it. Handle requests arriving at the same time. Keep the algorithm replaceable if the requirements change."
     },
     {
       "id": "task-scheduler",
@@ -877,7 +877,7 @@
         "interview": 45
       },
       "category": "Schedulers",
-      "description": "Design a cron-like task scheduler with one-time and recurring tasks, priority-queue execution, dependencies, and cancellable jobs."
+      "description": "Schedule work for a later time. Support one-time and repeated tasks, priorities, and dependencies as required. Allow cancellation with clear rules. Decide who owns task state and how the next ready task is selected."
     }
   ]
 }

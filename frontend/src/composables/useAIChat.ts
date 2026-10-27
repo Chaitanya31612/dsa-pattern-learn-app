@@ -19,7 +19,15 @@ export interface AIChatMessage {
   timestamp: string
 }
 
-type ContextType = 'pattern' | 'problem' | 'sub-pattern'
+type ContextType = 'pattern' | 'problem' | 'sub-pattern' | 'hld' | 'software'
+export interface HLDChatContext {
+  mode: 'learn' | 'practice' | 'review'
+  exercise_id?: string
+  file_path?: string
+  section_id?: string
+  example_id?: string
+  attempt?: { phases: Record<string, string>; diagram: string; assisted: boolean }
+}
 
 const STORAGE_PREFIX = 'dsa-ai-chat-'
 
@@ -51,8 +59,11 @@ function saveChatHistory(contextType: ContextType, contextId: string, messages: 
   sessionStorage.setItem(key, JSON.stringify(messages.slice(-30)))
 }
 
-export function useAIChat(contextType: ContextType, contextId: string) {
-  const messages = ref<AIChatMessage[]>(loadChatHistory(contextType, contextId))
+export function useAIChat(contextType: ContextType, contextId: string, getHLDContext?: () => HLDChatContext | undefined) {
+  const initialContext = getHLDContext?.()
+  const learning = contextType === 'hld' || contextType === 'software'
+  const historyId = learning ? `${contextId}-${initialContext?.mode}-${initialContext?.exercise_id ?? 'lesson'}` : contextId
+  const messages = ref<AIChatMessage[]>(loadChatHistory(contextType, historyId))
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
@@ -60,7 +71,7 @@ export function useAIChat(contextType: ContextType, contextId: string) {
   watch(
     messages,
     (newMessages) => {
-      saveChatHistory(contextType, contextId, newMessages)
+      try { saveChatHistory(contextType, historyId, newMessages) } catch { /* Chat remains usable without session storage. */ }
     },
     { deep: true },
   )
@@ -82,9 +93,9 @@ export function useAIChat(contextType: ContextType, contextId: string) {
 
     try {
       const endpoint =
-        contextType === 'pattern' || contextType === 'sub-pattern' ? '/api/ai/pattern-chat' : '/api/ai/problem-chat'
+        contextType === 'software' ? '/api/ai/software-chat' : contextType === 'hld' ? '/api/ai/hld-chat' : contextType === 'pattern' || contextType === 'sub-pattern' ? '/api/ai/pattern-chat' : '/api/ai/problem-chat'
 
-      const bodyKey = (contextType === 'pattern' || contextType === 'sub-pattern') ? 'pattern_id' : 'problem_slug'
+      const bodyKey = learning ? 'module_id' : (contextType === 'pattern' || contextType === 'sub-pattern') ? 'pattern_id' : 'problem_slug'
 
       // Implement a sliding window character limit to prevent 422 payload errors.
       // We iterate backwards to keep the most recent context.
@@ -95,20 +106,22 @@ export function useAIChat(contextType: ContextType, contextId: string) {
       for (let i = messages.value.length - 1; i >= 0; i--) {
         const m = messages.value[i]
         if (!m) continue
-        const len = m.content.length
+        const len = Math.min(m.content.length, 6000)
         if (charCount + len > MAX_CHARS && payloadMessages.length > 0) {
           break
         }
         payloadMessages.unshift({
           role: m.role,
-          content: m.content,
+          content: m.content.slice(0, 6000),
         })
         charCount += len
+        if (payloadMessages.length >= 30) break
       }
 
       const body = {
         [bodyKey]: contextId,
         messages: payloadMessages,
+        ...(learning ? getHLDContext?.() : {}),
       }
 
       const response = await fetch(getApiUrl(endpoint), {
@@ -118,6 +131,10 @@ export function useAIChat(contextType: ContextType, contextId: string) {
       }).catch(() => null);
 
       if (!response || !response.ok) {
+        if (learning) {
+          const data = await response?.json().catch(() => null)
+          throw new Error(typeof data?.detail === 'string' ? data.detail : 'AI coach is unavailable. Your design is saved. Check the backend/provider or continue with self-review.')
+        }
         messages.value.push({
           role: 'assistant',
           content: '🔒 **Demo Mode**: This is a frontend-only deployment for demonstration purposes. For full AI features, please run the project locally with the backend server and your API keys configured.',
@@ -138,6 +155,7 @@ export function useAIChat(contextType: ContextType, contextId: string) {
       const errorMessage =
         err instanceof Error ? err.message : 'Failed to get AI response'
       error.value = errorMessage
+      if (learning) return
 
       messages.value.push({
         role: 'assistant',
@@ -151,7 +169,7 @@ export function useAIChat(contextType: ContextType, contextId: string) {
 
   function clearChat() {
     messages.value = []
-    const key = `${STORAGE_PREFIX}${contextType}-${contextId}`
+    const key = `${STORAGE_PREFIX}${contextType}-${historyId}`
     sessionStorage.removeItem(key)
   }
 

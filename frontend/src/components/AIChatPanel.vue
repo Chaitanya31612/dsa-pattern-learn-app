@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, nextTick, computed } from 'vue'
-import { useAIChat } from '../composables/useAIChat'
+import { useAIChat, type HLDChatContext } from '../composables/useAIChat'
 import hljs from 'highlight.js/lib/core'
 import java from 'highlight.js/lib/languages/java'
 import python from 'highlight.js/lib/languages/python'
@@ -11,11 +11,14 @@ hljs.registerLanguage('python', python)
 hljs.registerLanguage('javascript', javascript)
 
 const props = defineProps<{
-  contextType: 'pattern' | 'problem' | 'sub-pattern'
+  contextType: 'pattern' | 'problem' | 'sub-pattern' | 'hld' | 'software'
   contextId: string
   contextLabel: string
   quickChips?: string[]
+  hldContext?: HLDChatContext
+  learningContext?: HLDChatContext
 }>()
+const emit = defineEmits<{ message: [] }>()
 
 const defaultPatternChips = [
   'Explain this pattern simply',
@@ -41,9 +44,10 @@ const isExpanded = ref(false)
 const inputText = ref('')
 const threadRef = ref<HTMLElement | null>(null)
 
-const { messages, isLoading, sendMessage, clearChat } = useAIChat(
+const { messages, isLoading, error, sendMessage, clearChat } = useAIChat(
   props.contextType,
   props.contextId,
+  () => props.learningContext ?? props.hldContext,
 )
 
 function toggle() {
@@ -74,11 +78,13 @@ watch(
 async function handleSend() {
   const text = inputText.value.trim()
   if (!text) return
+  emit('message')
   inputText.value = ''
   await sendMessage(text)
 }
 
 async function handleChipClick(chip: string) {
+  emit('message')
   await sendMessage(chip)
 }
 
@@ -201,7 +207,7 @@ function renderMarkdown(content: string): string {
           <p class="ai-chat-empty-text">
             Ask me anything about
             <strong>{{ contextLabel }}</strong>.
-            I can explain concepts, show code, walk through solutions, and more.
+            {{ contextType === 'hld' && hldContext?.mode === 'practice' ? 'In practice, I answer clarifications and give narrow hints. Using the coach marks this draft as assisted.' : 'I can explain concepts, compare approaches, and help you reason through questions.' }}
           </p>
 
           <!-- Quick suggestion chips -->
@@ -234,6 +240,7 @@ function renderMarkdown(content: string): string {
           </div>
         </div>
 
+        <p v-if="error" role="alert" style="color: var(--accent-red)">{{ error }}</p>
         <!-- Typing indicator -->
         <div v-if="isLoading" class="ai-msg ai-msg-assistant">
           <span class="ai-msg-avatar">🤖</span>

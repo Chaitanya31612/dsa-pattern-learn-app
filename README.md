@@ -69,6 +69,16 @@ Current generated dataset:
 - 17 patterns
 - Difficulty mix: Easy 70, Medium 113, Hard 17
 
+### HLD course (Volumes 1 and 2)
+
+Open `/system-design/hld` for the HLD Architecture Lab. It contains 31 modules, 177 short lesson steps, 62 diagrams, 95 design/transfer/repair exercises, 124 MCQs, and four visual mechanism labs. The Volume 2 extension covers all thirteen chapter families and a final transfer assessment.
+
+Read a short lesson, study a worked example, submit your own attempt, then request AI feedback or reveal the prepared reference. Missed concepts and design explanations return through spaced recall. Existing Volume 1 progress remains compatible. Progress is stored in your browser; export HLD backups from the course or Settings.
+
+Lessons, quizzes, practice drafts, labs, and self-review work without AI. Live coaching and grading need the FastAPI backend on port 8000 and a working configured provider. Start the Vue app on port 5173. The full course has 136 planned hours; reading completion and AI scores do not certify mastery.
+
+See [the HLD usage and development guide](docs/HLD-LEARNING.md) and [the usability/learning review](docs/HLD-REVIEW.md).
+
 ## 2. System Architecture
 
 ```mermaid

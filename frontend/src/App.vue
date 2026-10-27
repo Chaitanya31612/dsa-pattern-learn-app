@@ -1,11 +1,25 @@
 <script setup lang="ts">
+import { computed, nextTick, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useTheme } from './composables/useTheme'
 import { useProgress } from './composables/useProgress'
 import { usePatterns } from './composables/usePatterns'
 
 const { theme, toggleTheme } = useTheme()
 const { totalSolved } = useProgress()
-const { meta } = usePatterns()
+const { meta, error: catalogError, retry: retryCatalog } = usePatterns()
+const route = useRoute()
+const headerNav = ref<HTMLElement | null>(null)
+watch(() => route.path, async path => {
+  await nextTick()
+  if (!window.matchMedia('(max-width: 1400px)').matches || !headerNav.value) return
+  const target = headerNav.value.querySelector<HTMLElement>(path.startsWith('/hld/') || path === '/system-design/hld' ? '.hld-direct-link' : 'a.active')
+  if (target) headerNav.value.scrollLeft = Math.max(0, target.offsetLeft - headerNav.value.offsetLeft - 12)
+}, { immediate: true })
+
+const isSystemDesignActive = computed(() => {
+  return route.path.startsWith('/system-design') || route.path.startsWith('/lld/') || route.path.startsWith('/hld/')
+})
 </script>
 
 <template>
@@ -24,7 +38,7 @@ const { meta } = usePatterns()
           <span class="logo-sub terminal-prompt">pattern_mastery</span>
         </router-link>
 
-        <nav class="header-nav">
+        <nav ref="headerNav" class="header-nav" aria-label="Main navigation">
           <router-link to="/" class="nav-link" active-class="active">
             <span class="nav-icon">◈</span> Dashboard
           </router-link>
@@ -40,6 +54,18 @@ const { meta } = usePatterns()
           <router-link to="/mock-interview" class="nav-link" active-class="active">
             <span class="nav-icon">⧗</span> Interview
           </router-link>
+          <div class="nav-dropdown" :class="{ active: isSystemDesignActive }">
+            <router-link to="/system-design/lld" class="nav-link nav-link-dropdown">
+              <span class="nav-icon">⌘</span> System Design
+              <span class="nav-caret">▾</span>
+            </router-link>
+            <div class="nav-dropdown-menu">
+              <router-link to="/system-design/lld" class="nav-dropdown-item">LLD</router-link>
+              <router-link to="/system-design/hld" class="nav-dropdown-item">HLD Architecture Lab</router-link>
+            </div>
+          </div>
+          <router-link to="/system-design/hld" class="nav-link hld-direct-link" :class="{ active: route.path.startsWith('/hld/') }" active-class="active">HLD</router-link>
+          <router-link to="/software" class="nav-link" :class="{ active: route.path.startsWith('/software') }">Software Learnings</router-link>
           <router-link to="/quiz" class="nav-link" active-class="active">
             <span class="nav-icon">?</span> Quiz
           </router-link>
@@ -65,6 +91,7 @@ const { meta } = usePatterns()
 
     <!-- ═══ Main Content ═══ -->
     <main class="app-main">
+      <div v-if="catalogError" class="container catalog-load-error" role="alert"><p>The DSA catalog could not load. Check your connection, then retry.</p><button class="btn" @click="retryCatalog">Retry DSA catalog</button></div>
       <router-view v-slot="{ Component }">
         <transition name="page" mode="out-in">
           <component :is="Component" />
@@ -83,6 +110,7 @@ const { meta } = usePatterns()
 </template>
 
 <style scoped>
+.catalog-load-error { padding:20px; margin-bottom:20px; border:1px solid var(--accent-red); border-radius:8px; }
 .app-layout {
   display: flex;
   flex-direction: column;
@@ -146,6 +174,7 @@ const { meta } = usePatterns()
   display: flex;
   gap: 2px;
   margin-left: auto;
+  align-items: center;
 }
 
 .nav-link {
@@ -169,6 +198,69 @@ const { meta } = usePatterns()
 .nav-link.active {
   color: var(--accent-cyan);
   background: var(--bg-card);
+}
+
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-link-dropdown {
+  padding-right: 10px;
+}
+
+.nav-dropdown.active .nav-link,
+.nav-dropdown:hover .nav-link,
+.nav-dropdown:focus-within .nav-link {
+  color: var(--accent-cyan);
+  background: var(--bg-card);
+}
+
+.nav-caret {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.nav-dropdown:hover .nav-caret,
+.nav-dropdown:focus-within .nav-caret,
+.nav-dropdown.active .nav-caret {
+  color: var(--accent-cyan);
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 180px;
+  padding: 6px;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--bg-card) 92%, transparent);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.nav-dropdown-item {
+  display: block;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.nav-dropdown-item:hover {
+  color: var(--accent-cyan);
+  background: var(--bg-card-hover);
 }
 
 .nav-icon {
@@ -245,6 +337,15 @@ const { meta } = usePatterns()
 }
 
 /* ── Responsive ──────────────────────────────── */
+.hld-direct-link { display: none; }
+@media (max-width: 1400px) {
+  .header-inner { display: grid; grid-template-columns: minmax(0, 1fr) auto; height: auto; padding-top: 10px; padding-bottom: 6px; gap: 8px; }
+  .header-nav { grid-column: 1 / -1; grid-row: 2; margin-left: 0; width: 100%; min-width: 0; overflow-x: auto; padding-bottom: 4px; }
+  .nav-link { white-space: nowrap; flex-shrink: 0; }
+  .nav-dropdown-menu { display: none; }
+  .hld-direct-link { display: flex; }
+  .header-right { grid-column: 2; grid-row: 1; }
+}
 @media (max-width: 768px) {
   .header-inner {
     gap: var(--space-md);

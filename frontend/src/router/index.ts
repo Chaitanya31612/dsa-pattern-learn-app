@@ -10,8 +10,13 @@ import MockInterviewView from '../views/MockInterviewView.vue'
 import SubPatternLearningView from '../views/SubPatternLearningView.vue'
 import DetailedAnalysisView from '../views/DetailedAnalysisView.vue'
 import CustomProblemsView from '../views/CustomProblemsView.vue'
+import SystemDesignView from '../views/SystemDesignView.vue'
+import LLDFrameworkView from '../views/LLDFrameworkView.vue'
+import LLDInterviewView from '../views/LLDInterviewView.vue'
 
 const routes: RouteRecordRaw[] = [
+  { path: '/software', name: 'software-course', component: () => import('../views/SoftwareCourseView.vue'), meta: { title: 'Software Learnings' } },
+  { path: '/software/:id', name: 'software-module', component: () => import('../views/SoftwareModuleView.vue'), meta: { title: 'Software Learning Module' } },
   {
     path: '/',
     name: 'dashboard',
@@ -59,6 +64,40 @@ const routes: RouteRecordRaw[] = [
     name: 'mock-interview',
     component: MockInterviewView,
     meta: { title: 'Mock Interview' },
+  },
+  {
+    path: '/system-design',
+    redirect: '/system-design/lld',
+  },
+  {
+    path: '/system-design/lld',
+    name: 'system-design',
+    component: SystemDesignView,
+    meta: { title: 'System Design' },
+  },
+  {
+    path: '/lld/:id/framework',
+    name: 'lld-framework',
+    component: LLDFrameworkView,
+    meta: { title: 'LLD Framework' },
+  },
+  {
+    path: '/system-design/hld',
+    name: 'hld-course',
+    component: () => import('../views/HLDCourseView.vue'),
+    meta: { title: 'HLD Architecture Lab' },
+  },
+  {
+    path: '/hld/:id',
+    name: 'hld-module',
+    component: () => import('../views/HLDModuleView.vue'),
+    meta: { title: 'HLD Module' },
+  },
+  {
+    path: '/lld/:id/session',
+    name: 'lld-session',
+    component: LLDInterviewView,
+    meta: { title: 'LLD Session' },
   },
   {
     path: '/detailed-analysis/:slug',

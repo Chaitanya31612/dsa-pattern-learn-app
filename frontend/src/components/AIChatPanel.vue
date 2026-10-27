@@ -11,7 +11,7 @@ hljs.registerLanguage('python', python)
 hljs.registerLanguage('javascript', javascript)
 
 const props = defineProps<{
-  contextType: 'pattern' | 'problem' | 'sub-pattern' | 'hld' | 'software'
+  contextType: 'pattern' | 'problem' | 'sub-pattern' | 'hld' | 'software' | 'ai-course'
   contextId: string
   contextLabel: string
   quickChips?: string[]

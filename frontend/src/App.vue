@@ -65,6 +65,7 @@ const isSystemDesignActive = computed(() => {
             </div>
           </div>
           <router-link to="/system-design/hld" class="nav-link hld-direct-link" :class="{ active: route.path.startsWith('/hld/') }" active-class="active">HLD</router-link>
+          <router-link to="/ai" class="nav-link" :class="{ active: route.path === '/ai' || route.path.startsWith('/ai/') }" active-class="active">AI Learnings</router-link>
           <router-link to="/software" class="nav-link" :class="{ active: route.path.startsWith('/software') }">Software Learnings</router-link>
           <router-link to="/quiz" class="nav-link" active-class="active">
             <span class="nav-icon">?</span> Quiz
@@ -94,7 +95,7 @@ const isSystemDesignActive = computed(() => {
       <div v-if="catalogError" class="container catalog-load-error" role="alert"><p>The DSA catalog could not load. Check your connection, then retry.</p><button class="btn" @click="retryCatalog">Retry DSA catalog</button></div>
       <router-view v-slot="{ Component }">
         <transition name="page" mode="out-in">
-          <component :is="Component" />
+          <component :is="Component" :key="String(route.name)" />
         </transition>
       </router-view>
     </main>

@@ -15,6 +15,8 @@ import LLDFrameworkView from '../views/LLDFrameworkView.vue'
 import LLDInterviewView from '../views/LLDInterviewView.vue'
 
 const routes: RouteRecordRaw[] = [
+  { path: '/ai', name: 'ai-course', component: () => import('../views/SoftwareCourseView.vue'), props: { area: 'ai' }, meta: { title: 'AI Learnings' } },
+  { path: '/ai/:id', name: 'ai-module', component: () => import('../views/SoftwareModuleView.vue'), props: { area: 'ai' }, meta: { title: 'AI Learning Chapter' } },
   { path: '/software', name: 'software-course', component: () => import('../views/SoftwareCourseView.vue'), meta: { title: 'Software Learnings' } },
   { path: '/software/:id', name: 'software-module', component: () => import('../views/SoftwareModuleView.vue'), meta: { title: 'Software Learning Module' } },
   {

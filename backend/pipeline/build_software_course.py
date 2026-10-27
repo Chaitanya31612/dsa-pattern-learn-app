@@ -6,10 +6,13 @@ APP = Path(__file__).resolve().parents[2]
 JOURNAL = APP.parent / 'swe-mastery-journal'
 
 
-def build(journal=JOURNAL):
-    manifest = json.loads((journal / 'software-learnings/course-index.json').read_text())
+def build(journal=JOURNAL, course_directory="software-learnings"):
+    if course_directory not in ("software-learnings", "ai-learnings"):
+        raise ValueError("Unknown course directory")
+    source = journal / course_directory
+    manifest = json.loads((source / 'course-index.json').read_text())
     labs = {}
-    lab_manifest = json.loads((journal / 'software-learnings/labs.json').read_text())
+    lab_manifest = json.loads((source / 'labs.json').read_text())
     for item in lab_manifest:
         folder = (journal / item['directory']).resolve()
         if not folder.is_relative_to(journal.resolve()):
@@ -37,7 +40,7 @@ def build(journal=JOURNAL):
         if module['track'] not in {t['id'] for t in manifest['tracks']}:
             raise ValueError('Unknown module track')
         seen.add(module['id'])
-        if module.get('level') not in ('beginner', 'intermediate'):
+        if module.get('level') not in (('beginner', 'intermediate', 'advanced') if course_directory=='ai-learnings' else ('beginner', 'intermediate')):
             raise ValueError('Unknown learning level')
         if module.get('lab') and module['lab'] not in labs:
             raise ValueError('Missing lab')
@@ -80,8 +83,8 @@ def build(journal=JOURNAL):
                 raise ValueError('Prerequisite must precede module in track')
             reached.add(module['id'])
     return {**manifest, 'modules': modules, 'labs': labs,
-            'guide': (journal / 'software-learnings/README.md').read_text(),
-            'versions': (journal / 'software-learnings/versions-and-sources.md').read_text()}
+            'guide': (source / 'README.md').read_text(),
+            'versions': (source / 'versions-and-sources.md').read_text()}
 
 
 if __name__ == '__main__':

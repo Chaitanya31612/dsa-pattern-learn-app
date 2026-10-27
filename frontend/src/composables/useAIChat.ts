@@ -19,7 +19,7 @@ export interface AIChatMessage {
   timestamp: string
 }
 
-type ContextType = 'pattern' | 'problem' | 'sub-pattern' | 'hld' | 'software'
+type ContextType = 'pattern' | 'problem' | 'sub-pattern' | 'hld' | 'software' | 'ai-course'
 export interface HLDChatContext {
   mode: 'learn' | 'practice' | 'review'
   exercise_id?: string
@@ -61,7 +61,7 @@ function saveChatHistory(contextType: ContextType, contextId: string, messages: 
 
 export function useAIChat(contextType: ContextType, contextId: string, getHLDContext?: () => HLDChatContext | undefined) {
   const initialContext = getHLDContext?.()
-  const learning = contextType === 'hld' || contextType === 'software'
+  const learning = ['hld', 'software', 'ai-course'].includes(contextType)
   const historyId = learning ? `${contextId}-${initialContext?.mode}-${initialContext?.exercise_id ?? 'lesson'}` : contextId
   const messages = ref<AIChatMessage[]>(loadChatHistory(contextType, historyId))
   const isLoading = ref(false)
@@ -93,7 +93,7 @@ export function useAIChat(contextType: ContextType, contextId: string, getHLDCon
 
     try {
       const endpoint =
-        contextType === 'software' ? '/api/ai/software-chat' : contextType === 'hld' ? '/api/ai/hld-chat' : contextType === 'pattern' || contextType === 'sub-pattern' ? '/api/ai/pattern-chat' : '/api/ai/problem-chat'
+        contextType === 'ai-course' ? '/api/ai/ai-course-chat' : contextType === 'software' ? '/api/ai/software-chat' : contextType === 'hld' ? '/api/ai/hld-chat' : contextType === 'pattern' || contextType === 'sub-pattern' ? '/api/ai/pattern-chat' : '/api/ai/problem-chat'
 
       const bodyKey = learning ? 'module_id' : (contextType === 'pattern' || contextType === 'sub-pattern') ? 'pattern_id' : 'problem_slug'
 

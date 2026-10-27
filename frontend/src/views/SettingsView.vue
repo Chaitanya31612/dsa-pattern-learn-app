@@ -138,6 +138,7 @@ const totalReflections = computed(() => Object.keys(state.reflections).length)
       <p class="setting-desc">Preserve your design snapshots, quiz history, notes, and scheduled recall separately.</p>
       <HLDBackup />
       <SoftwareBackup />
+      <SoftwareBackup area="ai" />
     </section>
     <!-- ═══ Smart Features ═══ -->
     <section class="card card-flat animate-in stagger-3" style="margin-bottom: var(--space-lg)">

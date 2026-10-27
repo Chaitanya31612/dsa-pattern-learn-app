@@ -1,11 +1,11 @@
 import type { HLDCard, HLDQuestion } from './hld'
-export type SoftwareTrack = 'spring' | 'ruby' | 'git' | 'frontend' | 'ux' | 'cloud' | 'ops' | 'events'
+export type SoftwareTrack = 'spring' | 'ruby' | 'git' | 'frontend' | 'ux' | 'cloud' | 'ops' | 'events' | 'models' | 'contracts' | 'retrieval' | 'agents' | 'mcp' | 'rails-ai' | 'quality' | 'advanced-ai'
 export interface SoftwareLab {
   id: string; title: string; version: string; journalPath: string; guide: string
   files: { path: string; language: string; content: string }[]
 }
 export interface SoftwareModule {
-  level: 'beginner' | 'intermediate'; sequence: number; tags: string[]
+  level: 'beginner' | 'intermediate' | 'advanced'; sequence: number; tags: string[]
   useCase?: string; benefits?: string; drawbacks?: string; lab?: string | null
   id: string; track: SoftwareTrack; number: number; title: string; outcome: string; hours: number; cue: string; version: string; book: string; prerequisite: string | null; journalPath: string
   sections: { id: string; title: string; content: string }[]

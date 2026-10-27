@@ -3,7 +3,10 @@ import type { SoftwareCourse, SoftwareModule, SoftwareProgress, SoftwareAttempt 
 import { newSoftwareDraft, validateSoftwareProgress } from '../lib/softwareLearning'
 import { DAY, gradeQuiz, scheduleReview } from '../lib/hldLearning'
 
-const KEY = 'software-learnings-progress-v1'
+export type LearningArea = 'software' | 'ai'
+export function createLearningSpace(area: LearningArea) {
+const label = area==='ai'?'AI Learnings':'Software Learnings'
+const KEY = `${area==='ai'?'ai':'software'}-learnings-progress-v1`
 const course = ref<SoftwareCourse | null>(null)
 const error = ref('')
 const storageError = ref('')
@@ -13,7 +16,7 @@ let pending: Promise<void> | null = null
 try {
   const raw = localStorage.getItem(KEY)
   if (raw) progress.value = validateSoftwareProgress(JSON.parse(raw))
-} catch { blocked.value = true; storageError.value = 'Saved Software Learnings progress could not be read. It has not been overwritten. Export the stored copy in Settings before replacing it.' }
+} catch { blocked.value = true; storageError.value = `Saved ${label} progress could not be read. It has not been overwritten. Export the stored copy in Settings before replacing it.` }
 watch(progress, data => {
   if (blocked.value) return
   try { localStorage.setItem(KEY, JSON.stringify(data)); storageError.value = '' }
@@ -24,12 +27,12 @@ async function load() {
   if (course.value || pending) return pending
   pending = (async () => {
     try {
-      const response = await fetch(`${import.meta.env.BASE_URL}software-course.json`)
+      const response = await fetch(`${import.meta.env.BASE_URL}${area}-course.json`)
       if (!response.ok) throw new Error('load')
       const data = await response.json()
       if (data.schemaVersion !== 1 || !Array.isArray(data.modules) || !data.modules.length) throw new Error('schema')
       course.value = data; error.value = ''
-    } catch { error.value = 'The Software Learnings course could not load. Check the server and retry.' }
+    } catch { error.value = `The ${label} course could not load. Check the server and retry.` }
     finally { pending = null }
   })()
   return pending
@@ -86,8 +89,15 @@ function replaceBackup(value: unknown) {
   localStorage.setItem(KEY, JSON.stringify(valid))
   blocked.value = false; progress.value = valid; storageError.value = ''
 }
-export function useSoftware() {
+function useSpace() {
   void load()
   return { course, error, progress, storageError, blocked, due, load, state, draft, completeStep, submit, submitQuiz, rate, refreshTime, replaceBackup,
     rawBackup: () => localStorage.getItem(KEY), newDraft: newSoftwareDraft }
 }
+
+return useSpace
+}
+const softwareSpace = createLearningSpace('software')
+const aiSpace = createLearningSpace('ai')
+export const useSoftware = softwareSpace
+export const useAILearnings = aiSpace

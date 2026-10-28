@@ -5,3 +5,12 @@ venv/
 development.md
 /project-markdowns
 /.run/
+.venv/
+.wrangler/
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+node_modules/
+.cloudflare/
+.venv-workers/
+python_modules/

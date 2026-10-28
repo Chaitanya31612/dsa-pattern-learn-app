@@ -1,0 +1,15 @@
+[project]
+name = "patternfirst-ai"
+version = "0.1.0"
+description = "Cloudflare deployment of the existing Pattern First FastAPI backend"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi",
+    "python-dotenv",
+    "groq",
+    "google-genai",
+    "ollama",
+]
+
+[dependency-groups]
+dev = ["workers-py", "workers-runtime-sdk"]

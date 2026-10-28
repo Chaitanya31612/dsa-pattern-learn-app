@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { aiHeaders } from '../lib/aiConnection'
 import { ref, onMounted } from 'vue'
 
 interface CustomProblem {
@@ -33,7 +34,7 @@ function getApiUrl(path: string): string {
 async function loadCustomProblems() {
   loadingList.value = true
   try {
-    const res = await fetch(getApiUrl('/api/custom-problems')).catch(() => null)
+    const res = await fetch(getApiUrl('/api/custom-problems'), { headers: aiHeaders() }).catch(() => null)
     if (!res || !res.ok) {
       // In demo mode, just leave customProblems empty
       customProblems.value = []
@@ -68,7 +69,7 @@ async function submitUrl() {
   try {
     const res = await fetch(getApiUrl('/api/process-leetcode'), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: aiHeaders(),
       body: JSON.stringify({ url })
     }).catch(() => null)
 

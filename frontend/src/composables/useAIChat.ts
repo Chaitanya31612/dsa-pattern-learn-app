@@ -1,3 +1,4 @@
+import { aiHeaders } from '../lib/aiConnection'
 import { ref, watch } from 'vue'
 
 /**
@@ -126,10 +127,14 @@ export function useAIChat(contextType: ContextType, contextId: string, getHLDCon
 
       const response = await fetch(getApiUrl(endpoint), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: aiHeaders(),
         body: JSON.stringify(body),
       }).catch(() => null);
 
+      if (response?.status === 401) {
+        error.value = 'Enter your hosted AI access key in Settings, then retry.'
+        return
+      }
       if (!response || !response.ok) {
         if (learning) {
           const data = await response?.json().catch(() => null)

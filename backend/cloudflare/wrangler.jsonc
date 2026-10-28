@@ -1,0 +1,22 @@
+{
+  "name": "patternfirst-ai",
+  "main": "src/worker.py",
+  "compatibility_date": "2026-10-28",
+  "compatibility_flags": [
+    "python_workers"
+  ],
+  "find_additional_modules": true,
+  "rules": [
+    {
+      "type": "Data",
+      "globs": [
+        "pipeline/data/*.json"
+      ],
+      "fallthrough": true
+    }
+  ],
+  "vars": {
+    "ALLOWED_ORIGINS": "https://dev--patternfirstdsa.netlify.app,https://patternfirstdsa.netlify.app,http://127.0.0.1:5173,http://localhost:5173",
+    "AI_REQUESTS_PER_MINUTE": "12"
+  }
+}

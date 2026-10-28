@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { aiHeaders } from '../lib/aiConnection'
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useSoftware, useAILearnings } from '../composables/useSoftware'
@@ -54,7 +55,7 @@ async function evaluate(a: SoftwareAttempt) {
   evaluating.value=true;message.value=''
   try {
     const base=(import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/,'')
-    const response=await fetch(`${base}/api/${isAI?'ai-course':'software'}/evaluate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({module_id:module.value.id,exercise_id:exercise.value.id,attempt:{phases:a.phases,diagram:a.diagram,assisted:a.assisted}})})
+    const response=await fetch(`${base}/api/${isAI?'ai-course':'software'}/evaluate`,{method:'POST',headers:aiHeaders(),body:JSON.stringify({module_id:module.value.id,exercise_id:exercise.value.id,attempt:{phases:a.phases,diagram:a.diagram,assisted:a.assisted}})})
     const data=await response.json().catch(() => null)
     if (!data) throw new Error('AI feedback is unavailable. Your saved attempt is kept. Check the backend and retry.')
     if (!response.ok) throw new Error(typeof data.detail==='string'?data.detail:'AI feedback is unavailable. Your attempt is saved.')

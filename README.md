@@ -168,6 +168,8 @@ Frontend already has a comprehensive technical README:
 
 ## 7. Quick Start
 
+To host the **same Python AI backend** on Cloudflare Workers, follow [the Cloudflare deployment guide](docs/CLOUDFLARE-PYTHON.md). No TypeScript backend rewrite is needed. The frontend can stay on Netlify.
+
 To start the frontend and the AI backend together, run this from the repository root:
 
 ```bash

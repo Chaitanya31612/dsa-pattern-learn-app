@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { aiHeaders } from '../lib/aiConnection'
 import { computed, ref } from 'vue'
 import type { HLDAttempt, HLDModule, HLDReview } from '../types/hld'
 import { DIMENSION_LABELS, HLD_DIMENSIONS } from '../types/hld'
@@ -18,7 +19,7 @@ async function evaluate() {
   const submitted = props.attempt
   const base = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '')
   try {
-    const res = await fetch(`${base}/api/hld/evaluate`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    const res = await fetch(`${base}/api/hld/evaluate`, { method: 'POST', headers: aiHeaders(),
       signal: AbortSignal.timeout(90_000), body: JSON.stringify({ module_id: props.module.id, exercise_id: submitted.exerciseId,
         attempt: { phases: submitted.phases, diagram: submitted.diagram, assisted: submitted.assisted } }) })
     const data = await res.json()

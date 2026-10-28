@@ -1,0 +1,4 @@
+# Optional local Worker test credentials. Copy to .dev.vars (ignored by Git).
+GROQ_API_KEY="your-groq-key"
+AI_ACCESS_TOKEN="replace-with-a-random-secret-at-least-32-characters"
+# GEMINI_API_KEY="your-gemini-key"

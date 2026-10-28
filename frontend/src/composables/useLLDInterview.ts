@@ -1,3 +1,4 @@
+import { aiHeaders } from '../lib/aiConnection'
 import { computed, ref } from 'vue'
 import type {
   LLDCatalogProblem,
@@ -542,10 +543,17 @@ export function useLLDInterview() {
 
       const response = await fetch(getApiUrl('/api/lld-interview/respond'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: aiHeaders(),
         body: JSON.stringify(payload),
       }).catch(() => null)
 
+      if (response?.status === 401) {
+        session.chat.push({ role: 'assistant', content: 'Enter your hosted AI access key in Settings, then retry.', ts: new Date().toISOString() })
+        session.updatedAt = new Date().toISOString()
+        saveSession(session)
+        isResponding.value = false
+        return
+      }
       if (response && response.ok) {
         const data = await response.json()
         const reply = String(data.reply ?? '')

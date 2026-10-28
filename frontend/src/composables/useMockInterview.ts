@@ -1,3 +1,4 @@
+import { aiHeaders } from '../lib/aiConnection'
 import { computed, ref } from 'vue'
 import type {
   InterviewProblemState,
@@ -370,10 +371,13 @@ async function fetchInterviewerReply(payload: {
 
   const response = await fetch(getApiUrl('/api/mock-interview/respond'), {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: aiHeaders(),
     body: JSON.stringify(body),
   }).catch(() => null);
 
+  if (response?.status === 401) {
+    return { reply: 'Enter your hosted AI access key in Settings, then retry.' }
+  }
   if (!response || !response.ok) {
     if (payload.mode === 'interview') {
       throw new Error('Interview backend unavailable, falling back to offline reply.')

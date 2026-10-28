@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { aiHeaders, aiURL } from '../lib/aiConnection'
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useMockInterview } from '../composables/useMockInterview'
@@ -71,9 +72,9 @@ async function fetchAnalysis() {
 
   isAnalyzing.value = true
   try {
-    const response = await fetch('/api/analyze-code', {
+    const response = await fetch(aiURL('/api/analyze-code'), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: aiHeaders(),
       body: JSON.stringify({
         problem_slug: slug.value,
         code: problemState.value.code,
@@ -82,6 +83,10 @@ async function fetchAnalysis() {
       }),
     }).catch(() => null)
 
+    if (response?.status === 401) {
+      errorMsg.value = 'Enter your hosted AI access key in Settings, then retry.'
+      return
+    }
     if (!response || !response.ok) {
       analysisResult.value = {
         timeComplexity: "O(1) - Demo Mode",

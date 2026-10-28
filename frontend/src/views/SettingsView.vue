@@ -3,6 +3,16 @@ import { computed, ref } from 'vue'
 import { useProgress } from '../composables/useProgress'
 import HLDBackup from '../components/HLDBackup.vue'
 import SoftwareBackup from '../components/SoftwareBackup.vue'
+import { hostedAIKey, saveHostedAIKey } from '../lib/aiConnection'
+
+const accessKey = ref(hostedAIKey())
+const accessStatus = ref('')
+function saveAccessKey() {
+  try {
+    saveHostedAIKey(accessKey.value)
+    accessStatus.value = accessKey.value.trim() ? 'Saved for this tab session. Retry your AI request.' : 'Hosted access key removed.'
+  } catch { accessStatus.value = 'Browser storage is unavailable. Allow session storage and retry.' }
+}
 
 const { exportProgress, importProgress, state } = useProgress()
 
@@ -67,6 +77,19 @@ const totalReflections = computed(() => Object.keys(state.reflections).length)
       <span class="terminal-prompt">settings.config()</span>
       <h1 class="sv-title">Settings</h1>
     </header>
+
+    <section class="card card-flat" style="margin-bottom: var(--space-lg)">
+      <h3 class="section-heading">Hosted AI connection</h3>
+      <p class="setting-desc">Using the Cloudflare backend? Enter the personal access key you configured there. Your local Python server does not require it.</p>
+      <p class="setting-desc">This is not your Groq or Gemini API key. Provider keys stay on the backend. This key is saved only for this tab session.</p>
+      <form @submit.prevent="saveAccessKey" class="action-row">
+        <label for="hosted-ai-key">Personal AI access key</label>
+        <input id="hosted-ai-key" class="hosted-key" v-model="accessKey" type="password" autocomplete="off" spellcheck="false" />
+        <button class="btn btn-primary" type="submit">Save access key</button>
+        <button class="btn" type="button" @click="accessKey='';saveAccessKey()">Clear</button>
+      </form>
+      <p role="status">{{ accessStatus }}</p>
+    </section>
 
     <!-- ═══ Progress Stats ═══ -->
     <section class="card card-flat animate-in stagger-1" style="margin-bottom: var(--space-lg)">
@@ -246,6 +269,19 @@ const totalReflections = computed(() => Object.keys(state.reflections).length)
 </template>
 
 <style scoped>
+.hosted-key {
+  flex: 1 1 250px;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font: inherit;
+}
+.hosted-key:focus { outline: 2px solid var(--accent-cyan); outline-offset: 2px; }
 .sv-header {
   margin-bottom: var(--space-xl);
 }

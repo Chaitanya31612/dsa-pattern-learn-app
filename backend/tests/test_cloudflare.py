@@ -1,6 +1,7 @@
 """Hosting boundary checks; existing course tests cover the reused teaching API."""
 import asyncio
 import importlib.util
+import json
 from pathlib import Path
 
 import httpx
@@ -10,7 +11,7 @@ import app
 from cloudflare_adapter import HostedAPI
 
 TOKEN = 'test-personal-access-' + 'a' * 32
-ORIGIN = 'https://dev--patternfirstdsa.netlify.app'
+ORIGIN = 'https://learning.example'
 
 
 @pytest.fixture(autouse=True)
@@ -116,3 +117,35 @@ def test_build_packages_original_sources_and_never_local_secrets(tmp_path, monke
     assert not (build / 'src/requirements.txt').exists()
     assert not (build / 'src/pipeline/fetch_leetcode.py').exists()
     assert len(list((build / 'src/pipeline/data').glob('*.json'))) == 4
+
+
+def test_deployment_origins_stay_in_private_configuration(tmp_path, monkeypatch):
+    backend = Path(__file__).resolve().parents[1]
+    spec = importlib.util.spec_from_file_location('private_worker_prepare', backend / 'cloudflare/prepare.py')
+    prepare = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(prepare)
+    config = tmp_path / 'config'
+    config.mkdir()
+    for name in ('wrangler.jsonc', 'pyproject.toml', 'uv.lock', 'pylock.toml'):
+        (config / name).write_bytes((backend / 'cloudflare' / name).read_bytes())
+    monkeypatch.setattr(prepare, 'CONFIG', config)
+    monkeypatch.setattr(prepare, 'BUILD', tmp_path / 'build')
+    monkeypatch.delenv('CLOUDFLARE_ALLOWED_ORIGINS', raising=False)
+
+    build = prepare.prepare()
+    defaults = json.loads((build / 'wrangler.jsonc').read_text())
+    assert defaults['vars']['ALLOWED_ORIGINS'] == 'http://127.0.0.1:5173,http://localhost:5173'
+
+    private = config / 'wrangler.local.json'
+    private.write_text(json.dumps({'vars': {'ALLOWED_ORIGINS': 'https://private.example'}}))
+    prepare.prepare()
+    assert json.loads((build / 'wrangler.jsonc').read_text())['vars']['ALLOWED_ORIGINS'] == 'https://private.example'
+    assert not (build / 'src/wrangler.local.json').exists()
+
+    monkeypatch.setenv('CLOUDFLARE_ALLOWED_ORIGINS', 'https://ci.example')
+    prepare.prepare()
+    assert json.loads((build / 'wrangler.jsonc').read_text())['vars']['ALLOWED_ORIGINS'] == 'https://ci.example'
+
+    private.write_text(json.dumps({'vars': {'GROQ_API_KEY': 'synthetic-only'}}))
+    with pytest.raises(ValueError, match='secrets'):
+        prepare.prepare()

@@ -2,11 +2,11 @@
 
 Deployment README for **DSA Pattern Lab / Pattern First**.
 
-Recorded on **28 October 2026**. This documents the implementation and commands used for this project. Secret values are deliberately excluded.
+This guide documents the implementation and deployment commands. URLs, account names, and machine paths use placeholders. Keep your actual deployment details in ignored local files or your password manager.
 
 ### Find what you need
 
-- [Current deployment](#1-what-is-deployed-now)
+- [Deployment overview](#1-deployment-overview)
 - [Personal key: purpose and scope](#2-is-the-personal-access-key-only-for-this-project)
 - [Where the key is stored](#3-where-is-the-personal-key-stored)
 - [Architecture and changed files](#4-architecture-the-same-backend-a-different-server-adapter)
@@ -23,20 +23,18 @@ Recorded on **28 October 2026**. This documents the implementation and commands 
 
 For an ordinary code update, the two commands are `./backend/cloudflare.sh check` and `./backend/cloudflare.sh deploy`. You do not need to recreate secrets for each code deployment.
 
-## 1. What is deployed now?
+## 1. Deployment overview
 
-- Worker name: `patternfirst-ai`.
-- Worker URL: <https://patternfirst-ai.guptachaitanya31.workers.dev>.
-- Configuration check: <https://patternfirst-ai.guptachaitanya31.workers.dev/api/health>.
-- Frontend: <https://dev--patternfirstdsa.netlify.app/>.
+- Worker name: `patternfirst-ai` in the shared configuration. Choose your own if needed.
+- Example Worker URL: `https://your-worker.your-subdomain.workers.dev`.
+- Configuration check: append `/api/health` to your Worker URL.
+- Example frontend URL: `https://your-app.netlify.app`.
 - Runtime: Cloudflare **Python Workers**, serving the original FastAPI app.
-- AI provider used in live verification: Groq, model `openai/gpt-oss-120b`.
-- Runtime secrets installed: `GROQ_API_KEY`, `GEMINI_API_KEY`, `AI_ACCESS_TOKEN`.
-- Initial code deployment ID: `e3fc61d2-cbd7-470a-82e9-a1947b051e71`. Secrets were installed afterward; this ID is a historical deployment record, not a promise that it is the current version.
+- Runtime secret names: `GROQ_API_KEY`, `GEMINI_API_KEY`, `AI_ACCESS_TOKEN`.
 
-The backend was deployed and tested against its public URL. Netlify's environment-variable change and its frontend rebuild were left as user steps. This README does not claim those dashboard steps have already been completed.
+Replace example URLs with your own when configuring your deployment. Do not commit account URLs, deployment IDs, personal machine paths, or credential values to this guide.
 
-No paid plan, persistent database, custom domain, or model-hosting service was configured by this work. Groq/Gemini still apply their own account quotas. A successful smoke test does not guarantee unlimited free use.
+This setup does not require a persistent database, custom domain, or model-hosting service. Provider quotas and hosting limits still apply.
 
 ## 2. Is the personal access key only for this project?
 
@@ -59,7 +57,7 @@ GROQ_API_KEY / GEMINI_API_KEY
 
 The personal key covers all protected features on this Worker: DSA, mock interviews, LLD, HLD, Software Learnings, and AI Learnings. It is not a separate key for each course or question.
 
-Both allowed Netlify sites can use the same Worker and key. Command-line clients can also call the Worker with the key. `/api/health` and browser preflight requests do not require it.
+Sites in your configured origin list can use the same Worker and key. Command-line clients can also call the Worker with the key. `/api/health` and browser preflight requests do not require it.
 
 It does **not** grant permission to deploy code, manage your Cloudflare account, reveal the provider secrets, or use unrelated projects automatically. It does let the holder use this backend's AI features and consume the associated provider quota.
 
@@ -75,14 +73,14 @@ This is a **shared personal-use key**, not a user account system:
 
 ## 3. Where is the personal key stored?
 
-For this deployment:
+With this setup:
 
 - Cloudflare: the `AI_ACCESS_TOKEN` runtime secret on `patternfirst-ai`.
-- Local copy: `backend/.cloudflare/personal-access-key.txt`.
+- Optional local copy: `backend/.cloudflare/personal-access-key.txt`. Prefer a password manager.
 - Local Worker testing: `backend/cloudflare/.dev.vars` contains its local test value.
 - Browser: after you save it in Settings, it is stored under `patternfirst-hosted-ai-access` in `sessionStorage`.
 
-The local secret files are ignored by Git. The personal-key text file has owner-only permissions (`600`). It is a plaintext convenience copy; keep it private or move the value to a password manager.
+The local secret files are ignored by Git. If you create a personal-key text file, give it owner-only permissions (`600`). It is a plaintext convenience copy; keep it private or move the value to a password manager.
 
 Browser storage is for the current tab session. Refreshing preserves it. A separate tab/browser may need the key entered again; browser tab duplication/restoration can copy or restore session state. It is not included in progress exports.
 
@@ -124,7 +122,8 @@ There are two intentional hosting boundaries:
 - `backend/worker.py`: imports the existing app, warms its read-only catalog caches, and exports Cloudflare's ASGI entry point.
 - `backend/cloudflare_adapter.py`: hosted-only ASGI wrapper.
 - `backend/cloudflare/prepare.py`: builds an allowlisted source bundle.
-- `backend/cloudflare/wrangler.jsonc`: Worker name, Python entry point, compatibility settings, JSON-file rules, and ordinary configuration.
+- `backend/cloudflare/wrangler.jsonc`: shared runtime defaults; localhost origins only.
+- `backend/cloudflare/wrangler.local.example.json`: safe example for an ignored local origin override.
 - `backend/cloudflare/pyproject.toml`: Python Worker dependencies and tooling.
 - `backend/cloudflare/uv.lock`: locked local/tooling dependency resolution.
 - `backend/cloudflare/pylock.toml`: locked package resolution for the Python/WebAssembly runtime.
@@ -188,15 +187,13 @@ The source subtree is replaced on preparation. Tooling caches outside it are ret
 
 ## 7. Toolchain used
 
-Observed versions on this machine during setup:
+Tooling requirements and pins:
 
-- Existing Uvicorn virtual environment: Python `3.12.3`.
-- Packaging/tooling environment: managed Python `3.13.18`.
-- Python Worker environment selected by the tooling/configuration: Python `3.14.2` for WebAssembly, with a corresponding managed host environment.
-- Compatible Node selected: `24.22.1`, from the bundled Codex runtime.
-- npm CLI reused from an installed asdf Node distribution: npm `10.8.2`.
-- uv installed during setup: `0.13.6`.
-- Wrangler pinned by the launcher: `4.154.0`.
+- Packaging: Python 3.11+.
+- Worker dependency manifest: Python 3.13+.
+- Node: 22.12+ or a newer major, with npm 10+.
+- uv bootstrap pin: `0.13.6`.
+- Wrangler launcher pin: `4.154.0`.
 
 Different Python environments have different jobs. Your local app does not need to switch to the Worker's Python version. The launcher does not change global asdf settings.
 
@@ -207,7 +204,7 @@ The launcher needs Python 3.11+ for packaging, compatible Node 22.12+ or a newer
 Commands below start from the repository root unless a different directory is shown.
 
 ```bash
-cd /home/chaitanya/Desktop/Development/learning/DSAPatternLearnApp
+cd /path/to/DSAPatternLearnApp
 ```
 
 ### Install the Python deployment tool
@@ -234,6 +231,20 @@ The launcher can also bootstrap its pinned uv into an ignored tooling environmen
 chmod +x backend/cloudflare.sh
 bash -n backend/cloudflare.sh
 ```
+
+### Keep your site URLs out of Git
+
+The tracked configuration permits localhost only. Before your first hosted deployment:
+
+```bash
+cp backend/cloudflare/wrangler.local.example.json backend/cloudflare/wrangler.local.json
+```
+
+Edit `ALLOWED_ORIGINS` in the new **ignored** file. Use your frontend origins, without paths or trailing slashes. Keep actual account URLs and private deployment notes out of committed files.
+
+The packaging script merges this local file into ignored `backend/.cloudflare/wrangler.jsonc`. It accepts only `ALLOWED_ORIGINS` and `AI_REQUESTS_PER_MINUTE` under `vars`. Provider credentials belong in runtime secrets.
+
+For GitHub builds, set `CLOUDFLARE_ALLOWED_ORIGINS` in the Cloudflare build environment. This overrides the local/default origin list without storing your site URLs in Git. Keep runtime secrets configured separately on the Worker.
 
 ### Prepare the bundle
 
@@ -273,9 +284,9 @@ Port 8787 was also used during the initial compatibility investigation. The loca
 ./backend/cloudflare.sh login
 ```
 
-You completed the browser sign-in yourself. Wrangler stored its OAuth credentials in the user's local Wrangler configuration, outside this repository. Those credentials were not added to source control or bundled into the app.
+Complete the browser sign-in yourself. Wrangler stored its OAuth credentials in the user's local Wrangler configuration, outside this repository. Those credentials were not added to source control or bundled into the app.
 
-We verified the sign-in using `wrangler whoami` through the prepared local npx wrapper. A reproducible equivalent after preparation is:
+Verify the sign-in through the prepared local npx wrapper:
 
 ```bash
 (
@@ -290,7 +301,7 @@ We verified the sign-in using `wrangler whoami` through the prepared local npx w
 ./backend/cloudflare.sh deploy
 ```
 
-The actual deployment command's output was captured locally:
+To capture deployment output locally:
 
 ```bash
 ./backend/cloudflare.sh deploy > /tmp/patternfirst-cloudflare-deploy.log 2>&1
@@ -302,13 +313,13 @@ Internally:
 uv run --locked --python 3.13 pywrangler deploy
 ```
 
-The deployment succeeded and returned the public `patternfirst-ai.guptachaitanya31.workers.dev` URL. Without runtime secrets, its protected adapter deliberately returned a configuration error rather than permitting anonymous AI use.
+Cloudflare returns your Worker URL after deployment. Copy it into your private setup notes. Without runtime secrets, the adapter returns a configuration error rather than permitting anonymous AI use.
 
 ## 9. How the secrets were configured
 
-### What was actually done
+### Optional local provisioning script
 
-The deployment used a short local Python script to:
+The following script can:
 
 1. Read the existing provider keys from `backend/.env`.
 2. Read the personal key created for local Worker testing from `backend/cloudflare/.dev.vars`.
@@ -319,7 +330,7 @@ The deployment used a short local Python script to:
 
 The personal key was generated with Python's `secrets.token_hex(32)`: 32 random bytes represented as 64 hexadecimal characters. The adapter accepts a configured key of at least 32 characters.
 
-Here is the deployment script used, with no credential values embedded:
+Run this only for initial setup or an intentional credential update. It contains no credential values:
 
 ```python
 import json
@@ -361,7 +372,7 @@ path.write_text(token + '\n')
 path.chmod(0o600)
 ```
 
-The successful result listed three created secret **names**, not their values.
+Successful output lists the created secret **names**, not their values.
 
 Do not rerun bulk secret provisioning casually. It is for initial setup or deliberate credential updates. Changing `backend/.env` alone does not update Cloudflare, and changing a Cloudflare secret does not update your local files automatically.
 
@@ -384,7 +395,7 @@ Never put provider keys in `wrangler.jsonc`, a committed environment file, front
 In the existing Netlify project, configure this public build variable:
 
 ```text
-VITE_API_BASE_URL=https://patternfirst-ai.guptachaitanya31.workers.dev
+VITE_API_BASE_URL=https://your-worker.your-subdomain.workers.dev
 ```
 
 Apply it to the **Git `dev` branch deployment**, then trigger a rebuild. Netlify's local-development context named `dev` is not the same thing as a branch deployment from a Git branch named `dev`.
@@ -393,7 +404,7 @@ This variable contains a URL, not a secret. Vite embeds `VITE_*` variables into 
 
 After the rebuild:
 
-1. Open <https://dev--patternfirstdsa.netlify.app/settings>.
+1. Open <https://dev--your-app.netlify.app/settings>.
 2. Find **Hosted AI connection**.
 3. Copy the personal key from its local file or password manager.
 4. Paste it into **Personal AI access key** and save.
@@ -467,7 +478,7 @@ The test runner was invoked directly with the compatible Node binary:
 
 ```bash
 cd frontend
-/home/chaitanya/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node \
+node \
   node_modules/vitest/vitest.mjs run \
   src/lib/hldLearning.test.ts \
   src/lib/softwareLearning.test.ts \
@@ -484,9 +495,9 @@ Result: **43 passed**, for **77 tests total** with the backend suite. With a com
 
 ```bash
 cd frontend
-/home/chaitanya/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node \
+node \
   node_modules/vue-tsc/bin/vue-tsc.js -b
-/home/chaitanya/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node \
+node \
   node_modules/vite/bin/vite.js build
 cd ..
 ```
@@ -527,9 +538,9 @@ import json
 from pathlib import Path
 import requests
 
-base = 'https://patternfirst-ai.guptachaitanya31.workers.dev'
+base = 'https://your-worker.your-subdomain.workers.dev'
 token = Path('backend/.cloudflare/personal-access-key.txt').read_text().strip()
-origin = 'https://dev--patternfirstdsa.netlify.app'
+origin = 'https://dev--your-app.netlify.app'
 
 r = requests.get(base + '/api/health', timeout=30)
 r.raise_for_status()
@@ -556,7 +567,7 @@ PY
 For a health-only check with no inference:
 
 ```bash
-curl -fsS https://patternfirst-ai.guptachaitanya31.workers.dev/api/health
+curl -fsS https://your-worker.your-subdomain.workers.dev/api/health
 ```
 
 ### Source-control checks
@@ -567,7 +578,7 @@ git commit -m 'feat: host the existing Python AI backend on Cloudflare'
 git push origin dev
 ```
 
-Implementation commit: `c1cd70d`. Before committing, staged file contents were checked against the local provider credential values, without displaying those values. No local credentials were included. The deployment itself does not require another Git commit.
+Before committing, check staged files for private deployment details and credentials. A direct CLI deployment does not require another Git commit.
 
 ## 14. Investigation problems and how they were resolved
 
@@ -665,13 +676,14 @@ This integration was documented, not configured as part of the direct CLI deploy
 
 In Cloudflare, select the Worker → Settings → Builds → Connect GitHub:
 
-1. Grant access to `Chaitanya31612/dsa-pattern-learn-app`.
+1. Grant access to `YOUR_GITHUB_USER/YOUR_REPOSITORY`.
 2. Select branch `dev` while testing.
 3. Root directory: `backend`.
 4. Build command: `./cloudflare.sh prepare`.
 5. Deploy command: `./cloudflare.sh deploy`.
 6. Worker name: `patternfirst-ai`, matching the configuration.
-7. Optionally watch `backend/**` to avoid unrelated frontend-only builds.
+7. Set `CLOUDFLARE_ALLOWED_ORIGINS` in the build environment to your comma-separated frontend origins.
+8. Optionally watch `backend/**` to avoid unrelated frontend-only builds.
 
 Runtime secrets remain in the Worker settings. They are not Git build variables. Check the integration's first build before relying on automatic deployments.
 
@@ -820,6 +832,8 @@ class HostedAPI:
 ```python
 """Package the original API, without .env, virtualenvs, tests, or scraping tools."""
 from pathlib import Path
+import json
+import os
 import shutil
 
 BACKEND = Path(__file__).resolve().parents[1]
@@ -842,8 +856,23 @@ def prepare():
     data.mkdir(parents=True)
     for name in ('db.json', 'hld-course.json', 'software-course.json', 'ai-course.json'):
         shutil.copy2(BACKEND / 'pipeline/data' / name, data / name)
-    for name in ('pyproject.toml', 'uv.lock', 'pylock.toml', 'wrangler.jsonc'):
+    for name in ('pyproject.toml', 'uv.lock', 'pylock.toml'):
         shutil.copy2(CONFIG / name, BUILD / name)
+    # Keep account-specific browser origins outside tracked configuration.
+    config = json.loads((CONFIG / 'wrangler.jsonc').read_text())
+    local_config = CONFIG / 'wrangler.local.json'
+    if local_config.exists():
+        overrides = json.loads(local_config.read_text())
+        if set(overrides) - {'vars'} or not isinstance(overrides.get('vars', {}), dict):
+            raise ValueError('Local Worker configuration supports only a vars object.')
+        variables = overrides.get('vars', {})
+        if set(variables) - {'ALLOWED_ORIGINS', 'AI_REQUESTS_PER_MINUTE'}:
+            raise ValueError('Keep secrets out of configuration; use Cloudflare runtime secrets.')
+        config['vars'].update(variables)
+    # CI can supply its origins in build settings without committing site names.
+    if os.environ.get('CLOUDFLARE_ALLOWED_ORIGINS'):
+        config['vars']['ALLOWED_ORIGINS'] = os.environ['CLOUDFLARE_ALLOWED_ORIGINS']
+    (BUILD / 'wrangler.jsonc').write_text(json.dumps(config, indent=2) + '\n')
     # Only an explicitly created local Worker secret file is used. Production
     # secrets are configured in Cloudflare, and backend/.env is never bundled.
     secret = CONFIG / '.dev.vars'
@@ -951,7 +980,7 @@ esac
     }
   ],
   "vars": {
-    "ALLOWED_ORIGINS": "https://dev--patternfirstdsa.netlify.app,https://patternfirstdsa.netlify.app,http://127.0.0.1:5173,http://localhost:5173",
+    "ALLOWED_ORIGINS": "http://127.0.0.1:5173,http://localhost:5173",
     "AI_REQUESTS_PER_MINUTE": "12"
   }
 }
@@ -1031,6 +1060,7 @@ node_modules/
 .cloudflare/
 .venv-workers/
 python_modules/
+/backend/cloudflare/wrangler.local.json
 ```
 
 ### 18.10. Settings: save and clear the personal key

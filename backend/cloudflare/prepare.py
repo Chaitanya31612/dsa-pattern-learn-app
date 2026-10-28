@@ -1,5 +1,7 @@
 """Package the original API, without .env, virtualenvs, tests, or scraping tools."""
 from pathlib import Path
+import json
+import os
 import shutil
 
 BACKEND = Path(__file__).resolve().parents[1]
@@ -22,8 +24,23 @@ def prepare():
     data.mkdir(parents=True)
     for name in ('db.json', 'hld-course.json', 'software-course.json', 'ai-course.json'):
         shutil.copy2(BACKEND / 'pipeline/data' / name, data / name)
-    for name in ('pyproject.toml', 'uv.lock', 'pylock.toml', 'wrangler.jsonc'):
+    for name in ('pyproject.toml', 'uv.lock', 'pylock.toml'):
         shutil.copy2(CONFIG / name, BUILD / name)
+    # Keep account-specific browser origins outside tracked configuration.
+    config = json.loads((CONFIG / 'wrangler.jsonc').read_text())
+    local_config = CONFIG / 'wrangler.local.json'
+    if local_config.exists():
+        overrides = json.loads(local_config.read_text())
+        if set(overrides) - {'vars'} or not isinstance(overrides.get('vars', {}), dict):
+            raise ValueError('Local Worker configuration supports only a vars object.')
+        variables = overrides.get('vars', {})
+        if set(variables) - {'ALLOWED_ORIGINS', 'AI_REQUESTS_PER_MINUTE'}:
+            raise ValueError('Keep secrets out of configuration; use Cloudflare runtime secrets.')
+        config['vars'].update(variables)
+    # CI can supply its origins in build settings without committing site names.
+    if os.environ.get('CLOUDFLARE_ALLOWED_ORIGINS'):
+        config['vars']['ALLOWED_ORIGINS'] = os.environ['CLOUDFLARE_ALLOWED_ORIGINS']
+    (BUILD / 'wrangler.jsonc').write_text(json.dumps(config, indent=2) + '\n')
     # Only an explicitly created local Worker secret file is used. Production
     # secrets are configured in Cloudflare, and backend/.env is never bundled.
     secret = CONFIG / '.dev.vars'

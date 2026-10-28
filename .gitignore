@@ -14,3 +14,4 @@ node_modules/
 .cloudflare/
 .venv-workers/
 python_modules/
+/backend/cloudflare/wrangler.local.json

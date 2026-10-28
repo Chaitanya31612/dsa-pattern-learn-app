@@ -1,6 +1,6 @@
 # Deploy the existing Python AI backend on Cloudflare
 
-For the full deployment record, commands actually used, implementation snapshots, and access-key scope, read [Cloudflare Worker Deploy](../CLOUDFLARE-WORKER-DEPLOY.md). This file remains the shorter setup guide.
+For the full deployment guide, commands, implementation snapshots, and access-key scope, read [Cloudflare Worker Deploy](../CLOUDFLARE-WORKER-DEPLOY.md). This file remains the shorter setup guide.
 
 The frontend stays on Netlify. Cloudflare runs the **same FastAPI routes and provider adapters** used locally. There is no TypeScript backend and no second copy of the teaching/scoring logic.
 
@@ -17,7 +17,18 @@ The source packaging step is like creating a deployment archive. Files are copie
 
 `backend/.env`, virtual environments, tests, scraping tools, and private/work directories are not bundled. Dependencies use Cloudflare's Python/WebAssembly package ecosystem, including the existing Groq and Gemini SDKs. Local Uvicorn still uses its original virtual environment and requirements files.
 
-## 1. Check the deployment locally
+## 1. Configure your private site origins and check locally
+
+The tracked configuration allows localhost only. Create your ignored local configuration:
+
+```bash
+cp backend/cloudflare/wrangler.local.example.json backend/cloudflare/wrangler.local.json
+```
+
+Edit `vars.ALLOWED_ORIGINS` in that local file. Replace the example URLs with your frontend origins, with no paths or trailing slashes. Do not commit account URLs, deployment IDs, or personal machine paths.
+
+The launcher merges the local values into ignored `backend/.cloudflare/wrangler.jsonc`. Keep provider keys and the access token in runtime secrets, not this configuration.
+
 
 From the repository root:
 
@@ -80,13 +91,14 @@ The Worker URL should look like `https://patternfirst-ai.YOUR-SUBDOMAIN.workers.
 Once the changes are pushed to the repository:
 
 1. Select the Worker → Settings → Builds → Connect GitHub.
-2. Grant access to only `Chaitanya31612/dsa-pattern-learn-app`.
+2. Grant access to only `YOUR_GITHUB_USER/YOUR_REPOSITORY`.
 3. Choose the `dev` branch while testing.
 4. Set the root directory to `backend`.
 5. Build command: `./cloudflare.sh prepare`.
 6. Deploy command: `./cloudflare.sh deploy`.
 7. Keep the Worker name `patternfirst-ai`, matching its configuration.
-8. Optionally limit build watch paths to `backend/**` to avoid rebuilding for frontend-only changes.
+8. Set `CLOUDFLARE_ALLOWED_ORIGINS` in the Cloudflare build environment to your comma-separated frontend origins. The ignored local file is not available in Git builds.
+9. Optionally limit build watch paths to `backend/**` to avoid rebuilding for frontend-only changes.
 
 You can also use **Connect GitHub** on the Create application screen with the same settings. The deployment scripts must already exist on the selected branch. Build secrets and runtime secrets are separate; configure runtime credentials in the Worker's Settings.
 
@@ -102,7 +114,7 @@ Apply it to the `dev` branch-deploy context and rebuild that frontend. Netlify's
 
 Open the deployed app → Settings → Hosted AI connection. Enter the personal `AI_ACCESS_TOKEN`, not your Groq/Gemini key. Save it, then retry chat or assessment. It lasts for this tab session, survives refresh, and is separate from progress backups.
 
-Allowed browser origins are configured in `backend/cloudflare/wrangler.jsonc`. It includes the existing production and dev Netlify URLs and localhost. If you change domains, update this file and redeploy. An origin is just `https://site.example`, with no path or trailing slash. Dashboard edits to these ordinary variables may be replaced by later configuration deployments.
+Allowed browser origins come from ignored `backend/cloudflare/wrangler.local.json`, or `CLOUDFLARE_ALLOWED_ORIGINS` in the build environment (which takes precedence). The tracked defaults allow localhost only. If you change domains, update your private configuration and redeploy. An origin is just `https://site.example`, with no path or trailing slash. Dashboard edits to runtime variables may be replaced by later configuration deployments.
 
 ## 5. Verify before relying on it
 

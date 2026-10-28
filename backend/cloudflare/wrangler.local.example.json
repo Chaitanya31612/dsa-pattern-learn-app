@@ -1,0 +1,5 @@
+{
+  "vars": {
+    "ALLOWED_ORIGINS": "https://your-app.netlify.app,https://dev--your-app.netlify.app,http://127.0.0.1:5173,http://localhost:5173"
+  }
+}

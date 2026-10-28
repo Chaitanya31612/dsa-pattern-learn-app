@@ -1,5 +1,7 @@
 # Deploy the existing Python AI backend on Cloudflare
 
+For the full deployment record, commands actually used, implementation snapshots, and access-key scope, read [Cloudflare Worker Deploy](../CLOUDFLARE-WORKER-DEPLOY.md). This file remains the shorter setup guide.
+
 The frontend stays on Netlify. Cloudflare runs the **same FastAPI routes and provider adapters** used locally. There is no TypeScript backend and no second copy of the teaching/scoring logic.
 
 ## What was added
